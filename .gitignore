@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Audio processing outputs
+temp_audio/
+temp_audio_new/
+official_audio_playback/
+official_audio_wav/
+official_game_audio/
+reference_playback/
+audacity_windows/
+change_samples/
+filtered_audio_samples/
+focused_clips/
+simple_debug/
+
+# Generated images/visualizations
+*.png
+correlation_analysis.png
+inning_transitions_timeline.png
+waveform_*.png
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code (optional - remove if you want to track it)
+.claude/

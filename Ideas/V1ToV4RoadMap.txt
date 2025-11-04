@@ -1,0 +1,55 @@
+Ideas for Dinger stats
+Important stats
+Win loss season, person
+Era player with character
+batting average player with character
+slugging percentage player with character
+
+V1 win loss starting with most recent season and moving back
+what I need
+Image at begining to know whos playing
+- detect names in overlay
+- who is home and who is away
+	- not sure if they line this up in overlay may need to look at highlighted batter/captain combo
+	- potentially build data set of captain logos to easily see (sure this is online somewhere)
+Image at end of game
+- potentially detect on thats the game audio
+- maybe look at finish screen if they linger on it
+- could also parse comentary to see they said won but that may be harder worth looking into if this image processing is harder
+
+Maybe just need image at the end
+
+Process
+get list of all video urls for a season (hopefully in playlist)
+process each video starting from back to get image at end of game
+- whos playing
+- who won
+loop through videos and get important image
+process all images and generate relevant data to save in the database
+build UI so anyone can access easier
+
+V2 track pitching
+Think this will be easier than batting just tracking pitcher rather than multiple characters (could be multiple pitchers in game but less than 9 batters)
+Already know whos playing so get early screen shot of who the pitcher is 
+segment innings (started this)
+	- audio queues for inning transition
+segment at bats 
+	- audio queue for out, hit or walk (edge cases, steal, error/bobble, etc)
+maybe should just pull in at bat parse here too but maybe not idk using similar stuff and parsing through the video is the hard part
+also can use visual queues here 
+- ball strike out count
+- whos on base
+
+V3 track hitting
+- will most likely loop this in with track pitching but we'll see
+- also use some version of audio queues combine with visual queues to get confirmation
+
+V4 bit tracker
+- will need bigger data storage for this but track all audio from all games
+- find common bits I'd like to track
+	- Journey of 1000 steps
+	- food game
+	- I'm calling it
+- compile them together
+- could also use comentary to confirm game calls but that might be too much maybe only do it if audio and video analysis is still giving problems
+- this is fuzzy on how to efficiently search such a large data set, look into tools or other use cases for how to make this easier
