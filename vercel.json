@@ -1,4 +1,5 @@
 {
-  "version": 2,
-  "public": "webapp/frontend"
+  "buildCommand": null,
+  "outputDirectory": "webapp/frontend",
+  "installCommand": null
 }
