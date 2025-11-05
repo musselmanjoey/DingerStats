@@ -40,3 +40,11 @@ waveform_*.png
 # Database files
 database/*.db
 database/*.db-journal
+
+# Processing progress files
+*_progress.txt
+*_progress.log
+nul
+
+# Vercel
+.vercel
