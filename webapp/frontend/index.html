@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DingerStats - Season 10 Player Stats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            padding: 2rem 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .rank {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .win-pct {
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .h2h-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        select {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .vs-text {
+            font-weight: 700;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .h2h-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .filter-bar {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🏆 DingerStats</h1>
+            <div class="subtitle">Season 10 - Mario Baseball Stats & Standings</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('standings')">Standings</button>
+                <button class="tab" onclick="switchTab('h2h')">Head-to-Head</button>
+                <button class="tab" onclick="switchTab('recent')">Recent Games</button>
+            </div>
+
+            <!-- Standings Tab -->
+            <div id="standings-tab" class="tab-content active">
+                <div class="card">
+                    <div class="card-title">Player Standings</div>
+                    <div class="filter-bar">
+                        <span class="filter-label">Filter by Type:</span>
+                        <select id="game-type-filter" onchange="loadStandings()">
+                            <option value="">All Games</option>
+                        </select>
+                    </div>
+                    <div id="standings-content">
+                        <div class="loading">Loading standings...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Head-to-Head Tab -->
+            <div id="h2h-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-title">Head-to-Head Matchup</div>
+                    <div class="h2h-selector">
+                        <select id="player1-select">
+                            <option value="">Select Player 1</option>
+                        </select>
+                        <span class="vs-text">VS</span>
+                        <select id="player2-select">
+                            <option value="">Select Player 2</option>
+                        </select>
+                    </div>
+                    <div id="h2h-content">
+                        <div class="loading">Select two players to see their matchup history</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Games Tab -->
+            <div id="recent-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-title">Recent Games</div>
+                    <div id="recent-content">
+                        <div class="loading">Loading recent games...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Load data for tab
+            if (tabName === 'standings') loadStandings();
+            if (tabName === 'recent') loadRecentGames();
+        }
+
+        // Load standings
+        async function loadStandings() {
+            const gameType = document.getElementById('game-type-filter').value;
+            const url = gameType ? `${API_URL}/standings?game_type=${gameType}` : `${API_URL}/standings`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                const html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Wins</th>
+                                <th>Losses</th>
+                                <th>Win %</th>
+                                <th>Games</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.standings.map((player, index) => `
+                                <tr>
+                                    <td class="rank">${index + 1}</td>
+                                    <td class="player-name">${player.player}</td>
+                                    <td>${player.wins}</td>
+                                    <td>${player.losses}</td>
+                                    <td class="win-pct">${player.win_pct.toFixed(3)}</td>
+                                    <td>${player.games}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                document.getElementById('standings-content').innerHTML = html;
+            } catch (error) {
+                document.getElementById('standings-content').innerHTML = `
+                    <div class="error">Error loading standings. Make sure the API server is running on port 5000.</div>
+                `;
+            }
+        }
+
+        // Load players for dropdowns
+        async function loadPlayers() {
+            try {
+                const response = await fetch(`${API_URL}/players`);
+                const data = await response.json();
+
+                const options = data.players.map(p => `<option value="${p}">${p}</option>`).join('');
+
+                document.getElementById('player1-select').innerHTML = '<option value="">Select Player 1</option>' + options;
+                document.getElementById('player2-select').innerHTML = '<option value="">Select Player 2</option>' + options;
+            } catch (error) {
+                console.error('Error loading players:', error);
+            }
+        }
+
+        // Load game types for filter
+        async function loadGameTypes() {
+            try {
+                const response = await fetch(`${API_URL}/game-types`);
+                const data = await response.json();
+
+                const options = data.game_types.map(t => `<option value="${t}">${t}</option>`).join('');
+                document.getElementById('game-type-filter').innerHTML = '<option value="">All Games</option>' + options;
+            } catch (error) {
+                console.error('Error loading game types:', error);
+            }
+        }
+
+        // Load head-to-head
+        async function loadHeadToHead() {
+            const player1 = document.getElementById('player1-select').value;
+            const player2 = document.getElementById('player2-select').value;
+
+            if (!player1 || !player2) {
+                document.getElementById('h2h-content').innerHTML = '<div class="loading">Select two players to see their matchup history</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/head-to-head?player1=${player1}&player2=${player2}`);
+                const data = await response.json();
+
+                const html = `
+                    <div class="h2h-summary">
+                        <div class="stat-box">
+                            <div class="stat-value">${data.player1_wins}</div>
+                            <div class="stat-label">${data.player1} Wins</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${data.player2_wins}</div>
+                            <div class="stat-label">${data.player2} Wins</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${data.total_games}</div>
+                            <div class="stat-label">Total Games</div>
+                        </div>
+                    </div>
+
+                    ${data.games.length > 0 ? `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Game Type</th>
+                                    <th>Matchup</th>
+                                    <th>Score</th>
+                                    <th>Winner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.games.map(game => `
+                                    <tr>
+                                        <td>${game.game_type || 'N/A'}</td>
+                                        <td>${game.player_a} vs ${game.player_b}</td>
+                                        <td>${game.score_a}-${game.score_b}</td>
+                                        <td class="player-name">${game.winner}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    ` : '<div class="loading">No games found between these players</div>'}
+                `;
+
+                document.getElementById('h2h-content').innerHTML = html;
+            } catch (error) {
+                document.getElementById('h2h-content').innerHTML = '<div class="error">Error loading head-to-head data</div>';
+            }
+        }
+
+        // Load recent games
+        async function loadRecentGames() {
+            try {
+                const response = await fetch(`${API_URL}/recent-games?limit=20`);
+                const data = await response.json();
+
+                const html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Game Type</th>
+                                <th>Matchup</th>
+                                <th>Score</th>
+                                <th>Winner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.games.map(game => `
+                                <tr>
+                                    <td>${game.game_type || 'N/A'}</td>
+                                    <td>${game.player_a} vs ${game.player_b}</td>
+                                    <td>${game.score_a}-${game.score_b}</td>
+                                    <td class="player-name">${game.winner}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                document.getElementById('recent-content').innerHTML = html;
+            } catch (error) {
+                document.getElementById('recent-content').innerHTML = '<div class="error">Error loading recent games</div>';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('player1-select').addEventListener('change', loadHeadToHead);
+        document.getElementById('player2-select').addEventListener('change', loadHeadToHead);
+
+        // Initialize
+        loadStandings();
+        loadPlayers();
+        loadGameTypes();
+    </script>
+</body>
+</html>

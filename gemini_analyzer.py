@@ -29,41 +29,68 @@ class GeminiAnalyzer:
         self.client = genai.Client(api_key=self.api_key)
         self.model = model
 
-    @backoff.on_exception(
-        backoff.expo,
-        (exceptions.ResourceExhausted, exceptions.ServiceUnavailable, exceptions.DeadlineExceeded),
-        max_tries=5,
-        max_time=300
-    )
-    def analyze_video_with_retry(self, video_url: str, prompt: str) -> str:
+    def analyze_video_with_retry(self, video_url: str, prompt: str, max_retries: int = 3) -> str:
         """
-        Analyze video with exponential backoff retry logic
+        Analyze video with retry logic that respects Gemini's rate limit delays
 
         Args:
             video_url: Full YouTube video URL
             prompt: Question/instruction for Gemini
+            max_retries: Maximum number of retries for rate limits
 
         Returns:
             Gemini's response text
         """
-        try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=types.Content(
-                    parts=[
-                        types.Part(
-                            file_data=types.FileData(
-                                file_uri=video_url
-                            )
-                        ),
-                        types.Part(text=prompt)
-                    ]
+        for attempt in range(max_retries + 1):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=types.Content(
+                        parts=[
+                            types.Part(
+                                file_data=types.FileData(
+                                    file_uri=video_url
+                                )
+                            ),
+                            types.Part(text=prompt)
+                        ]
+                    )
                 )
-            )
-            return response.text
-        except Exception as e:
-            print(f"Error analyzing video {video_url}: {e}")
-            raise
+                return response.text
+
+            except Exception as e:
+                error_str = str(e)
+
+                # Check if this is a rate limit error
+                is_rate_limit = '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str or 'quota' in error_str.lower()
+
+                if is_rate_limit:
+                    # Parse retry delay from error message
+                    retry_delay = None
+                    if 'retry in' in error_str.lower():
+                        match = re.search(r'retry in (\d+\.?\d*)s', error_str, re.IGNORECASE)
+                        if match:
+                            retry_delay = float(match.group(1))
+
+                    # If this is our last attempt, raise the error
+                    if attempt >= max_retries:
+                        print(f"Rate limit exceeded after {max_retries} retries: {video_url}")
+                        raise
+
+                    # Wait for the retry delay (or default to exponential backoff)
+                    if retry_delay:
+                        wait_time = retry_delay + 2  # Add 2 seconds buffer
+                        print(f"  Rate limited. Waiting {wait_time:.1f}s before retry {attempt + 1}/{max_retries}...")
+                        time.sleep(wait_time)
+                    else:
+                        # Exponential backoff if no delay specified
+                        wait_time = (2 ** attempt) * 10
+                        print(f"  Rate limit error, waiting {wait_time}s before retry {attempt + 1}/{max_retries}...")
+                        time.sleep(wait_time)
+                else:
+                    # Non-rate-limit error, raise immediately
+                    print(f"Error analyzing video {video_url}: {e}")
+                    raise
 
     def analyze_game_video(self, video_id: str, video_url: str = None) -> Tuple[Optional[Dict], str]:
         """
