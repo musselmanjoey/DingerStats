@@ -3,73 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DingerStats - Season 10 Player Stats</title>
+    <title>.:DingerStats - Mario Baseball Stats:.</title>
     <style>
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            background: #2c3e50 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHklEQVQYV2NkYGD4z8DAwMgABXAGjBpEHqAKRg0iDwC8vAP/hMWX3gAAAABJRU5ErkJggg==') repeat;
+            color: #000;
+        }
+
+        /* 2005-Style Header with Metallic Gradient */
+        .header-wrap {
+            background: linear-gradient(to bottom, #6a85b6 0%, #3d5a80 50%, #2c3e50 100%);
+            border-bottom: 3px solid #ffd700;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .container {
-            max-width: 1200px;
+            max-width: 980px;
             margin: 0 auto;
+            padding: 15px 10px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .header h1 {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 28px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px #000, -1px -1px 2px rgba(255,255,255,0.3);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
         }
 
-        .subtitle {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .header .subtitle {
+            font-size: 10px;
+            color: #b8d4ff;
+            font-style: italic;
         }
 
-        .main-content {
-            padding: 2rem 1rem;
+        /* Forum-style Navigation */
+        .nav-bar {
+            background: linear-gradient(to bottom, #e8e8e8 0%, #d0d0d0 50%, #b8b8b8 100%);
+            border-top: 1px solid #fff;
+            border-bottom: 2px solid #666;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
         }
 
-        .tabs {
+        .nav-container {
+            max-width: 980px;
+            margin: 0 auto;
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #e0e0e0;
+            gap: 3px;
         }
 
-        .tab {
-            padding: 1rem 1.5rem;
+        .nav-tab {
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #f5f5f5, #d5d5d5);
+            border: 1px solid #999;
+            border-bottom: none;
             cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 11px;
+            color: #333;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+            position: relative;
+            top: 1px;
         }
 
-        .tab:hover {
-            color: #667eea;
+        .nav-tab:hover {
+            background: linear-gradient(to bottom, #fff, #e5e5e5);
         }
 
-        .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+        .nav-tab.active {
+            background: #f5f5f5;
+            border-bottom: 2px solid #f5f5f5;
+            color: #ff6600;
+        }
+
+        /* Main Content Area */
+        .main-wrap {
+            max-width: 980px;
+            margin: 15px auto;
+            background: #f5f5f5;
+            border: 1px solid #999;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+        }
+
+        .content-area {
+            padding: 15px;
         }
 
         .tab-content {
@@ -80,259 +105,367 @@
             display: block;
         }
 
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        /* Forum-Style Post Box */
+        .stat-box {
+            background: #fff;
+            border: 2px solid #c0c0c0;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #333;
+        .box-header {
+            background: linear-gradient(to bottom, #4a90e2 0%, #2e5c8a 100%);
+            padding: 6px 10px;
+            border-bottom: 2px solid #1a3a5a;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px #000;
         }
 
+        .box-content {
+            padding: 10px;
+        }
+
+        /* 2005-Style Tables */
         table {
             width: 100%;
             border-collapse: collapse;
+            border: 1px solid #999;
+            background: #fff;
         }
 
         thead {
-            background: #f8f9fa;
+            background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+            border-bottom: 2px solid #999;
         }
 
         th {
-            padding: 1rem;
+            padding: 6px 8px;
             text-align: left;
-            font-weight: 600;
-            color: #666;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #000;
+            border-right: 1px solid #aaa;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.7);
         }
 
         td {
-            padding: 1rem;
-            border-top: 1px solid #e0e0e0;
+            padding: 6px 8px;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #eee;
+            font-size: 11px;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
         }
 
         tr:hover {
-            background: #f8f9fa;
+            background: #ffffcc;
         }
 
         .rank {
-            font-weight: 700;
-            color: #667eea;
-            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ff6600;
+            font-size: 13px;
         }
 
-        .player-name {
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .win-pct {
-            font-weight: 600;
-            color: #10b981;
-        }
-
-        .h2h-selector {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            align-items: center;
-        }
-
-        select {
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1rem;
-            min-width: 200px;
+        /* Glossy Buttons (Very 2005) */
+        .button, select {
+            background: linear-gradient(to bottom, #f5f5f5 0%, #e0e0e0 50%, #d0d0d0 100%);
+            border: 1px solid #999;
+            border-radius: 4px;
+            padding: 5px 12px;
+            font-family: Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
             cursor: pointer;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 3px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.7);
         }
 
-        select:focus {
-            outline: none;
-            border-color: #667eea;
+        .button:hover, select:hover {
+            background: linear-gradient(to bottom, #fff 0%, #e8e8e8 50%, #d8d8d8 100%);
+        }
+
+        .button:active {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Stat Badges (Forum Rank Style) */
+        .stat-badge {
+            display: inline-block;
+            background: linear-gradient(to bottom, #4CAF50, #388E3C);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid #2E7D32;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+        }
+
+        /* H2H Selector */
+        .h2h-picker {
+            background: #f0f0f0;
+            border: 2px inset #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .h2h-picker label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .vs-text {
-            font-weight: 700;
-            color: #666;
-            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff0000;
+            font-size: 16px;
+            margin: 0 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        .h2h-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+        /* Stats Grid (Old School) */
+        .stats-grid {
+            display: table;
+            width: 100%;
+            border-spacing: 8px;
         }
 
-        .stat-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
+        .stat-cell {
+            display: table-cell;
+            background: linear-gradient(to bottom, #667eea, #4a5f99);
+            color: #fff;
+            padding: 12px;
+            border: 2px solid #334477;
+            border-radius: 5px;
             text-align: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+            margin-bottom: 4px;
         }
 
         .stat-label {
+            font-size: 10px;
             opacity: 0.9;
-            font-size: 0.9rem;
         }
 
+        /* Footer (Classic forum signature style) */
+        .footer {
+            background: #2c3e50;
+            color: #aaa;
+            text-align: center;
+            padding: 15px;
+            font-size: 10px;
+            border-top: 3px solid #ffd700;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading/Error States */
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 20px;
+            font-style: italic;
             color: #666;
         }
 
         .error {
-            background: #fee;
-            color: #c33;
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
+            background: #ffe0e0;
+            border: 2px solid #ff0000;
+            padding: 10px;
+            border-radius: 3px;
+            color: #cc0000;
+            font-weight: bold;
         }
 
-        .filter-bar {
-            margin-bottom: 1.5rem;
+        /* Support Section Styling */
+        .donation-box {
+            background: linear-gradient(to bottom, #fffacd, #ffeaa7);
+            border: 3px double #ffd700;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
         }
 
-        .filter-label {
-            font-weight: 600;
-            margin-right: 1rem;
+        .donation-box h3 {
+            color: #ff6600;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .venmo-link {
+            display: inline-block;
+            background: linear-gradient(to bottom, #3D95CE, #2574A9);
+            color: #fff !important;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+            border: 2px solid #1A5276;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+            margin-top: 8px;
+        }
+
+        .venmo-link:hover {
+            background: linear-gradient(to bottom, #4AA5DE, #2E84B9);
+        }
+
+        input[type="number"] {
+            border: 2px inset #ddd;
+            padding: 4px;
+            font-family: Verdana, sans-serif;
+            font-size: 11px;
+            width: 80px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="container">
-            <h1>🏆 DingerStats</h1>
-            <div class="subtitle">Season 10 - Mario Baseball Stats & Standings</div>
+    <div class="header-wrap">
+        <div class="header">
+            <h1>.:. DingerStats .
+
+:.</h1>
+            <div class="subtitle">Mario Super Sluggers - Player Statistics Database - Est. 2025</div>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="container">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('standings')">Standings</button>
-                <button class="tab" onclick="switchTab('h2h')">Head-to-Head</button>
-                <button class="tab" onclick="switchTab('recent')">Recent Games</button>
-                <button class="tab" onclick="switchTab('support')">Support the Project</button>
-            </div>
+    <div class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-tab active" onclick="switchTab('standings')">Standings</div>
+            <div class="nav-tab" onclick="switchTab('h2h')">Head-to-Head</div>
+            <div class="nav-tab" onclick="switchTab('recent')">Recent Games</div>
+            <div class="nav-tab" onclick="switchTab('support')">Support Us</div>
+        </div>
+    </div>
+
+    <div class="main-wrap">
+        <div class="content-area">
 
             <!-- Standings Tab -->
             <div id="standings-tab" class="tab-content active">
-                <div class="card">
-                    <div class="card-title">Player Standings</div>
-                    <div class="filter-bar">
-                        <span class="filter-label">Filter by Type:</span>
-                        <select id="game-type-filter" onchange="loadStandings()">
-                            <option value="">All Games</option>
-                        </select>
-                    </div>
-                    <div id="standings-content">
-                        <div class="loading">Loading standings...</div>
+                <div class="stat-box">
+                    <div class="box-header">» Player Standings</div>
+                    <div class="box-content">
+                        <div style="margin-bottom: 10px;">
+                            <label style="font-weight: bold; margin-right: 8px;">Filter by Game Type:</label>
+                            <select id="game-type-filter" onchange="loadStandings()">
+                                <option value="">All Games</option>
+                            </select>
+                        </div>
+                        <div id="standings-content">
+                            <div class="loading">Loading standings...</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Head-to-Head Tab -->
             <div id="h2h-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-title">Head-to-Head Matchup</div>
-                    <div class="h2h-selector">
-                        <select id="player1-select">
-                            <option value="">Select Player 1</option>
-                        </select>
-                        <span class="vs-text">VS</span>
-                        <select id="player2-select">
-                            <option value="">Select Player 2</option>
-                        </select>
-                    </div>
-                    <div id="h2h-content">
-                        <div class="loading">Select two players to see their matchup history</div>
+                <div class="stat-box">
+                    <div class="box-header">» Head-to-Head Battle</div>
+                    <div class="box-content">
+                        <div class="h2h-picker">
+                            <label>Select Players:</label>
+                            <div style="display: flex; align-items: center; margin-top: 8px;">
+                                <select id="player1-select" style="flex: 1;">
+                                    <option value="">Choose Player 1</option>
+                                </select>
+                                <span class="vs-text">VS</span>
+                                <select id="player2-select" style="flex: 1;">
+                                    <option value="">Choose Player 2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="h2h-content">
+                            <div class="loading">Select two players to view their matchup history</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Games Tab -->
             <div id="recent-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-title">Recent Games</div>
-                    <div id="recent-content">
-                        <div class="loading">Loading recent games...</div>
+                <div class="stat-box">
+                    <div class="box-header">» Recent Match Results</div>
+                    <div class="box-content">
+                        <div id="recent-content">
+                            <div class="loading">Loading recent games...</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Support Tab -->
             <div id="support-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-title">About This Project</div>
-                    <p style="line-height: 1.6; margin-bottom: 1.5rem;">
-                        Hi! I'm Joey, a hobby developer who built DingerStats to track Mario Baseball game results from
-                        <a href="https://www.youtube.com/@DingerCity" target="_blank" style="color: #667eea;">Dinger City</a>'s YouTube videos.
-                        This site uses AI to analyze every game and extract player stats automatically.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Processing Progress</div>
-                    <div id="processing-stats">
-                        <div class="loading">Loading stats...</div>
+                <div class="stat-box">
+                    <div class="box-header">» About This Site</div>
+                    <div class="box-content">
+                        <p style="line-height: 1.6; margin-bottom: 12px;">
+                            <b>Welcome to DingerStats!</b> This site tracks Mario Super Sluggers game statistics from
+                            <a href="https://www.youtube.com/@DingerCity" target="_blank" style="color: #0066cc;">Dinger City</a>'s YouTube channel.
+                            Using AI analysis, we extract player stats automatically from every video.
+                        </p>
+                        <p style="line-height: 1.6; color: #666; font-size: 10px;">
+                            Created by Joey - A hobby developer bringing old-school web vibes to modern stats tracking.
+                        </p>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-title">Speed Up Processing</div>
-                    <p style="line-height: 1.6; margin-bottom: 1.5rem;">
-                        Currently processing on a free tier (50 videos/day). Donations go 100% toward API costs
-                        to process all <span id="remaining-videos">1,118</span> videos faster!
-                    </p>
-
-                    <div class="donation-calculator">
-                        <label for="donation-amount" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
-                            Calculate Your Impact:
-                        </label>
-                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-                            <input
-                                type="number"
-                                id="donation-amount"
-                                value="5"
-                                min="1"
-                                step="1"
-                                style="padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; width: 100px;"
-                                oninput="calculateImpact()"
-                            >
-                            <div id="impact-display" style="flex: 1; font-size: 0.95rem; color: #666;">
-                                $5 = 1,666 videos = 33.3 days saved!
-                            </div>
+                <div class="stat-box">
+                    <div class="box-header">» Processing Progress</div>
+                    <div class="box-content">
+                        <div id="processing-stats">
+                            <div class="loading">Loading processing stats...</div>
                         </div>
                     </div>
+                </div>
 
-                    <a
-                        href="https://venmo.com/Joey-Musselman"
-                        target="_blank"
-                        style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.1rem; margin-top: 1rem;"
-                    >
-                        Donate via Venmo @Joey-Musselman
+                <div class="donation-box">
+                    <h3>⚡ Help Speed Up Video Processing! ⚡</h3>
+                    <p style="font-size: 11px; line-height: 1.5; margin-bottom: 10px;">
+                        Currently processing <b><span id="remaining-videos">1,118</span> videos</b> on free tier (50/day).
+                        Donations go 100% toward API costs to process faster!
+                    </p>
+                    <div style="margin: 10px 0;">
+                        <label style="font-weight: bold; font-size: 11px;">Calculate Your Impact:</label><br>
+                        <input type="number" id="donation-amount" value="5" min="1" oninput="calculateImpact()" style="margin-top: 4px;">
+                        <span style="font-weight: bold; margin-left: 8px;" id="impact-display">$5 = 1,666 videos = 33 days saved!</span>
+                    </div>
+                    <a href="https://venmo.com/Joey-Musselman" target="_blank" class="venmo-link">
+                        💰 Donate via Venmo @Joey-Musselman
                     </a>
                 </div>
             </div>
+
         </div>
+    </div>
+
+    <div class="footer">
+        <b>DingerStats</b> - Tracking Mario Baseball excellence since 2025<br>
+        Powered by AI Analysis | <a href="https://github.com/musselmanjoey/DingerStats" target="_blank">View on GitHub</a>
     </div>
 
     <script>
@@ -981,7 +1114,7 @@
 
         // Tab switching
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
 
             event.target.classList.add('active');
@@ -1000,12 +1133,11 @@
 
             // Filter by game type if selected
             if (gameType) {
-                // Would need to filter - for now just show all
                 standings = STATS_DATA.standings;
             }
 
             const html = `
-                <table>
+                <table cellspacing="0" cellpadding="0">
                     <thead>
                         <tr>
                             <th>Rank</th>
@@ -1019,11 +1151,11 @@
                     <tbody>
                         ${standings.map((player, index) => `
                             <tr>
-                                <td class="rank">${index + 1}</td>
-                                <td class="player-name">${player.player}</td>
+                                <td class="rank">#${index + 1}</td>
+                                <td><b>${player.player}</b></td>
                                 <td>${player.wins}</td>
                                 <td>${player.losses}</td>
-                                <td class="win-pct">${player.win_pct.toFixed(3)}</td>
+                                <td><span class="stat-badge">${player.win_pct.toFixed(3)}</span></td>
                                 <td>${player.games}</td>
                             </tr>
                         `).join('')}
@@ -1038,8 +1170,8 @@
         function loadPlayers() {
             const options = STATS_DATA.players.map(p => `<option value="${p}">${p}</option>`).join('');
 
-            document.getElementById('player1-select').innerHTML = '<option value="">Select Player 1</option>' + options;
-            document.getElementById('player2-select').innerHTML = '<option value="">Select Player 2</option>' + options;
+            document.getElementById('player1-select').innerHTML = '<option value="">Choose Player 1</option>' + options;
+            document.getElementById('player2-select').innerHTML = '<option value="">Choose Player 2</option>' + options;
         }
 
         // Load game types for filter
@@ -1054,7 +1186,7 @@
             const player2 = document.getElementById('player2-select').value;
 
             if (!player1 || !player2) {
-                document.getElementById('h2h-content').innerHTML = '<div class="loading">Select two players to see their matchup history</div>';
+                document.getElementById('h2h-content').innerHTML = '<div class="loading">Select two players to view their matchup history</div>';
                 return;
             }
 
@@ -1068,23 +1200,23 @@
             const player2Wins = games.filter(g => g.winner === player2).length;
 
             const html = `
-                <div class="h2h-summary">
-                    <div class="stat-box">
+                <div class="stats-grid">
+                    <div class="stat-cell">
                         <div class="stat-value">${player1Wins}</div>
                         <div class="stat-label">${player1} Wins</div>
                     </div>
-                    <div class="stat-box">
+                    <div class="stat-cell">
                         <div class="stat-value">${player2Wins}</div>
                         <div class="stat-label">${player2} Wins</div>
                     </div>
-                    <div class="stat-box">
+                    <div class="stat-cell">
                         <div class="stat-value">${games.length}</div>
                         <div class="stat-label">Total Games</div>
                     </div>
                 </div>
 
                 ${games.length > 0 ? `
-                    <table>
+                    <table cellspacing="0" cellpadding="0" style="margin-top: 12px;">
                         <thead>
                             <tr>
                                 <th>Game Type</th>
@@ -1098,8 +1230,8 @@
                                 <tr>
                                     <td>${game.game_type || 'N/A'}</td>
                                     <td>${game.player_a} vs ${game.player_b}</td>
-                                    <td>${game.score_a}-${game.score_b}</td>
-                                    <td class="player-name">${game.winner}</td>
+                                    <td><b>${game.score_a}-${game.score_b}</b></td>
+                                    <td><b>${game.winner}</b></td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -1112,10 +1244,10 @@
 
         // Load recent games
         function loadRecentGames() {
-            const recentGames = STATS_DATA.recent_games.slice(0, 20);  // Show first 20
+            const recentGames = STATS_DATA.recent_games.slice(0, 20);
 
             const html = `
-                <table>
+                <table cellspacing="0" cellpadding="0">
                     <thead>
                         <tr>
                             <th>Game Type</th>
@@ -1127,10 +1259,10 @@
                     <tbody>
                         ${recentGames.map(game => `
                             <tr>
-                                <td>${game.game_type || 'N/A'}</td>
+                                <td>${game.game_type || 'Regular'}</td>
                                 <td>${game.player_a} vs ${game.player_b}</td>
-                                <td>${game.score_a}-${game.score_b}</td>
-                                <td class="player-name">${game.winner}</td>
+                                <td><b>${game.score_a}-${game.score_b}</b></td>
+                                <td><b style="color: #ff6600;">${game.winner}</b></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -1151,33 +1283,24 @@
             document.getElementById('remaining-videos').textContent = data.remaining;
 
             const html = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                            ${data.processed}/${data.total_videos}
-                        </div>
-                        <div style="color: #666; font-size: 0.9rem;">Videos Processed</div>
-                    </div>
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                            ${data.progress_pct}%
-                        </div>
-                        <div style="color: #666; font-size: 0.9rem;">Complete</div>
-                    </div>
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                            ${data.free_tier.days_remaining}
-                        </div>
-                        <div style="color: #666; font-size: 0.9rem;">Days on Free Tier</div>
-                    </div>
-                </div>
-                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Estimated Completion:</div>
-                    <div style="font-size: 1.1rem;">${data.free_tier.completion_date} (free tier)</div>
-                    <div style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
-                        With API funding: ${data.paid_tier.days_to_complete} days (~$${data.paid_tier.cost_estimate})
-                    </div>
-                </div>
+                <table cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="background: #f0f0f0; padding: 10px;"><b>Videos Processed:</b></td>
+                        <td style="padding: 10px;"><b style="color: #ff6600;">${data.processed}/${data.total_videos}</b> (${data.progress_pct}% complete)</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #f0f0f0; padding: 10px;"><b>Remaining:</b></td>
+                        <td style="padding: 10px;">${data.remaining} videos</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #f0f0f0; padding: 10px;"><b>Free Tier ETA:</b></td>
+                        <td style="padding: 10px;">${data.free_tier.completion_date} (~${data.free_tier.days_remaining} days)</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #f0f0f0; padding: 10px;"><b>With API Funding:</b></td>
+                        <td style="padding: 10px;">${data.paid_tier.days_to_complete} days (~$${data.paid_tier.cost_estimate})</td>
+                    </tr>
+                </table>
             `;
 
             document.getElementById('processing-stats').innerHTML = html;
@@ -1187,8 +1310,7 @@
         function calculateImpact() {
             const amount = parseFloat(document.getElementById('donation-amount').value) || 0;
 
-            // Calculate based on $0.003 per video, 50 videos/day on free tier
-            const videosPerDollar = 333; // 1 / 0.003
+            const videosPerDollar = 333;
             const videosFunded = Math.floor(amount * videosPerDollar);
             const remaining = STATS_DATA.processing_stats.remaining;
             const daysSaved = Math.min(videosFunded / 50, remaining / 50).toFixed(1);

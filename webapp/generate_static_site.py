@@ -38,8 +38,8 @@ def generate_static_site():
     print(f"  Found {len(standings)} standings entries")
     print(f"  Found {len(all_games)} total games")
 
-    # Read the template
-    template_path = os.path.join(os.path.dirname(__file__), 'frontend', 'index_template.html')
+    # Read the 2005-style template
+    template_path = os.path.join(os.path.dirname(__file__), 'frontend', 'index_template_2005.html')
     with open(template_path, 'r', encoding='utf-8') as f:
         html = f.read()
 
