@@ -18,9 +18,14 @@ def generate_static_site():
 
     print("Generating static site with latest stats...")
 
-    # Get all the data
-    calc = StatsCalculator()
-    proc_stats = ProcessingStats()
+    # Get all the data - use absolute path to database
+    # Get the project root (go up from webapp/ to DingerStats/)
+    webapp_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(webapp_dir)
+    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
+    print(f"  Using database: {db_path}")
+    calc = StatsCalculator(db_path=db_path)
+    proc_stats = ProcessingStats(db_path=db_path)
 
     players = calc.get_all_players()
     standings = calc.get_player_records()

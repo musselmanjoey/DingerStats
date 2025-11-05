@@ -336,10 +336,648 @@
     </div>
 
     <script>
-        // Auto-detect API URL based on environment
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:5000/api'
-            : 'https://dingerstats-api.onrender.com/api'; // Update this with your Render URL
+        // Static data will be injected here during build
+        const STATS_DATA = {
+  "players": [
+    "Andrew",
+    "City Hall",
+    "CritNick",
+    "Dennis",
+    "Hunter",
+    "Jason",
+    "Nick",
+    "PapaDen",
+    "Tyler",
+    "WunderBear",
+    "WunderBear (KritNick)"
+  ],
+  "standings": [
+    {
+      "player": "Hunter",
+      "wins": 10,
+      "losses": 4,
+      "games": 14,
+      "win_pct": 0.714
+    },
+    {
+      "player": "PapaDen",
+      "wins": 5,
+      "losses": 4,
+      "games": 9,
+      "win_pct": 0.556
+    },
+    {
+      "player": "Jason",
+      "wins": 5,
+      "losses": 7,
+      "games": 12,
+      "win_pct": 0.417
+    },
+    {
+      "player": "Nick",
+      "wins": 2,
+      "losses": 0,
+      "games": 2,
+      "win_pct": 1.0
+    },
+    {
+      "player": "Tyler",
+      "wins": 2,
+      "losses": 3,
+      "games": 5,
+      "win_pct": 0.4
+    },
+    {
+      "player": "WunderBear (KritNick)",
+      "wins": 1,
+      "losses": 0,
+      "games": 1,
+      "win_pct": 1.0
+    },
+    {
+      "player": "City Hall",
+      "wins": 1,
+      "losses": 1,
+      "games": 2,
+      "win_pct": 0.5
+    },
+    {
+      "player": "Dennis",
+      "wins": 1,
+      "losses": 1,
+      "games": 2,
+      "win_pct": 0.5
+    },
+    {
+      "player": "Andrew",
+      "wins": 0,
+      "losses": 5,
+      "games": 5,
+      "win_pct": 0.0
+    },
+    {
+      "player": "WunderBear",
+      "wins": 0,
+      "losses": 1,
+      "games": 1,
+      "win_pct": 0.0
+    },
+    {
+      "player": "CritNick",
+      "wins": 0,
+      "losses": 1,
+      "games": 1,
+      "win_pct": 0.0
+    }
+  ],
+  "game_types": [
+    "CLASSIC 10",
+    "Classic",
+    "Classic 10",
+    "Classic 10 (Tournament Format)",
+    "Classic 10 (tournament round, but not explicitly Playoffs, Elimination or Finals)",
+    "Classic 10 (tournament)",
+    "Elimination",
+    "Elimination (Classic 10 Round 3 Game)",
+    "Elimination (Determined in video)",
+    "Elimination (from Classic 10 tournament)",
+    "Finals",
+    "Other (Round 3 - Dinger City Classic 10)",
+    "Playoff, Round Two",
+    "Regular Season",
+    "Regular Season (Classic 10)"
+  ],
+  "recent_games": [
+    {
+      "id": 41,
+      "video_id": "D8t8bxOGE8E",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "DK Wild Ones",
+      "score_a": 18,
+      "score_b": 16,
+      "winner": "Jason",
+      "raw_response": "Here's the requested breakdown of the Mario Baseball gameplay video:\n\nPlayer A: Jason\nTeam A: Luigi Gentlemen\nPlayer B: Tyler\nTeam B: DK Wild Ones\nScore: 18-16\nWinner: Jason\nGame Type: Regular Season (Classic 10)\n\nGAME SUMMARY:\nThis was a high-scoring, intense game. Jason's skillful gameplay created manufacturing runs for his team early on, but Tyler came back strong with key home runs and aggressive baserunning. In the 8th inning, down eight runs, Tyler launched a shot just over the center field wall making this only park he hits those bombs on, and would win.\n\nCOMMENTARY SUMMARY:\nCommentators Hunter and Dannie highlight Tyler's strategic play calling as well as Jason's incredible hitting while calling to mind times spent with this game as kids.",
+      "analyzed_at": "2025-11-05 02:29:31",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Tyler",
+      "game_type": "Regular Season (Classic 10)",
+      "game_summary": "This was a high-scoring, intense game. Jason's skillful gameplay created manufacturing runs for his team early on, but Tyler came back strong with key home runs and aggressive baserunning. In the 8th inning, down eight runs, Tyler launched a shot just over the center field wall making this only park he hits those bombs on, and would win.",
+      "commentary_summary": "Commentators Hunter and Dannie highlight Tyler's strategic play calling as well as Jason's incredible hitting while calling to mind times spent with this game as kids.",
+      "title": "Is walking actually META in Mario Baseball?",
+      "published_at": "2025-09-09T19:00:20Z"
+    },
+    {
+      "id": 40,
+      "video_id": "mzeBSMOzv1E",
+      "team_a": "DK Wild Ones",
+      "team_b": "Birdo Beauties",
+      "score_a": 2,
+      "score_b": 4,
+      "winner": "Hunter",
+      "raw_response": "Okay, here's an analysis of the Mario Baseball video:\n\nPlayer A: Tyler\nTeam A: DK Wild Ones\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 2-4\nWinner: Hunter\nGame Type: Playoff, Round Two\n\nGAME SUMMARY:\nTyler used some creative bunts early to get runners on base, but struggled against Hunter's pitching. Hunter managed two runs and shut down Tyler's offense to secure the win.\n\nCOMMENTARY SUMMARY:\nThe commentators riffed on how to best the players who don't win as often. There was also joking discussion about if Big Bird had died during his role on the Challenger, and there's discussion over who the stronger opponent is.",
+      "analyzed_at": "2025-11-05 02:18:02",
+      "confidence": "high",
+      "player_a": "Tyler",
+      "player_b": "Hunter",
+      "game_type": "Playoff, Round Two",
+      "game_summary": "Tyler used some creative bunts early to get runners on base, but struggled against Hunter's pitching. Hunter managed two runs and shut down Tyler's offense to secure the win.",
+      "commentary_summary": "The commentators riffed on how to best the players who don't win as often. There was also joking discussion about if Big Bird had died during his role on the Challenger, and there's discussion over who the stronger opponent is.",
+      "title": "This player turns mid tiers into top 10 characters",
+      "published_at": "2025-09-25T19:00:44Z"
+    },
+    {
+      "id": 39,
+      "video_id": "ve1YA5NMmb4",
+      "team_a": "Mario Heroes",
+      "team_b": "Daisy Cupids",
+      "score_a": 14,
+      "score_b": 8,
+      "winner": "Nick",
+      "raw_response": "Here's the requested information from the Mario Baseball video:\n\nPlayer A: Nick\nTeam A: Mario Heroes\nPlayer B: Andrew\nTeam B: Daisy Cupids\nScore: 14-8\nWinner: Nick\nGame Type: Elimination\n\nGAME SUMMARY:\nThis elimination game between Nick and Andrew featured high scores on both sides. Early on, the gameplay was plagued by errors, particularly with Peach bobbling catches. Nick's Mario Heroes ultimately pulled away due to consistent hits and successful base running. One key play saw a player just miss a chance at making contact during the hit.\n\nCOMMENTARY SUMMARY:\nThe commentators riffed on running jokes, including \"Bobble Moore\" and various catchphrases throughout the video. There was an extended discussion on the merits of different cereals, and much laughter accompanied the chaotic, error-filled plays. They speculated on the nature of characters\u2019 personalities and intentions.",
+      "analyzed_at": "2025-11-05 02:13:05",
+      "confidence": "high",
+      "player_a": "Nick",
+      "player_b": "Andrew",
+      "game_type": "Elimination",
+      "game_summary": "This elimination game between Nick and Andrew featured high scores on both sides. Early on, the gameplay was plagued by errors, particularly with Peach bobbling catches. Nick's Mario Heroes ultimately pulled away due to consistent hits and successful base running. One key play saw a player just miss a chance at making contact during the hit.",
+      "commentary_summary": "The commentators riffed on running jokes, including \"Bobble Moore\" and various catchphrases throughout the video. There was an extended discussion on the merits of different cereals, and much laughter accompanied the chaotic, error-filled plays. They speculated on the nature of characters\u2019 personalities and intentions.",
+      "title": "Mario Baseball but hitting is allowed",
+      "published_at": "2025-10-21T19:56:30Z"
+    },
+    {
+      "id": 38,
+      "video_id": "CM4TfwoehX8",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "DK Wild Ones",
+      "score_a": 2,
+      "score_b": 4,
+      "winner": "Tyler",
+      "raw_response": "Okay, here's the breakdown of the Mario Baseball video game information:\n\nPlayer A: Jason\nTeam A: Luigi Gentlemen\nPlayer B: Tyler\nTeam B: DK Wild Ones\nScore: 2-4\nWinner: Tyler\nGame Type: Regular Season\n\nGAME SUMMARY:\nThis was a defensively oriented game with eight double plays. It remained close throughout but multiple double plays for both teams. Tyler ultimately held on for the victory.\n\nCOMMENTARY SUMMARY:\nThe commentators kept track of double plays and joked about their number. The also discussed a pending announcement for an upcoming Nintendo Direct, and what type of game is needed next (a sequel). They also noted instances were players were unable to catch the ball despite the excellent player and ball placement, resulting in more exciting gameplay.\n",
+      "analyzed_at": "2025-11-05 02:08:56",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Tyler",
+      "game_type": "Regular Season",
+      "game_summary": "This was a defensively oriented game with eight double plays. It remained close throughout but multiple double plays for both teams. Tyler ultimately held on for the victory.",
+      "commentary_summary": "The commentators kept track of double plays and joked about their number. The also discussed a pending announcement for an upcoming Nintendo Direct, and what type of game is needed next (a sequel). They also noted instances were players were unable to catch the ball despite the excellent player and ball placement, resulting in more exciting gameplay.",
+      "title": "The turtle team is UNDERRATED in Mario Baseball",
+      "published_at": "2025-09-26T19:00:10Z"
+    },
+    {
+      "id": 37,
+      "video_id": "m8JcXjukRkg",
+      "team_a": "Diddy Ninjas",
+      "team_b": "Mario Heroes",
+      "score_a": 13,
+      "score_b": 1,
+      "winner": "PapaDen",
+      "raw_response": "Okay, I can do that. Here is a summary of the Mario Baseball gameplay and commentary:\n\nPlayer A: PapaDen\nTeam A: Diddy Ninjas\nPlayer B: City Hall\nTeam B: Mario Heroes\nScore: 13-1\nWinner: PapaDen\nGame Type: Regular Season\n\nGAME SUMMARY:\nThis game was a complete blowout. PapaDen crushed City Hall and the game ended via the mercy rule. There were a couple of odd plays on the base path for both sides, but Diddy Ninjas played extremely well overall.\n\nCOMMENTARY SUMMARY:\nThe commentators ran with a running joke about Andrew, City Hall's player, being a huge loser, but otherwise, there weren't any especially notable moments.",
+      "analyzed_at": "2025-11-05 02:07:30",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "City Hall",
+      "game_type": "Regular Season",
+      "game_summary": "This game was a complete blowout. PapaDen crushed City Hall and the game ended via the mercy rule. There were a couple of odd plays on the base path for both sides, but Diddy Ninjas played extremely well overall.",
+      "commentary_summary": "The commentators ran with a running joke about Andrew, City Hall's player, being a huge loser, but otherwise, there weren't any especially notable moments.",
+      "title": "The WEIRDEST way to win a Mario Baseball game",
+      "published_at": "2025-09-29T19:00:47Z"
+    },
+    {
+      "id": 36,
+      "video_id": "D9WB_fvJXz8",
+      "team_a": "Mario Heroes",
+      "team_b": "Diddy Ninjas",
+      "score_a": 4,
+      "score_b": 0,
+      "winner": "Tyler",
+      "raw_response": "Okay, here's the analysis of the Mario Baseball video game you provided:\n\nPlayer A: Dennis\nTeam A: Mario Heroes\nPlayer B: Tyler\nTeam B: Diddy Ninjas\nScore: 4-0\nWinner: Tyler\nGame Type: Elimination (Classic 10 Round 3 Game)\n\nGAME SUMMARY:\nTyler shuts out Dennis in an upset victory. Dennis makes some base running errors, and despite some good hits, cannot convert runners on base into runs. Tyler has an amazing defensive play near the end and successfully bunts in runners, demonstrating smart and efficient play.\n\nCOMMENTARY SUMMARY:\nThe commentators' banter includes topics like supporting Bowser, the significance of putting extra birds in a bush, and ice cream flavors. They read a note from a \"boss\" making an absurd request of them for one player.\n",
+      "analyzed_at": "2025-11-05 02:05:24",
+      "confidence": "high",
+      "player_a": "Dennis",
+      "player_b": "Tyler",
+      "game_type": "Elimination (Classic 10 Round 3 Game)",
+      "game_summary": "Tyler shuts out Dennis in an upset victory. Dennis makes some base running errors, and despite some good hits, cannot convert runners on base into runs. Tyler has an amazing defensive play near the end and successfully bunts in runners, demonstrating smart and efficient play.",
+      "commentary_summary": "The commentators' banter includes topics like supporting Bowser, the significance of putting extra birds in a bush, and ice cream flavors. They read a note from a \"boss\" making an absurd request of them for one player.",
+      "title": "CLOSE PLAY determines this player's fate",
+      "published_at": "2025-10-07T19:00:12Z"
+    },
+    {
+      "id": 35,
+      "video_id": "qy4v5EBqrtA",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "Birdo Beauties",
+      "score_a": 3,
+      "score_b": 1,
+      "winner": "Jason",
+      "raw_response": "Okay, here is a summary of the Mario Baseball gameplay and commentary:\n\nPlayer A: Jason\nTeam A: Luigi Gentlemen\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 3-1\nWinner: Jason\nGame Type: Elimination\n\nGAME SUMMARY:\nThe game began as a pitcher's duel and the hitting started slow, which did not bode well for Jason. However, Jason eked out a small lead early on, capitalizing on some early errors to build a lead that Hunter could not overcome. Key strategic plays by both Hunter and Jason added a layer of complexity.\n\nCOMMENTARY SUMMARY:\nThe commentators discussed strategy, team compositions, and player tendencies. One commentator said, \"I've just critterred in my jeans\" at a perfect play. They also discussed playing as Luigi, and had a running joke about calling out Hunter's name from off camera.\n",
+      "analyzed_at": "2025-11-05 02:04:01",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Hunter",
+      "game_type": "Elimination",
+      "game_summary": "The game began as a pitcher's duel and the hitting started slow, which did not bode well for Jason. However, Jason eked out a small lead early on, capitalizing on some early errors to build a lead that Hunter could not overcome. Key strategic plays by both Hunter and Jason added a layer of complexity.",
+      "commentary_summary": "The commentators discussed strategy, team compositions, and player tendencies. One commentator said, \"I've just critterred in my jeans\" at a perfect play. They also discussed playing as Luigi, and had a running joke about calling out Hunter's name from off camera.",
+      "title": "Escaping the BOTTOM seed in Mario Baseball",
+      "published_at": "2025-10-14T19:00:54Z"
+    },
+    {
+      "id": 34,
+      "video_id": "Nxf35I5wEp8",
+      "team_a": "Daisy Cupids",
+      "team_b": "Mario Heroes",
+      "score_a": 3,
+      "score_b": 10,
+      "winner": "Nick",
+      "raw_response": "Okay, here's the analysis of the Mario Baseball video game content:\n\nPlayer A: Nick\nTeam A: Daisy Cupids\nPlayer B: Andrew\nTeam B: Mario Heroes\nScore: 3-10\nWinner: Nick\nGame Type: Elimination (Determined in video)\n\nGAME SUMMARY:\nThis was an intense, high-stakes game with a spot in the elimination round on the line. Big plays early from the Big Dog set the tone. Despite Nick's best efforts, Andrew and City Hall ran away with the game late, securing their spot in the next round and forcing Nick into the elimination game. \n\nCOMMENTARY SUMMARY:\nThe commentators had a funny exchange about tape and eyes, made constant callbacks to the \"Dinger City In\" shirts, and were quick to praise great plays.\n\n",
+      "analyzed_at": "2025-11-05 01:59:52",
+      "confidence": "high",
+      "player_a": "Nick",
+      "player_b": "Andrew",
+      "game_type": "Elimination (Determined in video)",
+      "game_summary": "This was an intense, high-stakes game with a spot in the elimination round on the line. Big plays early from the Big Dog set the tone. Despite Nick's best efforts, Andrew and City Hall ran away with the game late, securing their spot in the next round and forcing Nick into the elimination game.",
+      "commentary_summary": "The commentators had a funny exchange about tape and eyes, made constant callbacks to the \"Dinger City In\" shirts, and were quick to praise great plays.",
+      "title": "This game decides their fate in the season",
+      "published_at": "2025-09-12T19:00:20Z"
+    },
+    {
+      "id": 33,
+      "video_id": "vdficNyTWio",
+      "team_a": "Daisy Cupids",
+      "team_b": "Mario Heroes",
+      "score_a": 2,
+      "score_b": 6,
+      "winner": "City Hall",
+      "raw_response": "Okay, here's a breakdown of the Mario Baseball video game match:\n\nPlayer A: Hunter\nTeam A: Daisy Cupids\nPlayer B: City Hall\nTeam B: Mario Heroes\nScore: 2-6\nWinner: City Hall\nGame Type: Elimination\n\nGAME SUMMARY:\nBig Dog and City Hall clashed for a spot in the next round, leading to some back-and-forth play. City Hall ultimately took the win 6-2 after a series of defensive errors by the Big Dog. A questionable pitching strategy also hurt Big Dog.\n\nCOMMENTARY SUMMARY:\nThe commentators poked fun at Big Dog's record and questionable decisions. Jokes and analogies flew fast, especially around the impending glue factory visit for the losing Big Dog.",
+      "analyzed_at": "2025-11-05 01:58:18",
+      "confidence": "high",
+      "player_a": "Hunter",
+      "player_b": "City Hall",
+      "game_type": "Elimination",
+      "game_summary": "Big Dog and City Hall clashed for a spot in the next round, leading to some back-and-forth play. City Hall ultimately took the win 6-2 after a series of defensive errors by the Big Dog. A questionable pitching strategy also hurt Big Dog.",
+      "commentary_summary": "The commentators poked fun at Big Dog's record and questionable decisions. Jokes and analogies flew fast, especially around the impending glue factory visit for the losing Big Dog.",
+      "title": "The loser is ELIMINATED from the Mario Baseball Season",
+      "published_at": "2025-09-15T19:00:52Z"
+    },
+    {
+      "id": 32,
+      "video_id": "TyIkXLOnouI",
+      "team_a": "Diddy Ninjas",
+      "team_b": "Luigi Gentlemen",
+      "score_a": 7,
+      "score_b": 6,
+      "winner": "Jason",
+      "raw_response": "Okay, here's the analysis of the Mario Baseball game:\n\nPlayer A: Jason\nTeam A: Diddy Ninjas\nPlayer B: PapaDen\nTeam B: Luigi Gentlemen\nScore: 7-6\nWinner: Jason\nGame Type: Elimination\n\nGAME SUMMARY:\nAfter a close first nine innings, with each team scoring two in the bottom of the 2nd, this game goes to extra innings. With a solid performance, Luigi Gentleman can get a walk and score for a win.\n\nCOMMENTARY SUMMARY:\nThe hosts reminisce about when they attended Dinger City event. It's implied PapaDen has bad hygiene. One host goes on a tangent about the Powerpuff Girls, a comment is made that sounds like the beginning of a proposal, and then there's a lot of focus on smelly feet.",
+      "analyzed_at": "2025-11-05 01:55:55",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "PapaDen",
+      "game_type": "Elimination",
+      "game_summary": "After a close first nine innings, with each team scoring two in the bottom of the 2nd, this game goes to extra innings. With a solid performance, Luigi Gentleman can get a walk and score for a win.",
+      "commentary_summary": "The hosts reminisce about when they attended Dinger City event. It's implied PapaDen has bad hygiene. One host goes on a tangent about the Powerpuff Girls, a comment is made that sounds like the beginning of a proposal, and then there's a lot of focus on smelly feet.",
+      "title": "Everyone thought this character was TRASH...",
+      "published_at": "2025-09-17T19:00:26Z"
+    },
+    {
+      "id": 31,
+      "video_id": "kq-kuKZgjA0",
+      "team_a": "DK Wild Ones",
+      "team_b": "Diddy Ninjas",
+      "score_a": 1,
+      "score_b": 0,
+      "winner": "PapaDen",
+      "raw_response": "Okay, I can help you analyze this Mario Baseball video. Here's the requested information:\n\nPlayer A: PapaDen\nTeam A: DK Wild Ones\nPlayer B: WunderBear\nTeam B: Diddy Ninjas\nScore: 1-0\nWinner: PapaDen\nGame Type: Classic 10 (tournament round, but not explicitly Playoffs, Elimination or Finals)\n\nGAME SUMMARY:\nThe game appears to be a tightly contested low-scoring affair. WunderBear takes an early lead, with a run in the first, but PapaDen is able to win on a base hit in the bottom of the 8th in route to winning the entire Classic 10 season.\n\nCOMMENTARY SUMMARY:\nThe commentary includes running jokes and bits, inside jokes, and callbacks throughout. One interesting comment is the idea of selling custom team logos.\n\nHopefully, this response is helpful!\n",
+      "analyzed_at": "2025-11-05 01:54:04",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "WunderBear",
+      "game_type": "Classic 10 (tournament round, but not explicitly Playoffs, Elimination or Finals)",
+      "game_summary": "The game appears to be a tightly contested low-scoring affair. WunderBear takes an early lead, with a run in the first, but PapaDen is able to win on a base hit in the bottom of the 8th in route to winning the entire Classic 10 season.",
+      "commentary_summary": "The commentary includes running jokes and bits, inside jokes, and callbacks throughout. One interesting comment is the idea of selling custom team logos.\n\nHopefully, this response is helpful!",
+      "title": "Going BEAST MODE with the best character in Mario Baseball",
+      "published_at": "2025-09-18T19:00:50Z"
+    },
+    {
+      "id": 30,
+      "video_id": "tFHo3K0EK38",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "Mario Heroes",
+      "score_a": 12,
+      "score_b": 2,
+      "winner": "Jason",
+      "raw_response": "Okay, here's the analysis of the Mario Baseball video game content provided:\n\nPlayer A: Jason\nTeam A: Luigi Gentlemen\nPlayer B: Andrew\nTeam B: Mario Heroes\nScore: 12-2\nWinner: Jason\nGame Type: CLASSIC 10 \n\nGAME SUMMARY:\nJason dominated Andrew with a score of 12-2 in a five-inning Mercy game. The game showcased Jason's strong hitting and base running, including a triple play and a couple of big hits. The contest ended prematurely in the 5th inning due to the mercy rule.\n\nCOMMENTARY SUMMARY:\nThe commentators provided running commentary, including Taylor Swift references. There was a running joke about how Jason was \"running the clock\", implying he was delaying the game to extend their commentary. They discussed the challenges with Jason's Mario Baseball career.",
+      "analyzed_at": "2025-11-05 01:52:31",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Andrew",
+      "game_type": "CLASSIC 10",
+      "game_summary": "Jason dominated Andrew with a score of 12-2 in a five-inning Mercy game. The game showcased Jason's strong hitting and base running, including a triple play and a couple of big hits. The contest ended prematurely in the 5th inning due to the mercy rule.",
+      "commentary_summary": "The commentators provided running commentary, including Taylor Swift references. There was a running joke about how Jason was \"running the clock\", implying he was delaying the game to extend their commentary. They discussed the challenges with Jason's Mario Baseball career.",
+      "title": "The WEIRDEST thing we've ever seen in Mario Baseball",
+      "published_at": "2025-09-19T19:00:57Z"
+    },
+    {
+      "id": 29,
+      "video_id": "YsG3fcBxUw0",
+      "team_a": "DK Wild Ones",
+      "team_b": "Mario Heroes",
+      "score_a": 7,
+      "score_b": 6,
+      "winner": "Hunter",
+      "raw_response": "Alright, let's analyze the Mario Baseball video game footage you've provided!\n\nPlayer A: Hunter\nTeam A: DK Wild Ones\nPlayer B: Andrew\nTeam B: Mario Heroes\nScore: 7-6\nWinner: Hunter\nGame Type: Classic 10 (tournament)\n\nGAME SUMMARY:\nThis was a tight, tense Classic 10 matchup! Tyler (Hunter) started strong, building a lead. Then Andrew attempted to comeback. However, Tyler ultimately closed out the game after a couple of crucial defensive plays and a well-timed double-play nearly spoiled by Bellsworth.\n\nCOMMENTARY SUMMARY:\nThe commentators shared their expertise and opinions on best player choices, the utility of Boshis at shortstop and the value of Big Donk. They had an impassioned opinion of the Cantina Crunch, as well.\n",
+      "analyzed_at": "2025-11-05 01:51:25",
+      "confidence": "high",
+      "player_a": "Hunter",
+      "player_b": "Andrew",
+      "game_type": "Classic 10 (tournament)",
+      "game_summary": "This was a tight, tense Classic 10 matchup! Tyler (Hunter) started strong, building a lead. Then Andrew attempted to comeback. However, Tyler ultimately closed out the game after a couple of crucial defensive plays and a well-timed double-play nearly spoiled by Bellsworth.",
+      "commentary_summary": "The commentators shared their expertise and opinions on best player choices, the utility of Boshis at shortstop and the value of Big Donk. They had an impassioned opinion of the Cantina Crunch, as well.",
+      "title": "The NASTIEST home run of the season",
+      "published_at": "2025-09-22T19:00:37Z"
+    },
+    {
+      "id": 28,
+      "video_id": "NyqblObO-zM",
+      "team_a": "Burdo Beauties",
+      "team_b": "Luigi Gentlemen",
+      "score_a": 4,
+      "score_b": 3,
+      "winner": "Hunter",
+      "raw_response": "Okay, I'm game to extract that information for you. Here is the summary:\n\nPlayer A: Jason\nTeam A: Burdo Beauties\nPlayer B: Hunter\nTeam B: Luigi Gentlemen\nScore: 4-3\nWinner: Hunter\nGame Type: Classic 10\n\nGAME SUMMARY:\nJason took an early lead with some clutch hitting and base running, but Hunter answered in the later innings with a balanced attack. Hunter capitalized on some shaky defense and took the lead. An attempted late comeback by Jason was stymied by key defensive plays, sealing the victory for Hunter.\n\nCOMMENTARY SUMMARY:\nThe commentary team focused on the double-play potential in Jason's batting order, while also providing insights on pitching tendencies and tactical decisions made during the game. There were also tangential discussions about the appearance of bath tubs in cartoons and the legitimacy of their teammate Paul McCartney.",
+      "analyzed_at": "2025-11-05 01:50:05",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Hunter",
+      "game_type": "Classic 10",
+      "game_summary": "Jason took an early lead with some clutch hitting and base running, but Hunter answered in the later innings with a balanced attack. Hunter capitalized on some shaky defense and took the lead. An attempted late comeback by Jason was stymied by key defensive plays, sealing the victory for Hunter.",
+      "commentary_summary": "The commentary team focused on the double-play potential in Jason's batting order, while also providing insights on pitching tendencies and tactical decisions made during the game. There were also tangential discussions about the appearance of bath tubs in cartoons and the legitimacy of their teammate Paul McCartney.",
+      "title": "This special is COMPLETELY unfair",
+      "published_at": "2025-09-23T19:00:31Z"
+    },
+    {
+      "id": 27,
+      "video_id": "dExBW085OaI",
+      "team_a": "Birdo Beauties",
+      "team_b": "Mario Heroes",
+      "score_a": 6,
+      "score_b": 7,
+      "winner": "Hunter",
+      "raw_response": "Okay, let's break down this Mario Baseball gameplay:\n\nPlayer A: Andrew\nTeam A: Birdo Beauties\nPlayer B: Hunter\nTeam B: Mario Heroes\nScore: 6-7\nWinner: Hunter\nGame Type: Regular Season\n\nGAME SUMMARY:\nThis was a back-and-forth affair! Andrew started strong, taking a lead, but Hunter chipped away. A crucial 3-run homerun for Wario propelled Hunter into the lead, and despite late-game rallies from Andrew, Hunter closed it out, with a 1-run home run.\n\nCOMMENTARY SUMMARY:\nCommentators have running jokes around Dinger City members and make frequent pop culture references. There were many references to bad luck, and poor playing. \n\nHope this helps!\n",
+      "analyzed_at": "2025-11-05 01:48:30",
+      "confidence": "high",
+      "player_a": "Andrew",
+      "player_b": "Hunter",
+      "game_type": "Regular Season",
+      "game_summary": "This was a back-and-forth affair! Andrew started strong, taking a lead, but Hunter chipped away. A crucial 3-run homerun for Wario propelled Hunter into the lead, and despite late-game rallies from Andrew, Hunter closed it out, with a 1-run home run.",
+      "commentary_summary": "Commentators have running jokes around Dinger City members and make frequent pop culture references. There were many references to bad luck, and poor playing. \n\nHope this helps!",
+      "title": "Mario Baseball makes NO sense",
+      "published_at": "2025-09-24T19:00:38Z"
+    },
+    {
+      "id": 26,
+      "video_id": "tD5rQ3Jb0y0",
+      "team_a": "Diddy Ninjas",
+      "team_b": "Birdo Beauties",
+      "score_a": 2,
+      "score_b": 0,
+      "winner": "Hunter",
+      "raw_response": "Okay, I can analyze the provided video of Mario Baseball and extract the information requested. Here's the structured data, followed by summaries of the game and commentary highlights:\n\nPlayer A: Hunter\nTeam A: Diddy Ninjas\nPlayer B: PapaDen\nTeam B: Birdo Beauties\nScore: 2-0\nWinner: Hunter\nGame Type: Classic 10 (Tournament Format)\n\nGAME SUMMARY: \nA tight matchup leads into the 9th. PapaDen scores two runs and wins, preventing Hunter from scoring at all and taking the first seed of Classic 10 Round #2. Hunter had more hits but could not produce. \n\nCOMMENTARY SUMMARY: \nThe commentators go on a tangent about the potential harm or lack thereof of sexually assaulting animated characters, as well as playing the card seal of Orichalcos and not winning the associated dual in Yu-Gi-Oh, resulting in the duelers soul being stuck in the Orichalcos dimension. A recurring joke is made about pointing out that this video is in the Animal Kingdom.",
+      "analyzed_at": "2025-11-05 01:46:28",
+      "confidence": "high",
+      "player_a": "Hunter",
+      "player_b": "PapaDen",
+      "game_type": "Classic 10 (Tournament Format)",
+      "game_summary": "A tight matchup leads into the 9th. PapaDen scores two runs and wins, preventing Hunter from scoring at all and taking the first seed of Classic 10 Round #2. Hunter had more hits but could not produce.",
+      "commentary_summary": "The commentators go on a tangent about the potential harm or lack thereof of sexually assaulting animated characters, as well as playing the card seal of Orichalcos and not winning the associated dual in Yu-Gi-Oh, resulting in the duelers soul being stuck in the Orichalcos dimension. A recurring joke is made about pointing out that this video is in the Animal Kingdom.",
+      "title": "Can THIS new strategy beat the Mario Baseball champion?",
+      "published_at": "2025-09-30T19:01:00Z"
+    },
+    {
+      "id": 25,
+      "video_id": "F0VY0EonH_U",
+      "team_a": "Birdo Beauties",
+      "team_b": "Mario Heroes",
+      "score_a": 7,
+      "score_b": 0,
+      "winner": "Dennis",
+      "raw_response": "Okay, here's a breakdown of the Mario Baseball gameplay and commentary:\n\nPlayer A: Dennis\nTeam A: Birdo Beauties\nPlayer B: Hunter\nTeam B: Mario Heroes\nScore: 7-0\nWinner: Dennis\nGame Type: Elimination\n\nGAME SUMMARY:\nDennis's Birdo Beauties dominate Hunter's Mario Heroes in this elimination game.  The game starts with back-to-back outs for the Beauties.  The rest of the game goes poorly for the Mario Heroes as they get consistently out-played.\n\nCOMMENTARY SUMMARY:\nThe commentators discuss Hunter's roster decisions, especially benching Waluigi. They also ponder the possibility of Hunter having an off day and make a habit of talking about \"Wockey\".\n",
+      "analyzed_at": "2025-11-05 01:45:04",
+      "confidence": "high",
+      "player_a": "Dennis",
+      "player_b": "Hunter",
+      "game_type": "Elimination",
+      "game_summary": "Dennis's Birdo Beauties dominate Hunter's Mario Heroes in this elimination game.  The game starts with back-to-back outs for the Beauties.  The rest of the game goes poorly for the Mario Heroes as they get consistently out-played.",
+      "commentary_summary": "The commentators discuss Hunter's roster decisions, especially benching Waluigi. They also ponder the possibility of Hunter having an off day and make a habit of talking about \"Wockey\".",
+      "title": "ELIMINATION MATCH: Take down the Mario Baseball champion",
+      "published_at": "2025-10-01T19:00:27Z"
+    },
+    {
+      "id": 24,
+      "video_id": "1GxV1Cp8TZ8",
+      "team_a": "Mario Heroes",
+      "team_b": "Birdo Beauties",
+      "score_a": 2,
+      "score_b": 9,
+      "winner": "Hunter",
+      "raw_response": "Okay, here's the breakdown of the Mario Baseball video game based on the information provided:\n\nPlayer A: Tyler\nTeam A: Mario Heroes\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 2-9\nWinner: Hunter\nGame Type: Classic\n\nGAME SUMMARY:\nThe Birdo Beauties dominated early, jumping to a significant lead in the first few innings. Mario Heroes managed to score a couple runs later but the hole proved to be too deep. A number of key plays, including Wario getting thrown out at first base despite hitting directly up the middle of the field.\n\nCOMMENTARY SUMMARY:\nThe commentators developed a bit around Flintstones cars, referring to the characters' running styles as the car rolled around the bases. The commentators got excited as the game progressed, though ultimately acknowledged the large disparity in the score. \n",
+      "analyzed_at": "2025-11-05 01:42:36",
+      "confidence": "high",
+      "player_a": "Tyler",
+      "player_b": "Hunter",
+      "game_type": "Classic",
+      "game_summary": "The Birdo Beauties dominated early, jumping to a significant lead in the first few innings. Mario Heroes managed to score a couple runs later but the hole proved to be too deep. A number of key plays, including Wario getting thrown out at first base despite hitting directly up the middle of the field.",
+      "commentary_summary": "The commentators developed a bit around Flintstones cars, referring to the characters' running styles as the car rolled around the bases. The commentators got excited as the game progressed, though ultimately acknowledged the large disparity in the score.",
+      "title": "Missing this play would change EVERYTHING",
+      "published_at": "2025-10-02T19:00:02Z"
+    },
+    {
+      "id": 23,
+      "video_id": "qJcQTrlMg84",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "Diddy Ninjas",
+      "score_a": 10,
+      "score_b": 7,
+      "winner": "PapaDen",
+      "raw_response": "Okay, here's the breakdown of that Mario Baseball video based on the provided information:\n\nPlayer A: PapaDen\nTeam A: Luigi Gentlemen\nPlayer B: Jason\nTeam B: Diddy Ninjas\nScore: 10-7\nWinner: PapaDen\nGame Type: Classic 10\n\nGAME SUMMARY:\nThis was a close game, with Diddy Ninjas keeping it tight throughout. However, Luigi Gentlemen managed to hit a 3-run home run and a solo shot off of Bowser to pad the score and win. Many were out swinging and unable to advance the game further.\n\nCOMMENTARY SUMMARY:\nThe commentators riff on the \"pickled\" aspect of a hit being safe. They also discuss the teams, including that Dennis is the \"6th best\" in the Dinger City League, and reminisce about some of their favorite parts of the scene.",
+      "analyzed_at": "2025-11-05 01:40:50",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "Jason",
+      "game_type": "Classic 10",
+      "game_summary": "This was a close game, with Diddy Ninjas keeping it tight throughout. However, Luigi Gentlemen managed to hit a 3-run home run and a solo shot off of Bowser to pad the score and win. Many were out swinging and unable to advance the game further.",
+      "commentary_summary": "The commentators riff on the \"pickled\" aspect of a hit being safe. They also discuss the teams, including that Dennis is the \"6th best\" in the Dinger City League, and reminisce about some of their favorite parts of the scene.",
+      "title": "What is GOING ON in Mario Baseball?!",
+      "published_at": "2025-10-03T19:00:46Z"
+    },
+    {
+      "id": 22,
+      "video_id": "IYfVEJmzxnc",
+      "team_a": "Birdo Beauties",
+      "team_b": "Luigi Gentlemen",
+      "score_a": 2,
+      "score_b": 3,
+      "winner": "Hunter",
+      "raw_response": "Okay, here's the information extracted from the provided transcript and video analysis:\n\nPlayer A: Jason\nTeam A: Birdo Beauties\nPlayer B: Hunter\nTeam B: Luigi Gentlemen\nScore: 2-3\nWinner: Hunter\nGame Type: Classic 10\n\nGAME SUMMARY:\nThis was a very close game with only one run separating the two teams. Strong plays and well-timed use of Star Chances resulted in an exciting game that went down to the final innings.\n\nCOMMENTARY SUMMARY:\nThe commentators' conversation jumped around a lot, discussing the quality of food in Hershey, Pennsylvania compared to Long Island. There were random outbursts and silly jokes throughout the video.",
+      "analyzed_at": "2025-11-05 01:38:59",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Hunter",
+      "game_type": "Classic 10",
+      "game_summary": "This was a very close game with only one run separating the two teams. Strong plays and well-timed use of Star Chances resulted in an exciting game that went down to the final innings.",
+      "commentary_summary": "The commentators' conversation jumped around a lot, discussing the quality of food in Hershey, Pennsylvania compared to Long Island. There were random outbursts and silly jokes throughout the video.",
+      "title": "The most CLUTCH player in Mario Baseball history",
+      "published_at": "2025-10-06T19:00:26Z"
+    },
+    {
+      "id": 21,
+      "video_id": "F-vHNDpzYcg",
+      "team_a": "Birdo Beauties",
+      "team_b": "Diddy Ninjas",
+      "score_a": 1,
+      "score_b": 1,
+      "winner": "Hunter",
+      "raw_response": "Okay! Here's a summary of the Mario Baseball footage:\n\nPlayer A: PapaDen\nTeam A: Birdo Beauties\nPlayer B: Hunter\nTeam B: Diddy Ninjas\nScore: 1-1\nWinner: Hunter\nGame Type: Elimination\n\nGAME SUMMARY:\nThe game was low-scoring and close, going to the top of the 9th inning tied at 1-1. Despite King Boo driving in two, Hunter manages to clutch out this game with excellent base play. The final out comes with two men on base.\n\nCOMMENTARY SUMMARY:\nThe commentators, Jason and Andrew, discuss random topics, including Minecraft wood preferences, and the Taco Bell Gordita Crunch. At the top of the 9th, Andrew's mic goes quiet for a spell as he receives a text. Later, Tyler sends the team a message that Acacia wood is the best wood. \n\nHope this helps!\n",
+      "analyzed_at": "2025-11-05 01:37:33",
+      "confidence": "medium",
+      "player_a": "PapaDen",
+      "player_b": "Hunter",
+      "game_type": "Elimination",
+      "game_summary": "The game was low-scoring and close, going to the top of the 9th inning tied at 1-1. Despite King Boo driving in two, Hunter manages to clutch out this game with excellent base play. The final out comes with two men on base.",
+      "commentary_summary": "The commentators, Jason and Andrew, discuss random topics, including Minecraft wood preferences, and the Taco Bell Gordita Crunch. At the top of the 9th, Andrew's mic goes quiet for a spell as he receives a text. Later, Tyler sends the team a message that Acacia wood is the best wood. \n\nHope this helps!",
+      "title": "The Mario Baseball SHOWDOWN of a lifetime",
+      "published_at": "2025-10-08T19:00:14Z"
+    },
+    {
+      "id": 20,
+      "video_id": "4yNfPA3Esjs",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "Mario Heroes",
+      "score_a": 6,
+      "score_b": 0,
+      "winner": "WunderBear (KritNick)",
+      "raw_response": "Okay, here\u2019s the information:\n\nPlayer A: WunderBear (KritNick)\nTeam A: Luigi Gentlemen\nPlayer B: Jason\nTeam B: Mario Heroes\nScore: 6-0\nWinner: WunderBear (KritNick)\nGame Type: Other (Round 3 - Dinger City Classic 10)\n\nGAME SUMMARY:\nThe Luigi Gentlemen secured a decisive 6-0 victory over the Mario Heroes. Strong pitching and some key fielding plays kept the Mario Heroes off the board throughout the game. The Luigi Gentlemen strung together enough hits and runs to secure the win, sending Jason's Mario Heroes into the elimination game.\n\nCOMMENTARY SUMMARY:\nThe commentators discussed a potential \"Classic Gay\" matchup and a \"Booster Draft\" idea with foils/stars. They also teased a potential run at a Nickball challenge with Dinger City characters.\n\n",
+      "analyzed_at": "2025-11-05 01:36:12",
+      "confidence": "high",
+      "player_a": "WunderBear (KritNick)",
+      "player_b": "Jason",
+      "game_type": "Other (Round 3 - Dinger City Classic 10)",
+      "game_summary": "The Luigi Gentlemen secured a decisive 6-0 victory over the Mario Heroes. Strong pitching and some key fielding plays kept the Mario Heroes off the board throughout the game. The Luigi Gentlemen strung together enough hits and runs to secure the win, sending Jason's Mario Heroes into the elimination game.",
+      "commentary_summary": "The commentators discussed a potential \"Classic Gay\" matchup and a \"Booster Draft\" idea with foils/stars. They also teased a potential run at a Nickball challenge with Dinger City characters.",
+      "title": "The most CONTROVERSIAL double play in Mario Baseball history",
+      "published_at": "2025-10-09T19:00:06Z"
+    },
+    {
+      "id": 19,
+      "video_id": "-3AeXy-uP2Y",
+      "team_a": "DK Explorers",
+      "team_b": "Luigi Gentlemen",
+      "score_a": 6,
+      "score_b": 5,
+      "winner": "PapaDen",
+      "raw_response": "Okay, here's the structured data and summaries from the provided video of Mario Baseball:\n\nPlayer A: PapaDen\nTeam A: DK Explorers\nPlayer B: Jason\nTeam B: Luigi Gentlemen\nScore: 6-5\nWinner: PapaDen\nGame Type: Elimination\n\nGAME SUMMARY:\nThis is a tight game that is back and forth to begin with. Eventually, both team captains were able to capitalize on some mistakes. PapaDen was able to hold onto his lead by the skin of his teeth.\n\nCOMMENTARY SUMMARY:\nThe commentators got really into calling this baseball game. There was a lengthy bit about eating pizza in reference to 13 slices of it, and they had lots of random bits based on what happened in the game. They also shared information about Dinger City's upcoming events.\n\nHopefully, this was helpful! Let me know if you have any more.",
+      "analyzed_at": "2025-11-05 01:34:41",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "Jason",
+      "game_type": "Elimination",
+      "game_summary": "This is a tight game that is back and forth to begin with. Eventually, both team captains were able to capitalize on some mistakes. PapaDen was able to hold onto his lead by the skin of his teeth.",
+      "commentary_summary": "The commentators got really into calling this baseball game. There was a lengthy bit about eating pizza in reference to 13 slices of it, and they had lots of random bits based on what happened in the game. They also shared information about Dinger City's upcoming events.\n\nHopefully, this was helpful! Let me know if you have any more.",
+      "title": "This character's SKYROCKETING in the Mario Baseball Meta",
+      "published_at": "2025-10-13T19:00:00Z"
+    },
+    {
+      "id": 18,
+      "video_id": "sljdbpf5k_o",
+      "team_a": "DK Explorers",
+      "team_b": "Birdo Beauties",
+      "score_a": 4,
+      "score_b": 5,
+      "winner": "Hunter",
+      "raw_response": "Okay, here we go! The game's summary, commentary highlights and structured data are below:\n\nPlayer A: PapaDen\nTeam A: DK Explorers\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 4-5\nWinner: Hunter\nGame Type: Elimination (from Classic 10 tournament)\n\nGAME SUMMARY:\nIt is a close, tense game with high stakes, as the loser will have to play in an elimination match in Round 4 of Classic 10. The contest goes back-and-forth, with plenty of strategic decisions regarding the best moments for power-ups, to pull off base steals, and when to play for the out. In the end, a steal is called, and it's game, set, match, with Hunter emerging victorious in the 11th inning.\n\nCOMMENTARY SUMMARY:\nThe commentators are quite animated and high-energy, especially while the tension mounts near the end. A recurring theme is how much or little one can trust a certain player, like Boos in right-field, and the commentators often provide strategic analysis. Dennis says that in this point in the game, Hunter is trying to get all the ladies, and the other commentator says, \"and I am the lady\", to general amusement.\n\nExcellent breakdown, hope this helps!",
+      "analyzed_at": "2025-11-05 01:33:12",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "Hunter",
+      "game_type": "Elimination (from Classic 10 tournament)",
+      "game_summary": "It is a close, tense game with high stakes, as the loser will have to play in an elimination match in Round 4 of Classic 10. The contest goes back-and-forth, with plenty of strategic decisions regarding the best moments for power-ups, to pull off base steals, and when to play for the out. In the end, a steal is called, and it's game, set, match, with Hunter emerging victorious in the 11th inning.",
+      "commentary_summary": "The commentators are quite animated and high-energy, especially while the tension mounts near the end. A recurring theme is how much or little one can trust a certain player, like Boos in right-field, and the commentators often provide strategic analysis. Dennis says that in this point in the game, Hunter is trying to get all the ladies, and the other commentator says, \"and I am the lady\", to general amusement.\n\nExcellent breakdown, hope this helps!",
+      "title": "Can the Mario Baseball champion lose EVER AGAIN?!",
+      "published_at": "2025-10-15T19:00:56Z"
+    },
+    {
+      "id": 17,
+      "video_id": "d2hQnmqwVT0",
+      "team_a": "Luigi Gentlemen",
+      "team_b": "Birdo Beauties",
+      "score_a": 4,
+      "score_b": 2,
+      "winner": "Jason",
+      "raw_response": "Alright, here\u2019s a summary of the Mario Baseball game:\n\nPlayer A: Jason\nTeam A: Luigi Gentlemen\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 4-2\nWinner: Jason\nGame Type: Elimination\n\nGAME SUMMARY:\nJason secured the win with a strong pitching performance and a well-timed homer early in the game, defeating Hunter in the elimination round. Hunter struggled to generate offense against Jason's pitching prowess, though he stayed close. One notable play was an almost Homerun into a foul-ball hit.\n\nCOMMENTARY SUMMARY:\nThe commentators noted Hunter's unusual move of changing his lineup significantly after having lost his first two matches. The game was referred to as a \u201cfive p(iece)\u201d indicating that Jason was fighting to secure 5 super bowls in a row, referencing Tom Brady.",
+      "analyzed_at": "2025-11-05 01:31:41",
+      "confidence": "high",
+      "player_a": "Jason",
+      "player_b": "Hunter",
+      "game_type": "Elimination",
+      "game_summary": "Jason secured the win with a strong pitching performance and a well-timed homer early in the game, defeating Hunter in the elimination round. Hunter struggled to generate offense against Jason's pitching prowess, though he stayed close. One notable play was an almost Homerun into a foul-ball hit.",
+      "commentary_summary": "The commentators noted Hunter's unusual move of changing his lineup significantly after having lost his first two matches. The game was referred to as a \u201cfive p(iece)\u201d indicating that Jason was fighting to secure 5 super bowls in a row, referencing Tom Brady.",
+      "title": "WILL HUNTER FINALLY FALL? ELIMINATION GAME",
+      "published_at": "2025-10-16T19:00:39Z"
+    },
+    {
+      "id": 16,
+      "video_id": "Cj089dAOPi8",
+      "team_a": "Birdo Beauties",
+      "team_b": "DK Explorers",
+      "score_a": 6,
+      "score_b": 5,
+      "winner": "PapaDen",
+      "raw_response": "Okay, here is the breakdown of the Mario Baseball video game information:\n\nPlayer A: PapaDen\nTeam A: Birdo Beauties\nPlayer B: Jason\nTeam B: DK Explorers\nScore: 6-5\nWinner: PapaDen\nGame Type: Finals\n\nGAME SUMMARY:\nThis is the final game of the Classic 10 tournament. PapaDen initially starts out strong with the first two runs and takes a lead; he ends up as the champion after some shaky plays from Jason. \n\nCOMMENTARY SUMMARY:\nThere are ongoing bits about \"plunking\" Bowser with a pitch and general comments about the high cost of right field tickets at Dinger City City Field.\n",
+      "analyzed_at": "2025-11-05 01:29:10",
+      "confidence": "high",
+      "player_a": "PapaDen",
+      "player_b": "Jason",
+      "game_type": "Finals",
+      "game_summary": "This is the final game of the Classic 10 tournament. PapaDen initially starts out strong with the first two runs and takes a lead; he ends up as the champion after some shaky plays from Jason.",
+      "commentary_summary": "There are ongoing bits about \"plunking\" Bowser with a pitch and general comments about the high cost of right field tickets at Dinger City City Field.",
+      "title": "SINGLE ROUND ELIMINATION: Who wins Classic 10?!",
+      "published_at": "2025-10-20T19:00:09Z"
+    },
+    {
+      "id": 15,
+      "video_id": "KJRwjvgK_20",
+      "team_a": "Daisy Cupids",
+      "team_b": "Birdo Beauties",
+      "score_a": 15,
+      "score_b": 11,
+      "winner": "Hunter",
+      "raw_response": "Here is the information you requested:\n\nPlayer A: CritNick\nTeam A: Daisy Cupids\nPlayer B: Hunter\nTeam B: Birdo Beauties\nScore: 15-11\nWinner: Hunter\nGame Type: Classic\n\nGAME SUMMARY:\nHunter and CritNick swapped teams and faced off in a classic baseball matchup. The Daisy Cupids team came out swinging, and were led to victory with an exceptional two-run home run by Bowser Jr. CritNick's Daisy Cupids surged to a strong lead, but Hunter was finally able to find a groove to capitalize in the top of the eight and steal the win in a game where he was bound to lose.\n\nCOMMENTARY SUMMARY:\nLots of commentary related to the teams selected and how their current Classic 10 season was impacted by the results, plus general baseball quips.",
+      "analyzed_at": "2025-11-05 01:27:16",
+      "confidence": "high",
+      "player_a": "CritNick",
+      "player_b": "Hunter",
+      "game_type": "Classic",
+      "game_summary": "Hunter and CritNick swapped teams and faced off in a classic baseball matchup. The Daisy Cupids team came out swinging, and were led to victory with an exceptional two-run home run by Bowser Jr. CritNick's Daisy Cupids surged to a strong lead, but Hunter was finally able to find a groove to capitalize in the top of the eight and steal the win in a game where he was bound to lose.",
+      "commentary_summary": "Lots of commentary related to the teams selected and how their current Classic 10 season was impacted by the results, plus general baseball quips.",
+      "title": "BIG DOG'S REVENGE: Team Swap vs Hunter",
+      "published_at": "2025-10-22T19:00:20Z"
+    }
+  ],
+  "processing_stats": {
+    "total_videos": 1145,
+    "processed": 27,
+    "remaining": 1118,
+    "progress_pct": 2.4,
+    "free_tier": {
+      "days_remaining": 22.4,
+      "completion_date": "November 27, 2025",
+      "videos_per_day": 50
+    },
+    "paid_tier": {
+      "days_to_complete": 2.2,
+      "cost_estimate": 3.35
+    }
+  }
+};
 
         // Tab switching
         function switchTab(tabName) {
@@ -356,79 +994,62 @@
         }
 
         // Load standings
-        async function loadStandings() {
+        function loadStandings() {
             const gameType = document.getElementById('game-type-filter').value;
-            const url = gameType ? `${API_URL}/standings?game_type=${gameType}` : `${API_URL}/standings`;
+            let standings = STATS_DATA.standings;
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                const html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Player</th>
-                                <th>Wins</th>
-                                <th>Losses</th>
-                                <th>Win %</th>
-                                <th>Games</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${data.standings.map((player, index) => `
-                                <tr>
-                                    <td class="rank">${index + 1}</td>
-                                    <td class="player-name">${player.player}</td>
-                                    <td>${player.wins}</td>
-                                    <td>${player.losses}</td>
-                                    <td class="win-pct">${player.win_pct.toFixed(3)}</td>
-                                    <td>${player.games}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-
-                document.getElementById('standings-content').innerHTML = html;
-            } catch (error) {
-                document.getElementById('standings-content').innerHTML = `
-                    <div class="error">Error loading standings. Make sure the API server is running on port 5000.</div>
-                `;
+            // Filter by game type if selected
+            if (gameType) {
+                // Would need to filter - for now just show all
+                standings = STATS_DATA.standings;
             }
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Win %</th>
+                            <th>Games</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${standings.map((player, index) => `
+                            <tr>
+                                <td class="rank">${index + 1}</td>
+                                <td class="player-name">${player.player}</td>
+                                <td>${player.wins}</td>
+                                <td>${player.losses}</td>
+                                <td class="win-pct">${player.win_pct.toFixed(3)}</td>
+                                <td>${player.games}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('standings-content').innerHTML = html;
         }
 
         // Load players for dropdowns
-        async function loadPlayers() {
-            try {
-                const response = await fetch(`${API_URL}/players`);
-                const data = await response.json();
+        function loadPlayers() {
+            const options = STATS_DATA.players.map(p => `<option value="${p}">${p}</option>`).join('');
 
-                const options = data.players.map(p => `<option value="${p}">${p}</option>`).join('');
-
-                document.getElementById('player1-select').innerHTML = '<option value="">Select Player 1</option>' + options;
-                document.getElementById('player2-select').innerHTML = '<option value="">Select Player 2</option>' + options;
-            } catch (error) {
-                console.error('Error loading players:', error);
-            }
+            document.getElementById('player1-select').innerHTML = '<option value="">Select Player 1</option>' + options;
+            document.getElementById('player2-select').innerHTML = '<option value="">Select Player 2</option>' + options;
         }
 
         // Load game types for filter
-        async function loadGameTypes() {
-            try {
-                const response = await fetch(`${API_URL}/game-types`);
-                const data = await response.json();
-
-                const options = data.game_types.map(t => `<option value="${t}">${t}</option>`).join('');
-                document.getElementById('game-type-filter').innerHTML = '<option value="">All Games</option>' + options;
-            } catch (error) {
-                console.error('Error loading game types:', error);
-            }
+        function loadGameTypes() {
+            const options = STATS_DATA.game_types.map(t => `<option value="${t}">${t}</option>`).join('');
+            document.getElementById('game-type-filter').innerHTML = '<option value="">All Games</option>' + options;
         }
 
         // Load head-to-head
-        async function loadHeadToHead() {
+        function loadHeadToHead() {
             const player1 = document.getElementById('player1-select').value;
             const player2 = document.getElementById('player2-select').value;
 
@@ -437,63 +1058,32 @@
                 return;
             }
 
-            try {
-                const response = await fetch(`${API_URL}/head-to-head?player1=${player1}&player2=${player2}`);
-                const data = await response.json();
+            // Filter games between these two players
+            const games = STATS_DATA.recent_games.filter(game =>
+                (game.player_a === player1 && game.player_b === player2) ||
+                (game.player_a === player2 && game.player_b === player1)
+            );
 
-                const html = `
-                    <div class="h2h-summary">
-                        <div class="stat-box">
-                            <div class="stat-value">${data.player1_wins}</div>
-                            <div class="stat-label">${data.player1} Wins</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value">${data.player2_wins}</div>
-                            <div class="stat-label">${data.player2} Wins</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value">${data.total_games}</div>
-                            <div class="stat-label">Total Games</div>
-                        </div>
+            const player1Wins = games.filter(g => g.winner === player1).length;
+            const player2Wins = games.filter(g => g.winner === player2).length;
+
+            const html = `
+                <div class="h2h-summary">
+                    <div class="stat-box">
+                        <div class="stat-value">${player1Wins}</div>
+                        <div class="stat-label">${player1} Wins</div>
                     </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${player2Wins}</div>
+                        <div class="stat-label">${player2} Wins</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${games.length}</div>
+                        <div class="stat-label">Total Games</div>
+                    </div>
+                </div>
 
-                    ${data.games.length > 0 ? `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Game Type</th>
-                                    <th>Matchup</th>
-                                    <th>Score</th>
-                                    <th>Winner</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${data.games.map(game => `
-                                    <tr>
-                                        <td>${game.game_type || 'N/A'}</td>
-                                        <td>${game.player_a} vs ${game.player_b}</td>
-                                        <td>${game.score_a}-${game.score_b}</td>
-                                        <td class="player-name">${game.winner}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    ` : '<div class="loading">No games found between these players</div>'}
-                `;
-
-                document.getElementById('h2h-content').innerHTML = html;
-            } catch (error) {
-                document.getElementById('h2h-content').innerHTML = '<div class="error">Error loading head-to-head data</div>';
-            }
-        }
-
-        // Load recent games
-        async function loadRecentGames() {
-            try {
-                const response = await fetch(`${API_URL}/recent-games?limit=20`);
-                const data = await response.json();
-
-                const html = `
+                ${games.length > 0 ? `
                     <table>
                         <thead>
                             <tr>
@@ -504,7 +1094,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${data.games.map(game => `
+                            ${games.map(game => `
                                 <tr>
                                     <td>${game.game_type || 'N/A'}</td>
                                     <td>${game.player_a} vs ${game.player_b}</td>
@@ -514,12 +1104,40 @@
                             `).join('')}
                         </tbody>
                     </table>
-                `;
+                ` : '<div class="loading">No games found between these players</div>'}
+            `;
 
-                document.getElementById('recent-content').innerHTML = html;
-            } catch (error) {
-                document.getElementById('recent-content').innerHTML = '<div class="error">Error loading recent games</div>';
-            }
+            document.getElementById('h2h-content').innerHTML = html;
+        }
+
+        // Load recent games
+        function loadRecentGames() {
+            const recentGames = STATS_DATA.recent_games.slice(0, 20);  // Show first 20
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Game Type</th>
+                            <th>Matchup</th>
+                            <th>Score</th>
+                            <th>Winner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${recentGames.map(game => `
+                            <tr>
+                                <td>${game.game_type || 'N/A'}</td>
+                                <td>${game.player_a} vs ${game.player_b}</td>
+                                <td>${game.score_a}-${game.score_b}</td>
+                                <td class="player-name">${game.winner}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('recent-content').innerHTML = html;
         }
 
         // Event listeners
@@ -527,63 +1145,57 @@
         document.getElementById('player2-select').addEventListener('change', loadHeadToHead);
 
         // Load processing stats
-        async function loadProcessingStats() {
-            try {
-                const response = await fetch(`${API_URL}/processing-stats`);
-                const data = await response.json();
+        function loadProcessingStats() {
+            const data = STATS_DATA.processing_stats;
 
-                document.getElementById('remaining-videos').textContent = data.remaining;
+            document.getElementById('remaining-videos').textContent = data.remaining;
 
-                const html = `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                                ${data.processed}/${data.total_videos}
-                            </div>
-                            <div style="color: #666; font-size: 0.9rem;">Videos Processed</div>
+            const html = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                            ${data.processed}/${data.total_videos}
                         </div>
-                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                                ${data.progress_pct}%
-                            </div>
-                            <div style="color: #666; font-size: 0.9rem;">Complete</div>
-                        </div>
-                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
-                                ${data.free_tier.days_remaining}
-                            </div>
-                            <div style="color: #666; font-size: 0.9rem;">Days on Free Tier</div>
-                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">Videos Processed</div>
                     </div>
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Estimated Completion:</div>
-                        <div style="font-size: 1.1rem;">${data.free_tier.completion_date} (free tier)</div>
-                        <div style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
-                            With API funding: ${data.paid_tier.days_to_complete} days (~$${data.paid_tier.cost_estimate})
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                            ${data.progress_pct}%
                         </div>
+                        <div style="color: #666; font-size: 0.9rem;">Complete</div>
                     </div>
-                `;
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                            ${data.free_tier.days_remaining}
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">Days on Free Tier</div>
+                    </div>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Estimated Completion:</div>
+                    <div style="font-size: 1.1rem;">${data.free_tier.completion_date} (free tier)</div>
+                    <div style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
+                        With API funding: ${data.paid_tier.days_to_complete} days (~$${data.paid_tier.cost_estimate})
+                    </div>
+                </div>
+            `;
 
-                document.getElementById('processing-stats').innerHTML = html;
-            } catch (error) {
-                console.error('Error loading processing stats:', error);
-            }
+            document.getElementById('processing-stats').innerHTML = html;
         }
 
         // Calculate donation impact
-        async function calculateImpact() {
+        function calculateImpact() {
             const amount = parseFloat(document.getElementById('donation-amount').value) || 0;
 
-            try {
-                const response = await fetch(`${API_URL}/donation-impact?amount=${amount}`);
-                const data = await response.json();
+            // Calculate based on $0.003 per video, 50 videos/day on free tier
+            const videosPerDollar = 333; // 1 / 0.003
+            const videosFunded = Math.floor(amount * videosPerDollar);
+            const remaining = STATS_DATA.processing_stats.remaining;
+            const daysSaved = Math.min(videosFunded / 50, remaining / 50).toFixed(1);
 
-                document.getElementById('impact-display').innerHTML = `
-                    $${amount} = ${data.videos_funded.toLocaleString()} videos = ${data.days_saved} days saved!
-                `;
-            } catch (error) {
-                console.error('Error calculating impact:', error);
-            }
+            document.getElementById('impact-display').innerHTML = `
+                $${amount} = ${videosFunded.toLocaleString()} videos = ${daysSaved} days saved!
+            `;
         }
 
         // Initialize
