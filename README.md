@@ -1,190 +1,260 @@
-# DingerStats 🏟️
+# DingerStats ⚾
 
-**Automated Mario Superstar Baseball gameplay analysis using audio pattern matching and machine learning.**
+**AI-Powered Mario Baseball Tournament Statistics Tracker**
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Accuracy](https://img.shields.io/badge/Detection_Accuracy-71.4%25-orange.svg)](#results)
+[![Gemini](https://img.shields.io/badge/AI-Gemini_2.0-orange.svg)](https://ai.google.dev)
 
 ## Overview
 
-DingerStats automatically detects inning transitions in Mario Superstar Baseball gameplay videos from the "Dinger City" YouTube channel using advanced audio signal processing and multi-template pattern matching. The system achieves **71.4% accuracy** with **sub-second precision** through consensus voting across multiple audio templates.
+DingerStats automatically analyzes YouTube videos from Mario Baseball tournaments (Classic 10 & Season 10) using AI vision and transcript analysis to create a comprehensive statistics website with authentic 2005-era web design aesthetics.
+
+**No manual data entry. Just AI-powered extraction from video.**
 
 ## 🎯 Key Features
 
-- **Multi-template detection system** with consensus voting across 7 chime templates
-- **Audio filtering** to separate commentary from game sounds
-- **Cross-correlation pattern matching** using librosa and scipy
-- **Sub-second timing precision** (0.1-0.4s average error)
-- **Robust search algorithms** with timing precision analysis
-- **Production-ready pipeline** for automated video processing
+### Multi-Source AI Analysis
+- **Gemini Visual Analysis** - Extracts game data from video frames (scoreboard, UI elements)
+- **Ollama Transcript Analysis** - Validates results using local LLM analysis of commentary
+- **Version Tracking** - Compare different prompt versions to improve accuracy
+- **Cross-Validation** - Don't trust a single AI model; verify with multiple sources
 
-## 📊 Results
+### Real-Time Progress Dashboard
+- **Live tracking** of video analysis progress
+- **Per-analyzer statistics** (Gemini vs Ollama, v1 vs v2)
+- **Success/failure metrics** with activity feed
+- **Auto-refreshing** every 5 seconds
 
-**Current Performance (v1.0):**
-- ✅ **71.4% accuracy** (5/7 known transitions detected)
-- ✅ **Sub-second precision** on successful detections
-- ✅ **Perfect 9th inning detection** (19:34 → 19:34, 0.1s error)
-- ✅ **High consensus confidence** (5-6/7 templates agree on best detections)
+### Retro Tournament Website
+- **Authentic 2005 web design** with animated brackets
+- **Player statistics** and head-to-head records
+- **Tournament brackets** with sliding door animations
+- **Game summaries** with commentary highlights
 
-**Example Detection Output:**
-```
-[FOUND] 2:28 -> 2:28 (error: 0.1s, strength: 5/7, score: 0.002030)
-[FOUND] 5:14 -> 5:14 (error: 0.1s, strength: 2/7, score: 0.001489)  
-[FOUND] 7:34 -> 7:33 (error: 0.4s, strength: 4/7, score: 0.002662)
-[FOUND] 19:34 -> 19:34 (error: 0.1s, strength: 5/7, score: 0.002712)
-```
+### Intelligent Video Filtering
+- **Manual review system** to mark non-game videos (drafts, analysis)
+- **Automatic exclusion** from statistics
+- **Database migrations** handle schema changes automatically
+
+## 📊 Current Stats
+
+- **43 Classic 10 videos** tracked
+- **26+ games analyzed** with Gemini v2 (95%+ accuracy)
+- **3 games validated** with Ollama v1
+- **Real-time monitoring** via progress dashboard
 
 ## 🚀 Quick Start
 
+See **[QUICK_START.md](QUICK_START.md)** for a complete 10-minute setup guide.
+
 ### Prerequisites
-- Python 3.11+
-- FFmpeg (for audio processing)
-- ~2GB RAM for processing 20-minute videos
+
+- Python 3.8+
+- Google Gemini API key (free tier works!)
+- YouTube Data API key (free with Google account)
+- (Optional) Ollama for local transcript validation
 
 ### Installation
 
-1. **Clone the repository:**
 ```bash
-git clone https://github.com/musselmanjoey/DingerStats.git
-cd DingerStats
+# 1. Clone and setup
+cd C:/Users/musse/Projects/DingerStats
+
+# 2. Create .env file
+cat > .env << EOF
+YOUTUBE_API_KEY=your_youtube_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+CLASSIC10_PLAYLIST_ID=PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF
+SEASON10_PLAYLIST_ID=PL4KAbBInKJ-wULDmMsXHk6lmNdN4WpKk2
+EOF
+
+# 3. Install dependencies
+pip install google-generativeai google-api-python-client python-dotenv flask flask-cors youtube-transcript-api requests
+
+# 4. Fetch video metadata
+python src/scripts/fetch_playlists.py
+
+# 5. Analyze videos with Gemini
+python src/scripts/process_videos.py --playlist classic10 --analyzer gemini --version v2
+
+# 6. Monitor progress (new terminal)
+cd webapp/backend && python progress_api.py
+# Open http://localhost:5001
+
+# 7. View website (new terminal)
+cd webapp/backend && python api.py
+# Open http://localhost:5000
 ```
 
-2. **Create virtual environment:**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+## 🏗️ Architecture
+
+### Data Flow
+```
+YouTube API → Video Metadata → SQLite Database
+     ↓
+YouTube Videos → AI Analyzers → Game Results → Database
+     ↓                  ↓
+  Gemini Vision    Ollama Transcript
+  (v1, v2...)      (v1, v2...)
+     ↓
+Progress Dashboard ← Flask API ← Database
+     ↓
+Retro Website ← JSON API ← Database
 ```
 
-3. **Install dependencies:**
-```bash
-pip install librosa scipy numpy soundfile yt-dlp matplotlib
-```
+### Tech Stack
 
-### Basic Usage
+**Backend:**
+- Python 3.8+, SQLite, Flask
+- Google Gemini API (vision analysis)
+- Ollama (local LLM for transcripts)
+- YouTube Data API v3
 
-**Run the multi-template detection system:**
-```bash
-python multi_template_detector.py
-```
+**Frontend:**
+- Pure HTML/CSS/JavaScript
+- 2005-era retro design aesthetics
+- Responsive layouts
 
-**Analyze a specific video:**
-```bash
-python full_video_analysis.py
-```
+**AI Models:**
+- Gemini 2.0 Flash (primary - visual analysis)
+- Llama 3.2 (Ollama - transcript validation)
 
-**Debug and compare templates:**
-```bash
-python simple_debug.py
-```
-
-## 🏗️ Project Structure
+### Project Structure
 
 ```
 DingerStats/
-├── 📁 audio_processing/          # Core audio processing modules
-├── 📁 better_samples/            # User-extracted chime samples (7 templates)
-├── 📁 reference_sounds/          # Reference patterns and analysis
-├── 🐍 multi_template_detector.py # Main detection system (71.4% accuracy)
-├── 🐍 robust_search_system.py    # Timing precision analysis
-├── 🐍 audio_filtering.py         # Commentary separation techniques
-├── 🐍 full_video_analysis.py     # Complete video processing
-├── 📋 PROJECT_BRIEFING.md        # Original project vision
-├── 📋 PROJECT_SUMMARY.md         # Development journey & lessons learned
-├── 📋 FUTURE_ROADMAP.md          # Next development phases
-└── 📋 README.md                  # This file
+├── src/
+│   ├── analyzers/           # AI analysis engines
+│   │   ├── gemini_analyzer.py          # Gemini visual analysis
+│   │   └── ollama_transcript_analyzer.py  # Ollama transcript analysis
+│   ├── youtube/
+│   │   └── youtube_client.py           # YouTube API wrapper
+│   └── scripts/
+│       ├── process_videos.py           # Main processing script
+│       ├── mark_videos.py              # Manual video filtering
+│       └── fetch_playlists.py          # Fetch video metadata
+├── database/
+│   ├── db_manager.py        # Database operations
+│   └── schema.sql           # Database schema
+├── webapp/
+│   ├── backend/
+│   │   ├── api.py           # Main website API
+│   │   └── progress_api.py  # Progress dashboard API
+│   └── frontend/
+│       ├── index.html       # Main website
+│       ├── classic-10.html  # Classic 10 tournament page
+│       └── progress.html    # Real-time progress dashboard
+└── docs/
+    ├── PROJECT_SUMMARY.md          # Complete architecture overview
+    ├── QUICK_START.md              # 10-minute setup guide
+    ├── ANALYZER_GUIDE.md           # Multi-source validation guide
+    └── PROGRESS_DASHBOARD_GUIDE.md # Dashboard usage guide
 ```
 
-## 🔧 How It Works
+## 📖 Documentation
 
-### 1. Audio Processing Pipeline
-```
-YouTube Video → Audio Extraction → Frequency Filtering → Template Matching → Consensus Voting → Results
-```
+### Getting Started
+- **[QUICK_START.md](QUICK_START.md)** - 10-minute setup guide
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Complete architecture overview
 
-### 2. Multi-Template Detection
-- **7 chime templates** extracted from gameplay footage
-- **Cross-correlation** analysis using scipy.signal.correlate()
-- **Consensus voting** requires 2+ templates to agree
-- **Conservative thresholds** (99.7th percentile) to reduce false positives
+### Advanced Usage
+- **[ANALYZER_GUIDE.md](ANALYZER_GUIDE.md)** - Multi-source validation methodology
+- **[PROGRESS_DASHBOARD_GUIDE.md](PROGRESS_DASHBOARD_GUIDE.md)** - Dashboard features and usage
+- **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** - Data model and queries
 
-### 3. Audio Filtering
-- **Frequency band filtering** emphasizes game audio frequencies
-- **Spectral subtraction** reduces commentary interference
-- **Dynamic range compression** normalizes audio levels
+## 🔧 Common Commands
 
-## 📈 Technical Achievements
+| Task | Command |
+|------|---------|
+| **Fetch videos** | `python src/scripts/fetch_playlists.py` |
+| **Analyze (Gemini)** | `python src/scripts/process_videos.py --playlist classic10 --analyzer gemini --version v2` |
+| **Analyze (Ollama)** | `python src/scripts/process_videos.py --playlist classic10 --analyzer ollama --version v2` |
+| **Mark non-game** | `python src/scripts/mark_videos.py --not-game <video_id>` |
+| **List videos** | `python src/scripts/mark_videos.py --list classic10` |
+| **Progress dashboard** | `cd webapp/backend && python progress_api.py` (port 5001) |
+| **Main website** | `cd webapp/backend && python api.py` (port 5000) |
 
-### Pattern Recognition Breakthrough
-- **From 0% → 71.4% accuracy** through systematic improvements
-- **Multi-template consensus** much more robust than single template
-- **User-extracted samples** outperformed official game audio
-- **Timing precision** solved through robust search algorithms
+## 🎮 Tournament Formats
 
-### Audio Signal Processing
-- **Cross-correlation optimization** with FFT-based processing
-- **Commentary separation** using spectral analysis techniques
-- **Template normalization** for consistent matching across audio sources
-- **Peak detection** with realistic spacing constraints (60s minimum gaps)
+### Classic 10 (YERR OUT! Format)
 
-## 🛣️ Future Development
+Unique alternating structure:
+- Multiple Round-Robin games → Single Elimination game
+- Loser of elimination is "YERR OUT!"
+- Repeat until Finals
 
-### Phase 1: UI & Workflow (Priority)
-- **Simple web interface** for audio sample collection
-- **Waveform visualization** and click-to-select functionality
-- **Community sample contribution** system
+**Game Types:**
+- `Classic 10 - Round 1 - Round Robin`
+- `Classic 10 - Round 1 - Elimination`
+- `Classic 10 - Finals`
 
-### Phase 2: Audio Event Expansion
-- **"Out" detection** for cross-validation (target: 90%+ accuracy)
-- **Hit/walk detection** for complete at-bat tracking
-- **Multi-event correlation** for higher confidence
+### Season 10 (Traditional Format)
 
-### Phase 3: Full Analytics Platform
-- **Database system** for game statistics storage
-- **Computer vision** for scoreboard and player detection
-- **Web dashboard** for automated video processing
+Standard progression:
+- `Season 10 - Regular Season`
+- `Season 10 - Playoffs`
+- `Season 10 - Finals`
 
-*See [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) for detailed development plans.*
+## 🧪 Multi-Source Validation Philosophy
 
-## 📊 Research & Methods
+**Don't trust a single AI model.** DingerStats uses multiple data sources to ensure accuracy:
 
-### Academic Foundations
-- **Audio event detection** principles from signal processing literature  
-- **Template matching optimization** using cross-correlation techniques
-- **Ensemble methods** through consensus voting approaches
-- **Spectral analysis** for audio source separation
+1. **Gemini Visual** analyzes video frames (primary source)
+2. **Ollama Transcript** analyzes commentary (validation)
+3. **Prompt versioning** tracks improvements over time
+4. **Manual review** allows human verification
 
-### Innovation Areas
-- **Multi-template consensus voting** for robust game audio detection
-- **Commentary interference filtering** in sports video analysis
-- **High-precision timing** for automated sports statistics
-- **Domain-specific audio pattern recognition** for video games
+When Gemini and Ollama agree → **High confidence**
+When they disagree → **Flag for manual review**
+
+See **[ANALYZER_GUIDE.md](ANALYZER_GUIDE.md)** for detailed methodology.
+
+## 📈 Results & Performance
+
+### Gemini Visual Analysis
+- **95%+ accuracy** on game data extraction
+- **~30 seconds** per video processing time
+- **Fast iteration** on prompt improvements (v1 → v2 → v3)
+
+### Ollama Transcript Analysis
+- **Free and offline** after model download
+- **Good for validation** despite slower speed
+- **Struggles with brief transcripts** but useful cross-check
+
+### Progress Dashboard
+Real-time visibility into:
+- Videos analyzed vs remaining
+- Success/failure rates per analyzer
+- Recent activity with player matchups
+- Per-version comparison (v1 vs v2)
+
+## 🛣️ Future Roadmap
+
+**Phase 1: Enhanced Validation** (Current)
+- Side-by-side Gemini vs Ollama comparison UI
+- Confidence scoring based on agreement
+- Automatic flagging of discrepancies
+
+**Phase 2: Advanced Statistics**
+- Character win rates and team composition analysis
+- Winning streaks and player performance trends
+- Historical accuracy tracking per analyzer
+
+**Phase 3: Community Features**
+- User predictions and bracket challenges
+- Comment system on games
+- Video embedding with timestamp links
 
 ## 🤝 Contributing
 
-We welcome contributions! Areas where help is needed:
+This is a personal project, but the multi-source AI validation methodology can be adapted for other video analysis projects.
 
-1. **Audio Sample Collection** - Help extract clean samples from more videos
-2. **Algorithm Improvements** - Enhance detection accuracy and reduce false positives  
-3. **UI Development** - Build the sample collection interface (Phase 1)
-4. **Documentation** - Improve guides and tutorials
+## 📝 Credits
 
-## 📝 Documentation
+Built by **Joey Musselman** to automatically track Mario Baseball tournament statistics from the Dinger League YouTube channel.
 
-- **[PROJECT_BRIEFING.md](PROJECT_BRIEFING.md)** - Original project vision and technical approach
-- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Complete development journey, challenges, and solutions
-- **[FUTURE_ROADMAP.md](FUTURE_ROADMAP.md)** - Detailed next development phases and priorities
-
-## ⚖️ License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Mario Superstar Baseball** by Nintendo/Namco for the amazing game
-- **Dinger City** YouTube channel for the gameplay footage
-- **librosa** and **scipy** communities for excellent audio processing libraries
-- **Audio signal processing research community** for foundational techniques
+Inspired by traditional sports statistics websites with authentic 2005-era web design.
 
 ## 📬 Contact
 
@@ -194,5 +264,4 @@ Project Link: [https://github.com/musselmanjoey/DingerStats](https://github.com/
 
 ---
 
-*🤖 Generated with [Claude Code](https://claude.ai/code)*  
-*Driven by Joey Musselman with iterative development and domain expertise*
+*🤖 Generated with [Claude Code](https://claude.ai/code)*
