@@ -17,12 +17,14 @@ class StatsCalculator:
     def __init__(self, db_path="../../database/dingerstats.db"):
         self.db = DatabaseManager(db_path)
 
-    def get_player_records(self, game_type=None):
+    def get_player_records(self, game_type=None, analyzer_type=None, prompt_version=None):
         """
         Calculate win-loss records for all players
 
         Args:
             game_type: Filter by game type (e.g., "Playoff", "Regular Season", etc.)
+            analyzer_type: Filter by analyzer (e.g., "gemini_visual", "ollama_transcript")
+            prompt_version: Filter by prompt version (e.g., "v1", "v2")
 
         Returns:
             List of player stats dicts sorted by wins
@@ -32,6 +34,14 @@ class StatsCalculator:
         # Filter by game type if specified
         if game_type:
             all_results = [r for r in all_results if r.get('game_type') == game_type]
+
+        # Filter by analyzer type if specified
+        if analyzer_type:
+            all_results = [r for r in all_results if r.get('analyzer_type') == analyzer_type]
+
+        # Filter by prompt version if specified
+        if prompt_version:
+            all_results = [r for r in all_results if r.get('prompt_version') == prompt_version]
 
         player_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'games': 0})
 
@@ -188,12 +198,52 @@ class StatsCalculator:
 
         return sorted(list(seasons))
 
-    def get_games_by_season(self, season_filter=None):
+    def get_available_data_sources(self):
+        """
+        Get list of all available data source combinations (analyzer_type + prompt_version)
+
+        Returns:
+            Dict with structure:
+            {
+                'analyzer_types': ['gemini_visual', 'ollama_transcript'],
+                'prompt_versions': ['v1', 'v2'],
+                'combinations': [
+                    {'analyzer': 'gemini_visual', 'version': 'v1', 'count': 25},
+                    {'analyzer': 'ollama_transcript', 'version': 'v1', 'count': 10}
+                ]
+            }
+        """
+        all_results = self.db.get_all_game_results()
+
+        analyzer_types = set()
+        prompt_versions = set()
+        combinations = defaultdict(int)
+
+        for result in all_results:
+            analyzer = result.get('analyzer_type', 'gemini_visual')  # Default to gemini_visual for old data
+            version = result.get('prompt_version', 'v1')
+
+            analyzer_types.add(analyzer)
+            prompt_versions.add(version)
+            combinations[(analyzer, version)] += 1
+
+        return {
+            'analyzer_types': sorted(list(analyzer_types)),
+            'prompt_versions': sorted(list(prompt_versions)),
+            'combinations': [
+                {'analyzer': analyzer, 'version': version, 'count': count}
+                for (analyzer, version), count in sorted(combinations.items())
+            ]
+        }
+
+    def get_games_by_season(self, season_filter=None, analyzer_type=None, prompt_version=None):
         """
         Get all games organized by season and phase
 
         Args:
             season_filter: Optional season to filter by (e.g., "Classic 10")
+            analyzer_type: Filter by analyzer (e.g., "gemini_visual", "ollama_transcript")
+            prompt_version: Filter by prompt version (e.g., "v1", "v2")
 
         Returns:
             Dict with structure:
@@ -216,6 +266,14 @@ class StatsCalculator:
 
             # Skip if filtering by season and this doesn't match
             if season_filter and season != season_filter:
+                continue
+
+            # Skip if filtering by analyzer type and this doesn't match
+            if analyzer_type and result.get('analyzer_type') != analyzer_type:
+                continue
+
+            # Skip if filtering by prompt version and this doesn't match
+            if prompt_version and result.get('prompt_version') != prompt_version:
                 continue
 
             game_data = {

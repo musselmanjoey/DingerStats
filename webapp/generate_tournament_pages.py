@@ -44,18 +44,31 @@ def is_elimination_game(game_type):
         return False
     return 'elimination' in game_type.lower()
 
-def get_classic10_rounds_data(db_path):
+def get_classic10_rounds_data(db_path, analyzer_type=None, prompt_version=None):
     """Get Classic 10 games organized by round with standings"""
     db = DatabaseManager(db_path)
 
+    # Build query with optional filters
+    query = """
+        SELECT
+            player_a, player_b, score_a, score_b, winner, game_type
+        FROM game_results
+        WHERE game_type LIKE '%Classic 10%'
+    """
+    params = []
+
+    if analyzer_type:
+        query += " AND analyzer_type = ?"
+        params.append(analyzer_type)
+
+    if prompt_version:
+        query += " AND prompt_version = ?"
+        params.append(prompt_version)
+
+    query += " ORDER BY analyzed_at"
+
     with db.get_connection() as conn:
-        cursor = conn.execute("""
-            SELECT
-                player_a, player_b, score_a, score_b, winner, game_type
-            FROM game_results
-            WHERE game_type LIKE '%Classic 10%'
-            ORDER BY analyzed_at
-        """)
+        cursor = conn.execute(query, params)
         games = cursor.fetchall()
 
     # Organize by round
@@ -117,13 +130,13 @@ def get_classic10_rounds_data(db_path):
 
     return rounds_with_standings
 
-def generate_tournament_page(season_name, season_data, template_path, output_dir, db_path=None):
+def generate_tournament_page(season_name, season_data_multi_source, template_path, output_dir, db_path=None):
     """
     Generate a tournament page for a specific season
 
     Args:
         season_name: Name of the season (e.g., "Classic 10", "Season 10")
-        season_data: Dict with phase data (varies by format)
+        season_data_multi_source: Dict with data keyed by source (e.g., {"gemini_v2": {...}, "ollama_v1": {...}})
         template_path: Path to HTML template
         output_dir: Directory to write output files
     """
@@ -131,31 +144,47 @@ def generate_tournament_page(season_name, season_data, template_path, output_dir
     with open(template_path, 'r', encoding='utf-8') as f:
         html = f.read()
 
-    # Calculate total games
-    total_games = sum(len(games) for games in season_data.values())
+    # Get first available data source for placeholder values
+    first_source_data = next(iter(season_data_multi_source.values()))
+
+    # Calculate total games from first source
+    total_games = sum(len(games) for games in first_source_data.values())
 
     # Replace common placeholders
     html = html.replace('TOURNAMENT_TITLE', season_name)
     html = html.replace('TOTAL_GAMES', str(total_games))
 
     # Replace format-specific placeholders (for Season template)
-    if 'Regular Season' in season_data:
-        regular_count = len(season_data.get('Regular Season', []))
-        playoffs_count = len(season_data.get('Playoffs', []))
-        finals_count = len(season_data.get('Finals', []))
+    if 'Regular Season' in first_source_data:
+        regular_count = len(first_source_data.get('Regular Season', []))
+        playoffs_count = len(first_source_data.get('Playoffs', []))
+        finals_count = len(first_source_data.get('Finals', []))
         html = html.replace('REGULAR_SEASON_COUNT', str(regular_count))
         html = html.replace('PLAYOFFS_COUNT', str(playoffs_count))
         html = html.replace('FINALS_COUNT', str(finals_count))
 
-    # Inject tournament data
-    data_json = json.dumps(season_data, indent=2)
-    html = html.replace('/* TOURNAMENT_DATA_PLACEHOLDER */', f'window.TOURNAMENT_DATA = {data_json};')
+    # Inject multi-source tournament data
+    data_json = json.dumps(season_data_multi_source, indent=2)
+    html = html.replace('/* TOURNAMENT_DATA_PLACEHOLDER */', f'window.TOURNAMENT_DATA_MULTI_SOURCE = {data_json};')
 
-    # For Classic 10, also inject rounds data for sliding door UI
+    # For Classic 10, also inject rounds data for sliding door UI (multi-source)
     if 'Classic' in season_name and 'Season' not in season_name and db_path:
-        rounds_data = get_classic10_rounds_data(db_path)
-        rounds_json = json.dumps(rounds_data, indent=2)
-        html = html.replace('/* ROUNDS_DATA_PLACEHOLDER */', f'window.ROUNDS_DATA = {rounds_json};')
+        # Get rounds data for each source
+        rounds_data_multi_source = {}
+        for source_key in season_data_multi_source.keys():
+            # Parse source key like "gemini_visual_v2" -> analyzer="gemini_visual", version="v2"
+            parts = source_key.rsplit('_', 1)  # Split from right to get version
+            if len(parts) == 2:
+                analyzer = parts[0]
+                version = parts[1]
+                rounds_data_multi_source[source_key] = get_classic10_rounds_data(
+                    db_path,
+                    analyzer_type=analyzer,
+                    prompt_version=version
+                )
+
+        rounds_json = json.dumps(rounds_data_multi_source, indent=2)
+        html = html.replace('/* ROUNDS_DATA_PLACEHOLDER */', f'window.ROUNDS_DATA_MULTI_SOURCE = {rounds_json};')
 
     # Generate output filename (e.g., "Classic 10" -> "classic-10.html")
     filename = season_name.lower().replace(' ', '-') + '.html'
@@ -169,9 +198,9 @@ def generate_tournament_page(season_name, season_data, template_path, output_dir
     return output_path
 
 def generate_all_tournament_pages():
-    """Generate tournament pages for all seasons"""
+    """Generate tournament pages for all seasons with multi-source data"""
 
-    print("Generating tournament pages...")
+    print("Generating tournament pages with multi-source data...")
 
     # Get data
     webapp_dir = os.path.dirname(os.path.abspath(__file__))
@@ -180,10 +209,16 @@ def generate_all_tournament_pages():
 
     calc = StatsCalculator(db_path=db_path)
 
-    # Get all games organized by season
-    games_by_season = calc.get_games_by_season()
+    # Get available data sources
+    data_sources = calc.get_available_data_sources()
+    print(f"  Available analyzers: {', '.join(data_sources['analyzer_types'])}")
+    print(f"  Available prompt versions: {', '.join(data_sources['prompt_versions'])}")
+    print(f"  Available combinations: {len(data_sources['combinations'])}")
 
-    if not games_by_season:
+    # Get all seasons
+    all_seasons = calc.get_seasons()
+
+    if not all_seasons:
         print("  No games found in database!")
         return
 
@@ -191,12 +226,43 @@ def generate_all_tournament_pages():
     output_dir = os.path.join(webapp_dir, 'frontend')
 
     print(f"  Using database: {db_path}")
-    print(f"  Found {len(games_by_season)} season(s)")
+    print(f"  Found {len(all_seasons)} season(s)")
 
     generated_pages = []
 
     # Generate a page for each season
-    for season_name, phases in games_by_season.items():
+    for season_name in all_seasons:
+        print(f"\n  Processing: {season_name}")
+
+        # Get data for each analyzer + prompt version combination
+        season_data_multi_source = {}
+
+        for combo in data_sources['combinations']:
+            analyzer = combo['analyzer']
+            version = combo['version']
+            source_key = f"{analyzer}_{version}"
+
+            print(f"    Getting data for {source_key}... ", end='')
+
+            # Get games for this specific combination and season
+            games = calc.get_games_by_season(
+                season_filter=season_name,
+                analyzer_type=analyzer,
+                prompt_version=version
+            )
+
+            # Only include if this source has data for this season
+            if games and season_name in games:
+                season_data_multi_source[source_key] = games[season_name]
+                game_count = sum(len(g) for g in games[season_name].values())
+                print(f"{game_count} games")
+            else:
+                print("no data")
+
+        if not season_data_multi_source:
+            print(f"    WARNING: No data for {season_name}, skipping")
+            continue
+
         # Choose template based on season type
         if 'Classic' in season_name and 'Season' not in season_name:
             # Use Classic 10 YERR OUT! template
@@ -207,7 +273,7 @@ def generate_all_tournament_pages():
 
         output_path = generate_tournament_page(
             season_name=season_name,
-            season_data=phases,
+            season_data_multi_source=season_data_multi_source,
             template_path=template_path,
             output_dir=output_dir,
             db_path=db_path

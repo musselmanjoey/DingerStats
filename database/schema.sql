@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS videos (
     playlist_id TEXT,
     duration TEXT,
     thumbnail_url TEXT,
+    is_game INTEGER DEFAULT 1,  -- 1 = game, 0 = not a game (draft, analysis, etc.)
+    manual_review INTEGER DEFAULT 0,  -- 1 = manually confirmed by user, 0 = AI guess
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

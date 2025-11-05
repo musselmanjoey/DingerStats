@@ -30,6 +30,23 @@ class DatabaseManager:
             conn.executescript(schema)
             conn.commit()
 
+        # Run migrations for existing databases
+        self._run_migrations()
+
+    def _run_migrations(self):
+        """Run database migrations for existing databases"""
+        with self.get_connection() as conn:
+            # Check if is_game column exists, add if not
+            cursor = conn.execute("PRAGMA table_info(videos)")
+            columns = [row[1] for row in cursor.fetchall()]
+
+            if 'is_game' not in columns:
+                print("  Running migration: Adding is_game and manual_review columns...")
+                conn.execute("ALTER TABLE videos ADD COLUMN is_game INTEGER DEFAULT 1")
+                conn.execute("ALTER TABLE videos ADD COLUMN manual_review INTEGER DEFAULT 0")
+                conn.commit()
+                print("  Migration complete!")
+
     def get_connection(self):
         """Get database connection"""
         conn = sqlite3.connect(self.db_path)
@@ -86,14 +103,66 @@ class DatabaseManager:
             cursor = conn.execute("SELECT * FROM videos ORDER BY published_at DESC")
             return [dict(row) for row in cursor.fetchall()]
 
-    def get_videos_by_playlist(self, playlist_id: str) -> List[Dict]:
-        """Get all videos from a specific playlist"""
+    def get_videos_by_playlist(self, playlist_id: str, include_non_games: bool = True) -> List[Dict]:
+        """
+        Get all videos from a specific playlist
+
+        Args:
+            playlist_id: Playlist ID to filter by
+            include_non_games: If False, only return videos where is_game=1
+        """
         with self.get_connection() as conn:
-            cursor = conn.execute(
-                "SELECT * FROM videos WHERE playlist_id = ? ORDER BY published_at DESC",
-                (playlist_id,)
-            )
+            if include_non_games:
+                cursor = conn.execute(
+                    "SELECT * FROM videos WHERE playlist_id = ? ORDER BY published_at DESC",
+                    (playlist_id,)
+                )
+            else:
+                cursor = conn.execute(
+                    "SELECT * FROM videos WHERE playlist_id = ? AND is_game = 1 ORDER BY published_at DESC",
+                    (playlist_id,)
+                )
             return [dict(row) for row in cursor.fetchall()]
+
+    def mark_video_as_non_game(self, video_id: str, manual: bool = True) -> bool:
+        """
+        Mark a video as NOT a game (draft, analysis, etc.)
+
+        Args:
+            video_id: Video ID to mark
+            manual: If True, sets manual_review=1 (user confirmed)
+        """
+        try:
+            with self.get_connection() as conn:
+                conn.execute(
+                    "UPDATE videos SET is_game = 0, manual_review = ? WHERE video_id = ?",
+                    (1 if manual else 0, video_id)
+                )
+                conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error marking video {video_id} as non-game: {e}")
+            return False
+
+    def mark_video_as_game(self, video_id: str, manual: bool = True) -> bool:
+        """
+        Mark a video as a game (revert non-game status)
+
+        Args:
+            video_id: Video ID to mark
+            manual: If True, sets manual_review=1 (user confirmed)
+        """
+        try:
+            with self.get_connection() as conn:
+                conn.execute(
+                    "UPDATE videos SET is_game = 1, manual_review = ? WHERE video_id = ?",
+                    (1 if manual else 0, video_id)
+                )
+                conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error marking video {video_id} as game: {e}")
+            return False
 
     # ==================== GAME RESULTS OPERATIONS ====================
 

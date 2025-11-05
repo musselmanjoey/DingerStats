@@ -107,6 +107,67 @@
             color: #d32f2f;
         }
 
+        /* Data Source Controls */
+        .data-source-controls {
+            background: #e8f4f8;
+            border: 2px solid #4a6fa5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .data-source-controls .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .data-source-controls label {
+            font-weight: bold;
+            font-size: 10px;
+            color: #2e5090;
+            text-transform: uppercase;
+        }
+
+        .data-source-controls select {
+            padding: 8px 12px;
+            border: 2px solid #999;
+            border-radius: 3px;
+            background: linear-gradient(to bottom, #fff, #f5f5f5);
+            font-family: Verdana, Arial, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+            min-width: 180px;
+        }
+
+        .data-source-controls select:hover {
+            background: linear-gradient(to bottom, #fff, #e8f4f8);
+            border-color: #4a6fa5;
+        }
+
+        .data-source-controls select:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 5px rgba(74,111,165,0.5);
+        }
+
+        .data-source-info {
+            background: #ffffcc;
+            border: 1px solid #ffd700;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
         .phase-tabs {
             display: flex;
             gap: 5px;
@@ -423,6 +484,25 @@
                     3. <strong>Loser is OUT!</strong><br>
                     4. Repeat with remaining players until Finals
                 </div>
+
+                <!-- Data Source Selection -->
+                <div class="data-source-controls">
+                    <div class="control-group">
+                        <label for="analyzer-select">Analyzer Type:</label>
+                        <select id="analyzer-select">
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="prompt-select">Prompt Version:</label>
+                        <select id="prompt-select">
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="data-source-info">
+                        Select different data sources to compare AI analysis results
+                    </div>
+                </div>
             </div>
 
             <!-- View Mode Tabs -->
@@ -505,6 +585,98 @@
     <script>
         /* TOURNAMENT_DATA_PLACEHOLDER */
         /* ROUNDS_DATA_PLACEHOLDER */
+
+        // Global state for currently selected data source
+        let currentAnalyzer = null;
+        let currentPromptVersion = null;
+        let currentSourceKey = null;
+
+        // Initialize dropdowns with available data sources
+        function initializeDataSourceControls() {
+            if (!window.TOURNAMENT_DATA_MULTI_SOURCE) return;
+
+            const sources = Object.keys(window.TOURNAMENT_DATA_MULTI_SOURCE);
+            if (sources.length === 0) return;
+
+            // Extract unique analyzers and versions
+            const analyzers = new Set();
+            const versions = new Set();
+
+            sources.forEach(sourceKey => {
+                // Parse "analyzer_version" format (split from right to handle underscores in analyzer name)
+                const lastUnderscoreIndex = sourceKey.lastIndexOf('_');
+                if (lastUnderscoreIndex !== -1) {
+                    const analyzer = sourceKey.substring(0, lastUnderscoreIndex);
+                    const version = sourceKey.substring(lastUnderscoreIndex + 1);
+                    analyzers.add(analyzer);
+                    versions.add(version);
+                }
+            });
+
+            // Populate analyzer dropdown
+            const analyzerSelect = document.getElementById('analyzer-select');
+            const sortedAnalyzers = Array.from(analyzers).sort();
+            sortedAnalyzers.forEach(analyzer => {
+                const option = document.createElement('option');
+                option.value = analyzer;
+                // Make display name more readable
+                const displayName = analyzer.split('_').map(w =>
+                    w.charAt(0).toUpperCase() + w.slice(1)
+                ).join(' ');
+                option.textContent = displayName;
+                analyzerSelect.appendChild(option);
+            });
+
+            // Populate prompt version dropdown
+            const promptSelect = document.getElementById('prompt-select');
+            const sortedVersions = Array.from(versions).sort();
+            sortedVersions.forEach(version => {
+                const option = document.createElement('option');
+                option.value = version;
+                option.textContent = version.toUpperCase();
+                promptSelect.appendChild(option);
+            });
+
+            // Set initial values (first available)
+            currentAnalyzer = sortedAnalyzers[0];
+            currentPromptVersion = sortedVersions[0];
+            currentSourceKey = `${currentAnalyzer}_${currentPromptVersion}`;
+
+            analyzerSelect.value = currentAnalyzer;
+            promptSelect.value = currentPromptVersion;
+
+            // Set up current data pointers for compatibility
+            window.TOURNAMENT_DATA = window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey];
+            window.ROUNDS_DATA = window.ROUNDS_DATA_MULTI_SOURCE ? window.ROUNDS_DATA_MULTI_SOURCE[currentSourceKey] : null;
+
+            // Add change listeners
+            analyzerSelect.addEventListener('change', onDataSourceChange);
+            promptSelect.addEventListener('change', onDataSourceChange);
+        }
+
+        // Handle data source change
+        function onDataSourceChange() {
+            const analyzerSelect = document.getElementById('analyzer-select');
+            const promptSelect = document.getElementById('prompt-select');
+
+            currentAnalyzer = analyzerSelect.value;
+            currentPromptVersion = promptSelect.value;
+            currentSourceKey = `${currentAnalyzer}_${currentPromptVersion}`;
+
+            // Check if this combination exists
+            if (!window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey]) {
+                alert(`No data available for ${currentAnalyzer} + ${currentPromptVersion}`);
+                return;
+            }
+
+            // Update current data pointers
+            window.TOURNAMENT_DATA = window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey];
+            window.ROUNDS_DATA = window.ROUNDS_DATA_MULTI_SOURCE ? window.ROUNDS_DATA_MULTI_SOURCE[currentSourceKey] : null;
+
+            // Re-render all data
+            renderGames();
+            renderRoundBreakdown();
+        }
 
         // View switching (All Stats vs Round Breakdown)
         document.querySelectorAll('.phase-tab[data-view]').forEach(tab => {
@@ -742,6 +914,8 @@
         });
 
         // Initialize
+        // Initialize on page load
+        initializeDataSourceControls();
         renderGames();
         renderRoundBreakdown();
     </script>

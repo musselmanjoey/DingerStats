@@ -107,6 +107,67 @@
             color: #d32f2f;
         }
 
+        /* Data Source Controls */
+        .data-source-controls {
+            background: #e8f4f8;
+            border: 2px solid #4a6fa5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .data-source-controls .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .data-source-controls label {
+            font-weight: bold;
+            font-size: 10px;
+            color: #2e5090;
+            text-transform: uppercase;
+        }
+
+        .data-source-controls select {
+            padding: 8px 12px;
+            border: 2px solid #999;
+            border-radius: 3px;
+            background: linear-gradient(to bottom, #fff, #f5f5f5);
+            font-family: Verdana, Arial, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+            min-width: 180px;
+        }
+
+        .data-source-controls select:hover {
+            background: linear-gradient(to bottom, #fff, #e8f4f8);
+            border-color: #4a6fa5;
+        }
+
+        .data-source-controls select:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 5px rgba(74,111,165,0.5);
+        }
+
+        .data-source-info {
+            background: #ffffcc;
+            border: 1px solid #ffd700;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
         .phase-tabs {
             display: flex;
             gap: 5px;
@@ -413,7 +474,7 @@
         <div class="content">
             <div class="tournament-info">
                 <h2>Classic 10</h2>
-                <p><strong>Total Games:</strong> 39</p>
+                <p><strong>Total Games:</strong> 16</p>
                 <p><strong>Format:</strong> YERR OUT!</p>
 
                 <div class="format-explanation">
@@ -422,6 +483,25 @@
                     2. Elimination: Bottom seed faces top seed's choice in an elimination game<br>
                     3. <strong>Loser is OUT!</strong><br>
                     4. Repeat with remaining players until Finals
+                </div>
+
+                <!-- Data Source Selection -->
+                <div class="data-source-controls">
+                    <div class="control-group">
+                        <label for="analyzer-select">Analyzer Type:</label>
+                        <select id="analyzer-select">
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="prompt-select">Prompt Version:</label>
+                        <select id="prompt-select">
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="data-source-info">
+                        Select different data sources to compare AI analysis results
+                    </div>
                 </div>
             </div>
 
@@ -503,455 +583,30 @@
     </div>
 
     <script>
-        window.TOURNAMENT_DATA = {
-  "Round 1": [
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 0,
-      "score_b": 7,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "kq-kuKZgjA0",
-      "video_title": "Going BEAST MODE with the best character in Mario Baseball",
-      "date": "2025-09-18T19:00:50Z"
-    },
-    {
-      "player_a": "Nick (CritNick/Big Dog)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 14,
-      "score_b": 8,
-      "winner": "Nick (CritNick/Big Dog)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "ve1YA5NMmb4",
-      "video_title": "Mario Baseball but hitting is allowed",
-      "date": "2025-10-21T19:56:30Z"
-    },
-    {
-      "player_a": "Nick (CritNick/Big Dog)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 15,
-      "score_b": 11,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "KJRwjvgK_20",
-      "video_title": "BIG DOG'S REVENGE: Team Swap vs Hunter",
-      "date": "2025-10-22T19:00:20Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Nick (CritNick/Big Dog)",
-      "score_a": 0,
-      "score_b": 5,
-      "winner": "Nick (CritNick/Big Dog)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "FOcq-1kblgE",
-      "video_title": "Newest season starts with a HIGHLY controversial game",
-      "date": "2025-08-25T19:00:11Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 3,
-      "score_b": 0,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "Cc0QC6QYCqQ",
-      "video_title": "This home run will make or break his entire season",
-      "date": "2025-08-29T19:00:11Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 9,
-      "score_b": 3,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "WbY_IjNfUsQ",
-      "video_title": "The best draft pick of the Mario Baseball season",
-      "date": "2025-09-02T19:00:34Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Nick (CritNick/Big Dog)",
-      "score_a": 9,
-      "score_b": 3,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "ia4stEav-qk",
-      "video_title": "This pitcher can actually hit like CRAZY",
-      "date": "2025-09-03T19:00:39Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Dennis (PapaDen)",
-      "score_a": 5,
-      "score_b": 12,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "p4sZYR4h45w",
-      "video_title": "Back and forth homers in the closest game yet",
-      "date": "2025-09-08T19:00:46Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 18,
-      "score_b": 16,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 1",
-      "video_id": "D8t8bxOGE8E",
-      "video_title": "Is walking actually META in Mario Baseball?",
-      "date": "2025-09-09T19:00:20Z"
-    }
-  ],
-  "Round 2": [
-    {
-      "player_a": "Andrew (City Hall)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 2,
-      "score_b": 12,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "tFHo3K0EK38",
-      "video_title": "The WEIRDEST thing we've ever seen in Mario Baseball",
-      "date": "2025-09-19T19:00:57Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 7,
-      "score_b": 3,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "YsG3fcBxUw0",
-      "video_title": "The NASTIEST home run of the season",
-      "date": "2025-09-22T19:00:37Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 4,
-      "score_b": 7,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "NyqblObO-zM",
-      "video_title": "This special is COMPLETELY unfair",
-      "date": "2025-09-23T19:00:31Z"
-    },
-    {
-      "player_a": "Andrew (City Hall)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 6,
-      "score_b": 7,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "dExBW085OaI",
-      "video_title": "Mario Baseball makes NO sense",
-      "date": "2025-09-24T19:00:38Z"
-    },
-    {
-      "player_a": "Tyler (WunderBears)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 2,
-      "score_b": 4,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "mzeBSMOzv1E",
-      "video_title": "This player turns mid tiers into top 10 characters",
-      "date": "2025-09-25T19:00:44Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 4,
-      "score_b": 2,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "CM4TfwoehX8",
-      "video_title": "The turtle team is UNDERRATED in Mario Baseball",
-      "date": "2025-09-26T19:00:10Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 13,
-      "score_b": 1,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "m8JcXjukRkg",
-      "video_title": "The WEIRDEST way to win a Mario Baseball game",
-      "date": "2025-09-29T19:00:47Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Dennis (PapaDen)",
-      "score_a": 2,
-      "score_b": 0,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "tD5rQ3Jb0y0",
-      "video_title": "Can THIS new strategy beat the Mario Baseball champion?",
-      "date": "2025-09-30T19:01:00Z"
-    },
-    {
-      "player_a": "Andrew (City Hall)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 7,
-      "score_b": 0,
-      "winner": "Andrew (City Hall)",
-      "game_type": "Classic 10 - Round 2",
-      "video_id": "F0VY0EonH_U",
-      "video_title": "ELIMINATION MATCH: Take down the Mario Baseball champion",
-      "date": "2025-10-01T19:00:27Z"
-    }
-  ],
-  "Round 3": [
-    {
-      "player_a": "Tyler (WunderBears)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 2,
-      "score_b": 9,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "1GxV1Cp8TZ8",
-      "video_title": "Missing this play would change EVERYTHING",
-      "date": "2025-10-02T19:00:02Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 7,
-      "score_b": 6,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "qJcQTrlMg84",
-      "video_title": "What is GOING ON in Mario Baseball?!",
-      "date": "2025-10-03T19:00:46Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 2,
-      "score_b": 3,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "IYfVEJmzxnc",
-      "video_title": "The most CLUTCH player in Mario Baseball history",
-      "date": "2025-10-06T19:00:26Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 4,
-      "score_b": 0,
-      "winner": "Tyler (WunderBears)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "D9WB_fvJXz8",
-      "video_title": "CLOSE PLAY determines this player's fate",
-      "date": "2025-10-07T19:00:12Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 17,
-      "score_b": 2,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "pD0w3A9z_8Q",
-      "video_title": "The highest value draft pick in Mario Baseball is NOT who you'd expect",
-      "date": "2025-08-28T19:00:51Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 8,
-      "score_b": 12,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "7VzJn7zqRXs",
-      "video_title": "You CANNOT disrespect this baseball legend",
-      "date": "2025-09-04T19:00:10Z"
-    },
-    {
-      "player_a": "Tyler (WunderBears)",
-      "player_b": "Nick (CritNick/Big Dog)",
-      "score_a": 7,
-      "score_b": 2,
-      "winner": "Tyler (WunderBears)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "L1XUOozjatY",
-      "video_title": "IMPOSSIBLE home runs just became possible",
-      "date": "2025-09-05T19:00:16Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Nick (CritNick/Big Dog)",
-      "score_a": 13,
-      "score_b": 3,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "12lQk1JeV8E",
-      "video_title": "The true villain of Mario Baseball",
-      "date": "2025-09-10T19:00:01Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 4,
-      "score_b": 6,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "1IvRD83hwXU",
-      "video_title": "Sick new characters in Mario Superstar Baseball",
-      "date": "2025-09-11T19:00:02Z"
-    },
-    {
-      "player_a": "Nick (CritNick/Big Dog)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 14,
-      "score_b": 8,
-      "winner": "Nick (CritNick/Big Dog)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "ve1YA5NMmb4",
-      "video_title": "Mario Baseball but hitting is allowed",
-      "date": "2025-10-21T19:56:30Z"
-    },
-    {
-      "player_a": "Nick (CritNick/Big Dog)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 3,
-      "score_b": 10,
-      "winner": "Nick (CritNick/Big Dog)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "Nxf35I5wEp8",
-      "video_title": "This game decides their fate in the season",
-      "date": "2025-09-12T19:00:20Z"
-    },
-    {
-      "player_a": "Hunter (Hunter Gatherers)",
-      "player_b": "Andrew (City Hall)",
-      "score_a": 2,
-      "score_b": 6,
-      "winner": "Andrew (City Hall)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "vdficNyTWio",
-      "video_title": "The loser is ELIMINATED from the Mario Baseball Season",
-      "date": "2025-09-15T19:00:52Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Dennis (PapaDen)",
-      "score_a": 7,
-      "score_b": 6,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Round 3",
-      "video_id": "TyIkXLOnouI",
-      "video_title": "Everyone thought this character was TRASH...",
-      "date": "2025-09-17T19:00:26Z"
-    }
-  ],
-  "Finals": [
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 1,
-      "score_b": 2,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "F-vHNDpzYcg",
-      "video_title": "The Mario Baseball SHOWDOWN of a lifetime",
-      "date": "2025-10-08T19:00:14Z"
-    },
-    {
-      "player_a": "Tyler (WunderBears)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 6,
-      "score_b": 3,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "4yNfPA3Esjs",
-      "video_title": "The most CONTROVERSIAL double play in Mario Baseball history",
-      "date": "2025-10-09T19:00:06Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 6,
-      "score_b": 5,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "-3AeXy-uP2Y",
-      "video_title": "This character's SKYROCKETING in the Mario Baseball Meta",
-      "date": "2025-10-13T19:00:00Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 3,
-      "score_b": 1,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "qy4v5EBqrtA",
-      "video_title": "Escaping the BOTTOM seed in Mario Baseball",
-      "date": "2025-10-14T19:00:54Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 4,
-      "score_b": 5,
-      "winner": "Hunter (Hunter Gatherers)",
-      "game_type": "Classic 10 - Finals - Championship",
-      "video_id": "sljdbpf5k_o",
-      "video_title": "Can the Mario Baseball champion lose EVER AGAIN?!",
-      "date": "2025-10-15T19:00:56Z"
-    },
-    {
-      "player_a": "Jason (JK Jesters)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 4,
-      "score_b": 2,
-      "winner": "Jason (JK Jesters)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "d2hQnmqwVT0",
-      "video_title": "WILL HUNTER FINALLY FALL? ELIMINATION GAME",
-      "date": "2025-10-16T19:00:39Z"
-    },
-    {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Jason (JK Jesters)",
-      "score_a": 6,
-      "score_b": 5,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Finals - Round Robin",
-      "video_id": "Cj089dAOPi8",
-      "video_title": "SINGLE ROUND ELIMINATION: Who wins Classic 10?!",
-      "date": "2025-10-20T19:00:09Z"
-    },
-    {
-      "player_a": "Andrew (City Hall)",
-      "player_b": "Dennis (PapaDen)",
-      "score_a": 5,
-      "score_b": 6,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Finals",
-      "video_id": "C9FHyZtDIGM",
-      "video_title": "The TIGHTEST game of the season",
-      "date": "2025-09-01T19:00:19Z"
-    }
-  ]
-};
-        window.ROUNDS_DATA = {
-  "Round 1": {
-    "round_robin": [
+        window.TOURNAMENT_DATA_MULTI_SOURCE = {
+  "gemini_visual_v1": {
+    "Round 1": [
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Nick (CritNick/Big Dog)",
+        "score_a": 0,
+        "score_b": 5,
+        "winner": "Nick (CritNick/Big Dog)",
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "FOcq-1kblgE",
+        "video_title": "Newest season starts with a HIGHLY controversial game",
+        "date": "2025-08-25T19:00:11Z"
+      },
       {
         "player_a": "Jason (JK Jesters)",
-        "player_b": "Tyler (WunderBears)",
-        "score_a": 18,
-        "score_b": 16,
+        "player_b": "Andrew (City Hall)",
+        "score_a": 3,
+        "score_b": 0,
         "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Round 1 - Round Robin"
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "Cc0QC6QYCqQ",
+        "video_title": "This home run will make or break his entire season",
+        "date": "2025-08-29T19:00:11Z"
       },
       {
         "player_a": "Hunter (Hunter Gatherers)",
@@ -959,201 +614,240 @@
         "score_a": 9,
         "score_b": 3,
         "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 1 - Round Robin"
-      }
-    ],
-    "elimination": {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 0,
-      "score_b": 7,
-      "winner": "Dennis (PapaDen)",
-      "game_type": "Classic 10 - Round 1 - Elimination"
-    },
-    "standings": [
-      {
-        "player": "Jason (JK Jesters)",
-        "wins": 1,
-        "losses": 0
-      },
-      {
-        "player": "Hunter (Hunter Gatherers)",
-        "wins": 1,
-        "losses": 0
-      },
-      {
-        "player": "Tyler (WunderBears)",
-        "wins": 0,
-        "losses": 2
-      }
-    ]
-  },
-  "Finals": {
-    "round_robin": [
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Jason (JK Jesters)",
-        "score_a": 6,
-        "score_b": 5,
-        "winner": "Dennis (PapaDen)",
-        "game_type": "Classic 10 - Finals - Round Robin"
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "WbY_IjNfUsQ",
+        "video_title": "The best draft pick of the Mario Baseball season",
+        "date": "2025-09-02T19:00:34Z"
       },
       {
         "player_a": "Jason (JK Jesters)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 4,
-        "score_b": 2,
-        "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Finals - Round Robin"
-      },
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 4,
-        "score_b": 5,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Finals - Championship"
-      },
-      {
-        "player_a": "Jason (JK Jesters)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 3,
-        "score_b": 1,
-        "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Finals - Round Robin"
-      },
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Jason (JK Jesters)",
-        "score_a": 6,
-        "score_b": 5,
-        "winner": "Dennis (PapaDen)",
-        "game_type": "Classic 10 - Finals - Round Robin"
-      },
-      {
-        "player_a": "Tyler (WunderBears)",
-        "player_b": "Jason (JK Jesters)",
-        "score_a": 6,
+        "player_b": "Nick (CritNick/Big Dog)",
+        "score_a": 9,
         "score_b": 3,
         "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Finals - Round Robin"
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "ia4stEav-qk",
+        "video_title": "This pitcher can actually hit like CRAZY",
+        "date": "2025-09-03T19:00:39Z"
       },
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 1,
-        "score_b": 2,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Finals - Round Robin"
-      }
-    ],
-    "elimination": null,
-    "standings": [
-      {
-        "player": "Jason (JK Jesters)",
-        "wins": 3,
-        "losses": 2
-      },
-      {
-        "player": "Dennis (PapaDen)",
-        "wins": 2,
-        "losses": 2
-      },
-      {
-        "player": "Hunter (Hunter Gatherers)",
-        "wins": 2,
-        "losses": 2
-      },
-      {
-        "player": "Tyler (WunderBears)",
-        "wins": 0,
-        "losses": 1
-      }
-    ]
-  },
-  "Round 3": {
-    "round_robin": [
       {
         "player_a": "Jason (JK Jesters)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 2,
-        "score_b": 3,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 3 - Round Robin"
-      },
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Jason (JK Jesters)",
-        "score_a": 7,
-        "score_b": 6,
-        "winner": "Dennis (PapaDen)",
-        "game_type": "Classic 10 - Round 3 - Round Robin"
-      },
-      {
-        "player_a": "Tyler (WunderBears)",
-        "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 2,
-        "score_b": 9,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 3 - Round Robin"
-      }
-    ],
-    "elimination": {
-      "player_a": "Dennis (PapaDen)",
-      "player_b": "Tyler (WunderBears)",
-      "score_a": 4,
-      "score_b": 0,
-      "winner": "Tyler (WunderBears)",
-      "game_type": "Classic 10 - Round 3 - Elimination"
-    },
-    "standings": [
-      {
-        "player": "Hunter (Hunter Gatherers)",
-        "wins": 2,
-        "losses": 0
-      },
-      {
-        "player": "Dennis (PapaDen)",
-        "wins": 1,
-        "losses": 0
-      },
-      {
-        "player": "Tyler (WunderBears)",
-        "wins": 0,
-        "losses": 1
-      },
-      {
-        "player": "Jason (JK Jesters)",
-        "wins": 0,
-        "losses": 2
-      }
-    ]
-  },
-  "Round 2": {
-    "round_robin": [
-      {
-        "player_a": "Hunter (Hunter Gatherers)",
         "player_b": "Dennis (PapaDen)",
-        "score_a": 2,
-        "score_b": 0,
+        "score_a": 5,
+        "score_b": 12,
         "winner": "Dennis (PapaDen)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
-      },
-      {
-        "player_a": "Dennis (PapaDen)",
-        "player_b": "Andrew (City Hall)",
-        "score_a": 13,
-        "score_b": 1,
-        "winner": "Dennis (PapaDen)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "p4sZYR4h45w",
+        "video_title": "Back and forth homers in the closest game yet",
+        "date": "2025-09-08T19:00:46Z"
       },
       {
         "player_a": "Jason (JK Jesters)",
         "player_b": "Tyler (WunderBears)",
-        "score_a": 4,
-        "score_b": 2,
+        "score_a": 18,
+        "score_b": 16,
         "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "D8t8bxOGE8E",
+        "video_title": "Is walking actually META in Mario Baseball?",
+        "date": "2025-09-09T19:00:20Z"
+      }
+    ],
+    "Round 3": [
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 17,
+        "score_b": 2,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "pD0w3A9z_8Q",
+        "video_title": "The highest value draft pick in Mario Baseball is NOT who you'd expect",
+        "date": "2025-08-28T19:00:51Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 8,
+        "score_b": 12,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "7VzJn7zqRXs",
+        "video_title": "You CANNOT disrespect this baseball legend",
+        "date": "2025-09-04T19:00:10Z"
+      },
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Nick (CritNick/Big Dog)",
+        "score_a": 7,
+        "score_b": 2,
+        "winner": "Tyler (WunderBears)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "L1XUOozjatY",
+        "video_title": "IMPOSSIBLE home runs just became possible",
+        "date": "2025-09-05T19:00:16Z"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Nick (CritNick/Big Dog)",
+        "score_a": 13,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "12lQk1JeV8E",
+        "video_title": "The true villain of Mario Baseball",
+        "date": "2025-09-10T19:00:01Z"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 4,
+        "score_b": 6,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "1IvRD83hwXU",
+        "video_title": "Sick new characters in Mario Superstar Baseball",
+        "date": "2025-09-11T19:00:02Z"
+      },
+      {
+        "player_a": "Nick (CritNick/Big Dog)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 14,
+        "score_b": 8,
+        "winner": "Nick (CritNick/Big Dog)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "ve1YA5NMmb4",
+        "video_title": "Mario Baseball but hitting is allowed",
+        "date": "2025-10-21T19:56:30Z"
+      },
+      {
+        "player_a": "Nick (CritNick/Big Dog)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 3,
+        "score_b": 10,
+        "winner": "Nick (CritNick/Big Dog)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "Nxf35I5wEp8",
+        "video_title": "This game decides their fate in the season",
+        "date": "2025-09-12T19:00:20Z"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 2,
+        "score_b": 6,
+        "winner": "Andrew (City Hall)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "vdficNyTWio",
+        "video_title": "The loser is ELIMINATED from the Mario Baseball Season",
+        "date": "2025-09-15T19:00:52Z"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Dennis (PapaDen)",
+        "score_a": 7,
+        "score_b": 6,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "TyIkXLOnouI",
+        "video_title": "Everyone thought this character was TRASH...",
+        "date": "2025-09-17T19:00:26Z"
+      }
+    ],
+    "Finals": [
+      {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Dennis (PapaDen)",
+        "score_a": 5,
+        "score_b": 6,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Finals",
+        "video_id": "C9FHyZtDIGM",
+        "video_title": "The TIGHTEST game of the season",
+        "date": "2025-09-01T19:00:19Z"
+      }
+    ]
+  },
+  "gemini_visual_v2": {
+    "Round 1": [
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 0,
+        "score_b": 7,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "kq-kuKZgjA0",
+        "video_title": "Going BEAST MODE with the best character in Mario Baseball",
+        "date": "2025-09-18T19:00:50Z"
+      },
+      {
+        "player_a": "Nick (CritNick/Big Dog)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 14,
+        "score_b": 8,
+        "winner": "Nick (CritNick/Big Dog)",
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "ve1YA5NMmb4",
+        "video_title": "Mario Baseball but hitting is allowed",
+        "date": "2025-10-21T19:56:30Z"
+      },
+      {
+        "player_a": "Nick (CritNick/Big Dog)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 15,
+        "score_b": 11,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "KJRwjvgK_20",
+        "video_title": "BIG DOG'S REVENGE: Team Swap vs Hunter",
+        "date": "2025-10-22T19:00:20Z"
+      }
+    ],
+    "Round 2": [
+      {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 2,
+        "score_b": 12,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "tFHo3K0EK38",
+        "video_title": "The WEIRDEST thing we've ever seen in Mario Baseball",
+        "date": "2025-09-19T19:00:57Z"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 7,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "YsG3fcBxUw0",
+        "video_title": "The NASTIEST home run of the season",
+        "date": "2025-09-22T19:00:37Z"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 4,
+        "score_b": 7,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "NyqblObO-zM",
+        "video_title": "This special is COMPLETELY unfair",
+        "date": "2025-09-23T19:00:31Z"
+      },
+      {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 6,
+        "score_b": 7,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "dExBW085OaI",
+        "video_title": "Mario Baseball makes NO sense",
+        "date": "2025-09-24T19:00:38Z"
       },
       {
         "player_a": "Tyler (WunderBears)",
@@ -1161,78 +855,604 @@
         "score_a": 2,
         "score_b": 4,
         "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "mzeBSMOzv1E",
+        "video_title": "This player turns mid tiers into top 10 characters",
+        "date": "2025-09-25T19:00:44Z"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 4,
+        "score_b": 2,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "CM4TfwoehX8",
+        "video_title": "The turtle team is UNDERRATED in Mario Baseball",
+        "date": "2025-09-26T19:00:10Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 13,
+        "score_b": 1,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "m8JcXjukRkg",
+        "video_title": "The WEIRDEST way to win a Mario Baseball game",
+        "date": "2025-09-29T19:00:47Z"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Dennis (PapaDen)",
+        "score_a": 2,
+        "score_b": 0,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "tD5rQ3Jb0y0",
+        "video_title": "Can THIS new strategy beat the Mario Baseball champion?",
+        "date": "2025-09-30T19:01:00Z"
       },
       {
         "player_a": "Andrew (City Hall)",
         "player_b": "Hunter (Hunter Gatherers)",
-        "score_a": 6,
-        "score_b": 7,
+        "score_a": 7,
+        "score_b": 0,
+        "winner": "Andrew (City Hall)",
+        "game_type": "Classic 10 - Round 2",
+        "video_id": "F0VY0EonH_U",
+        "video_title": "ELIMINATION MATCH: Take down the Mario Baseball champion",
+        "date": "2025-10-01T19:00:27Z"
+      }
+    ],
+    "Round 3": [
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 2,
+        "score_b": 9,
         "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "1GxV1Cp8TZ8",
+        "video_title": "Missing this play would change EVERYTHING",
+        "date": "2025-10-02T19:00:02Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 7,
+        "score_b": 6,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "qJcQTrlMg84",
+        "video_title": "What is GOING ON in Mario Baseball?!",
+        "date": "2025-10-03T19:00:46Z"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 2,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "IYfVEJmzxnc",
+        "video_title": "The most CLUTCH player in Mario Baseball history",
+        "date": "2025-10-06T19:00:26Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 4,
+        "score_b": 0,
+        "winner": "Tyler (WunderBears)",
+        "game_type": "Classic 10 - Round 3",
+        "video_id": "D9WB_fvJXz8",
+        "video_title": "CLOSE PLAY determines this player's fate",
+        "date": "2025-10-07T19:00:12Z"
+      }
+    ],
+    "Finals": [
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 1,
+        "score_b": 2,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "F-vHNDpzYcg",
+        "video_title": "The Mario Baseball SHOWDOWN of a lifetime",
+        "date": "2025-10-08T19:00:14Z"
+      },
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 3,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "4yNfPA3Esjs",
+        "video_title": "The most CONTROVERSIAL double play in Mario Baseball history",
+        "date": "2025-10-09T19:00:06Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 5,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "-3AeXy-uP2Y",
+        "video_title": "This character's SKYROCKETING in the Mario Baseball Meta",
+        "date": "2025-10-13T19:00:00Z"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 3,
+        "score_b": 1,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "qy4v5EBqrtA",
+        "video_title": "Escaping the BOTTOM seed in Mario Baseball",
+        "date": "2025-10-14T19:00:54Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 4,
+        "score_b": 5,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Finals - Championship",
+        "video_id": "sljdbpf5k_o",
+        "video_title": "Can the Mario Baseball champion lose EVER AGAIN?!",
+        "date": "2025-10-15T19:00:56Z"
       },
       {
         "player_a": "Jason (JK Jesters)",
         "player_b": "Hunter (Hunter Gatherers)",
         "score_a": 4,
-        "score_b": 7,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
-      },
-      {
-        "player_a": "Hunter (Hunter Gatherers)",
-        "player_b": "Andrew (City Hall)",
-        "score_a": 7,
-        "score_b": 3,
-        "winner": "Hunter (Hunter Gatherers)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
-      },
-      {
-        "player_a": "Andrew (City Hall)",
-        "player_b": "Jason (JK Jesters)",
-        "score_a": 2,
-        "score_b": 12,
+        "score_b": 2,
         "winner": "Jason (JK Jesters)",
-        "game_type": "Classic 10 - Round 2 - Round Robin"
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "d2hQnmqwVT0",
+        "video_title": "WILL HUNTER FINALLY FALL? ELIMINATION GAME",
+        "date": "2025-10-16T19:00:39Z"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 5,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Finals - Round Robin",
+        "video_id": "Cj089dAOPi8",
+        "video_title": "SINGLE ROUND ELIMINATION: Who wins Classic 10?!",
+        "date": "2025-10-20T19:00:09Z"
       }
-    ],
-    "elimination": {
-      "player_a": "Andrew (City Hall)",
-      "player_b": "Hunter (Hunter Gatherers)",
-      "score_a": 7,
-      "score_b": 0,
-      "winner": "Andrew (City Hall)",
-      "game_type": "Classic 10 - Round 2 - Elimination"
-    },
-    "standings": [
+    ]
+  },
+  "ollama_transcript_v1": {
+    "Round 1": [
       {
-        "player": "Hunter (Hunter Gatherers)",
-        "wins": 4,
-        "losses": 1
-      },
-      {
-        "player": "Dennis (PapaDen)",
-        "wins": 2,
-        "losses": 0
-      },
-      {
-        "player": "Jason (JK Jesters)",
-        "wins": 2,
-        "losses": 1
-      },
-      {
-        "player": "Tyler (WunderBears)",
-        "wins": 0,
-        "losses": 2
-      },
-      {
-        "player": "Andrew (City Hall)",
-        "wins": 0,
-        "losses": 4
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 3,
+        "score_b": 0,
+        "winner": "Tyler (WunderBears)",
+        "game_type": "Classic 10 - Round 1",
+        "video_id": "WbY_IjNfUsQ",
+        "video_title": "The best draft pick of the Mario Baseball season",
+        "date": "2025-09-02T19:00:34Z"
       }
     ]
   }
 };
+        window.ROUNDS_DATA_MULTI_SOURCE = {
+  "gemini_visual_v1": {
+    "Round 1": {
+      "round_robin": [
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Tyler (WunderBears)",
+          "score_a": 18,
+          "score_b": 16,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Round 1 - Round Robin"
+        },
+        {
+          "player_a": "Hunter (Hunter Gatherers)",
+          "player_b": "Tyler (WunderBears)",
+          "score_a": 9,
+          "score_b": 3,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 1 - Round Robin"
+        }
+      ],
+      "elimination": null,
+      "standings": [
+        {
+          "player": "Jason (JK Jesters)",
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "player": "Hunter (Hunter Gatherers)",
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "player": "Tyler (WunderBears)",
+          "wins": 0,
+          "losses": 2
+        }
+      ]
+    }
+  },
+  "gemini_visual_v2": {
+    "Finals": {
+      "round_robin": [
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Jason (JK Jesters)",
+          "score_a": 6,
+          "score_b": 5,
+          "winner": "Dennis (PapaDen)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        },
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 4,
+          "score_b": 2,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        },
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 4,
+          "score_b": 5,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Finals - Championship"
+        },
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 3,
+          "score_b": 1,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        },
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Jason (JK Jesters)",
+          "score_a": 6,
+          "score_b": 5,
+          "winner": "Dennis (PapaDen)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        },
+        {
+          "player_a": "Tyler (WunderBears)",
+          "player_b": "Jason (JK Jesters)",
+          "score_a": 6,
+          "score_b": 3,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        },
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 1,
+          "score_b": 2,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Finals - Round Robin"
+        }
+      ],
+      "elimination": null,
+      "standings": [
+        {
+          "player": "Jason (JK Jesters)",
+          "wins": 3,
+          "losses": 2
+        },
+        {
+          "player": "Dennis (PapaDen)",
+          "wins": 2,
+          "losses": 2
+        },
+        {
+          "player": "Hunter (Hunter Gatherers)",
+          "wins": 2,
+          "losses": 2
+        },
+        {
+          "player": "Tyler (WunderBears)",
+          "wins": 0,
+          "losses": 1
+        }
+      ]
+    },
+    "Round 3": {
+      "round_robin": [
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 2,
+          "score_b": 3,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 3 - Round Robin"
+        },
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Jason (JK Jesters)",
+          "score_a": 7,
+          "score_b": 6,
+          "winner": "Dennis (PapaDen)",
+          "game_type": "Classic 10 - Round 3 - Round Robin"
+        },
+        {
+          "player_a": "Tyler (WunderBears)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 2,
+          "score_b": 9,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 3 - Round Robin"
+        }
+      ],
+      "elimination": {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 4,
+        "score_b": 0,
+        "winner": "Tyler (WunderBears)",
+        "game_type": "Classic 10 - Round 3 - Elimination"
+      },
+      "standings": [
+        {
+          "player": "Hunter (Hunter Gatherers)",
+          "wins": 2,
+          "losses": 0
+        },
+        {
+          "player": "Dennis (PapaDen)",
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "player": "Tyler (WunderBears)",
+          "wins": 0,
+          "losses": 1
+        },
+        {
+          "player": "Jason (JK Jesters)",
+          "wins": 0,
+          "losses": 2
+        }
+      ]
+    },
+    "Round 2": {
+      "round_robin": [
+        {
+          "player_a": "Hunter (Hunter Gatherers)",
+          "player_b": "Dennis (PapaDen)",
+          "score_a": 2,
+          "score_b": 0,
+          "winner": "Dennis (PapaDen)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Dennis (PapaDen)",
+          "player_b": "Andrew (City Hall)",
+          "score_a": 13,
+          "score_b": 1,
+          "winner": "Dennis (PapaDen)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Tyler (WunderBears)",
+          "score_a": 4,
+          "score_b": 2,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Tyler (WunderBears)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 2,
+          "score_b": 4,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Andrew (City Hall)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 6,
+          "score_b": 7,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Jason (JK Jesters)",
+          "player_b": "Hunter (Hunter Gatherers)",
+          "score_a": 4,
+          "score_b": 7,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Hunter (Hunter Gatherers)",
+          "player_b": "Andrew (City Hall)",
+          "score_a": 7,
+          "score_b": 3,
+          "winner": "Hunter (Hunter Gatherers)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        },
+        {
+          "player_a": "Andrew (City Hall)",
+          "player_b": "Jason (JK Jesters)",
+          "score_a": 2,
+          "score_b": 12,
+          "winner": "Jason (JK Jesters)",
+          "game_type": "Classic 10 - Round 2 - Round Robin"
+        }
+      ],
+      "elimination": {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 7,
+        "score_b": 0,
+        "winner": "Andrew (City Hall)",
+        "game_type": "Classic 10 - Round 2 - Elimination"
+      },
+      "standings": [
+        {
+          "player": "Hunter (Hunter Gatherers)",
+          "wins": 4,
+          "losses": 1
+        },
+        {
+          "player": "Dennis (PapaDen)",
+          "wins": 2,
+          "losses": 0
+        },
+        {
+          "player": "Jason (JK Jesters)",
+          "wins": 2,
+          "losses": 1
+        },
+        {
+          "player": "Tyler (WunderBears)",
+          "wins": 0,
+          "losses": 2
+        },
+        {
+          "player": "Andrew (City Hall)",
+          "wins": 0,
+          "losses": 4
+        }
+      ]
+    },
+    "Round 1": {
+      "round_robin": [],
+      "elimination": {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 0,
+        "score_b": 7,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 1 - Elimination"
+      },
+      "standings": []
+    }
+  },
+  "ollama_transcript_v1": {
+    "Round 1": {
+      "round_robin": [],
+      "elimination": {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 3,
+        "score_b": 0,
+        "winner": "Tyler (WunderBears)",
+        "game_type": "Classic 10 - Round 1 - Elimination"
+      },
+      "standings": []
+    }
+  }
+};
+
+        // Global state for currently selected data source
+        let currentAnalyzer = null;
+        let currentPromptVersion = null;
+        let currentSourceKey = null;
+
+        // Initialize dropdowns with available data sources
+        function initializeDataSourceControls() {
+            if (!window.TOURNAMENT_DATA_MULTI_SOURCE) return;
+
+            const sources = Object.keys(window.TOURNAMENT_DATA_MULTI_SOURCE);
+            if (sources.length === 0) return;
+
+            // Extract unique analyzers and versions
+            const analyzers = new Set();
+            const versions = new Set();
+
+            sources.forEach(sourceKey => {
+                // Parse "analyzer_version" format (split from right to handle underscores in analyzer name)
+                const lastUnderscoreIndex = sourceKey.lastIndexOf('_');
+                if (lastUnderscoreIndex !== -1) {
+                    const analyzer = sourceKey.substring(0, lastUnderscoreIndex);
+                    const version = sourceKey.substring(lastUnderscoreIndex + 1);
+                    analyzers.add(analyzer);
+                    versions.add(version);
+                }
+            });
+
+            // Populate analyzer dropdown
+            const analyzerSelect = document.getElementById('analyzer-select');
+            const sortedAnalyzers = Array.from(analyzers).sort();
+            sortedAnalyzers.forEach(analyzer => {
+                const option = document.createElement('option');
+                option.value = analyzer;
+                // Make display name more readable
+                const displayName = analyzer.split('_').map(w =>
+                    w.charAt(0).toUpperCase() + w.slice(1)
+                ).join(' ');
+                option.textContent = displayName;
+                analyzerSelect.appendChild(option);
+            });
+
+            // Populate prompt version dropdown
+            const promptSelect = document.getElementById('prompt-select');
+            const sortedVersions = Array.from(versions).sort();
+            sortedVersions.forEach(version => {
+                const option = document.createElement('option');
+                option.value = version;
+                option.textContent = version.toUpperCase();
+                promptSelect.appendChild(option);
+            });
+
+            // Set initial values (first available)
+            currentAnalyzer = sortedAnalyzers[0];
+            currentPromptVersion = sortedVersions[0];
+            currentSourceKey = `${currentAnalyzer}_${currentPromptVersion}`;
+
+            analyzerSelect.value = currentAnalyzer;
+            promptSelect.value = currentPromptVersion;
+
+            // Set up current data pointers for compatibility
+            window.TOURNAMENT_DATA = window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey];
+            window.ROUNDS_DATA = window.ROUNDS_DATA_MULTI_SOURCE ? window.ROUNDS_DATA_MULTI_SOURCE[currentSourceKey] : null;
+
+            // Add change listeners
+            analyzerSelect.addEventListener('change', onDataSourceChange);
+            promptSelect.addEventListener('change', onDataSourceChange);
+        }
+
+        // Handle data source change
+        function onDataSourceChange() {
+            const analyzerSelect = document.getElementById('analyzer-select');
+            const promptSelect = document.getElementById('prompt-select');
+
+            currentAnalyzer = analyzerSelect.value;
+            currentPromptVersion = promptSelect.value;
+            currentSourceKey = `${currentAnalyzer}_${currentPromptVersion}`;
+
+            // Check if this combination exists
+            if (!window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey]) {
+                alert(`No data available for ${currentAnalyzer} + ${currentPromptVersion}`);
+                return;
+            }
+
+            // Update current data pointers
+            window.TOURNAMENT_DATA = window.TOURNAMENT_DATA_MULTI_SOURCE[currentSourceKey];
+            window.ROUNDS_DATA = window.ROUNDS_DATA_MULTI_SOURCE ? window.ROUNDS_DATA_MULTI_SOURCE[currentSourceKey] : null;
+
+            // Re-render all data
+            renderGames();
+            renderRoundBreakdown();
+        }
 
         // View switching (All Stats vs Round Breakdown)
         document.querySelectorAll('.phase-tab[data-view]').forEach(tab => {
@@ -1470,6 +1690,8 @@
         });
 
         // Initialize
+        // Initialize on page load
+        initializeDataSourceControls();
         renderGames();
         renderRoundBreakdown();
     </script>
