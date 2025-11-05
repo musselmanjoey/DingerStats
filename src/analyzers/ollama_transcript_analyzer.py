@@ -11,12 +11,12 @@ from typing import Dict, Optional, Tuple
 
 
 class OllamaTranscriptAnalyzer:
-    def __init__(self, model: str = "llama3.2:3b", ollama_url: str = "http://localhost:11434"):
+    def __init__(self, model: str = "llama3.2:1b", ollama_url: str = "http://localhost:11434"):
         """
         Initialize Ollama analyzer
 
         Args:
-            model: Ollama model to use (default: llama3.2:3b - fast and good for structured tasks)
+            model: Ollama model to use (default: llama3.2:1b - fastest, best for weak machines)
             ollama_url: Ollama API endpoint
         """
         self.model = model

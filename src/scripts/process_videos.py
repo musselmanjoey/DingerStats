@@ -21,7 +21,7 @@ PLAYLISTS = {
 def get_analyzer(analyzer_type, prompt_version):
     """Get the appropriate analyzer instance"""
     if analyzer_type == 'ollama':
-        return OllamaTranscriptAnalyzer(model="llama3.2:3b"), 'ollama_transcript'
+        return OllamaTranscriptAnalyzer(model="llama3.2:1b"), 'ollama_transcript'
     elif analyzer_type == 'gemini':
         # Import here to avoid dependency if not using Gemini
         from src.analyzers.gemini_analyzer import GeminiAnalyzer

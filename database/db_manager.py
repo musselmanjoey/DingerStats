@@ -36,16 +36,27 @@ class DatabaseManager:
     def _run_migrations(self):
         """Run database migrations for existing databases"""
         with self.get_connection() as conn:
-            # Check if is_game column exists, add if not
+            # Check if is_game column exists in videos table
             cursor = conn.execute("PRAGMA table_info(videos)")
-            columns = [row[1] for row in cursor.fetchall()]
+            video_columns = [row[1] for row in cursor.fetchall()]
 
-            if 'is_game' not in columns:
-                print("  Running migration: Adding is_game and manual_review columns...")
+            if 'is_game' not in video_columns:
+                print("  Running migration: Adding is_game and manual_review to videos...")
                 conn.execute("ALTER TABLE videos ADD COLUMN is_game INTEGER DEFAULT 1")
                 conn.execute("ALTER TABLE videos ADD COLUMN manual_review INTEGER DEFAULT 0")
                 conn.commit()
-                print("  Migration complete!")
+                print("  Videos migration complete!")
+
+            # Check if analyzer_type column exists in game_results table
+            cursor = conn.execute("PRAGMA table_info(game_results)")
+            result_columns = [row[1] for row in cursor.fetchall()]
+
+            if 'analyzer_type' not in result_columns:
+                print("  Running migration: Adding analyzer_type and prompt_version to game_results...")
+                conn.execute("ALTER TABLE game_results ADD COLUMN analyzer_type TEXT DEFAULT 'gemini_visual'")
+                conn.execute("ALTER TABLE game_results ADD COLUMN prompt_version TEXT DEFAULT 'v1'")
+                conn.commit()
+                print("  Game results migration complete!")
 
     def get_connection(self):
         """Get database connection"""
