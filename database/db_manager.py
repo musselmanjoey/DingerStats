@@ -104,8 +104,8 @@ class DatabaseManager:
                 conn.execute("""
                     INSERT INTO game_results
                     (video_id, player_a, player_b, team_a, team_b, score_a, score_b, winner,
-                     raw_response, confidence)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     game_type, game_summary, commentary_summary, raw_response, confidence)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     result_data['video_id'],
                     result_data.get('player_a'),
@@ -115,6 +115,9 @@ class DatabaseManager:
                     result_data.get('score_a'),
                     result_data.get('score_b'),
                     result_data.get('winner'),
+                    result_data.get('game_type'),
+                    result_data.get('game_summary'),
+                    result_data.get('commentary_summary'),
                     result_data.get('raw_response'),
                     result_data.get('confidence', 'medium')
                 ))

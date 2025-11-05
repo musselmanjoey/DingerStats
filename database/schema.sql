@@ -24,6 +24,9 @@ CREATE TABLE IF NOT EXISTS game_results (
     score_a INTEGER,
     score_b INTEGER,
     winner TEXT,    -- Player name who won
+    game_type TEXT, -- Game type (Regular Season, Playoff, Elimination, Finals, etc.)
+    game_summary TEXT,  -- Game highlights and notable moments
+    commentary_summary TEXT,  -- Commentary bits and memorable moments
     raw_response TEXT,  -- Store full Gemini response
     analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confidence TEXT,  -- high, medium, low

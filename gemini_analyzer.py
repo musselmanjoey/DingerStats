@@ -83,10 +83,27 @@ class GeminiAnalyzer:
         # Structured prompt for better parsing
         prompt = """
         Analyze this Mario Baseball video game and extract the following information:
+
+        STRUCTURED DATA (required):
         1) The HUMAN PLAYER names (e.g., Dennis, Nick, Hunter, Jason, Andrew, etc.)
         2) The character team names they're using (e.g., Daisy Cupids, Mario Heroes)
         3) The final score
         4) Which PLAYER won (not team name - the human player's name)
+        5) Game type: Is this a Regular Season game, Playoff, Elimination, Finals, or other tournament format?
+
+        GAME HIGHLIGHTS:
+        Summarize notable moments and gameplay:
+        - Notable plays (walk-offs, grand slams, comebacks, defensive gems, close plays)
+        - Game flow (was it close? blowout? back-and-forth?)
+        - Turning points or momentum shifts
+        - Overall game quality/excitement
+
+        COMMENTARY HIGHLIGHTS:
+        Capture memorable commentary moments:
+        - Running jokes or recurring bits (e.g., specific catchphrases on certain plays)
+        - Funny interactions between commentators
+        - Memorable calls or reactions
+        - Any callbacks or inside jokes
 
         Format your response exactly like this:
         Player A: [human player name]
@@ -95,6 +112,13 @@ class GeminiAnalyzer:
         Team B: [character team name]
         Score: [A's score]-[B's score]
         Winner: [human player name who won]
+        Game Type: [Regular Season/Playoff/Elimination/Finals/etc.]
+
+        GAME SUMMARY:
+        [Your game highlights and notable moments here - 2-4 sentences]
+
+        COMMENTARY SUMMARY:
+        [Your commentary highlights here - 1-3 sentences, or "None notable" if nothing stands out]
 
         If you cannot determine this information with confidence, respond with:
         Unable to determine: [reason]
@@ -296,6 +320,13 @@ class GeminiAnalyzer:
             # Extract winner
             winner_match = re.search(r'Winner:\s*(.+)', response, re.IGNORECASE)
 
+            # Extract game type
+            game_type_match = re.search(r'Game Type:\s*(.+)', response, re.IGNORECASE)
+
+            # Extract summaries
+            game_summary_match = re.search(r'GAME SUMMARY:\s*(.+?)(?=COMMENTARY SUMMARY:|$)', response, re.IGNORECASE | re.DOTALL)
+            commentary_summary_match = re.search(r'COMMENTARY SUMMARY:\s*(.+)', response, re.IGNORECASE | re.DOTALL)
+
             if not all([player_a_match, player_b_match, score_match, winner_match]):
                 # Try alternative parsing (more flexible)
                 return self.flexible_parse(response)
@@ -307,6 +338,9 @@ class GeminiAnalyzer:
             score_a = int(score_match.group(1))
             score_b = int(score_match.group(2))
             winner = winner_match.group(1).strip()
+            game_type = game_type_match.group(1).strip() if game_type_match else "Unknown"
+            game_summary = game_summary_match.group(1).strip() if game_summary_match else None
+            commentary_summary = commentary_summary_match.group(1).strip() if commentary_summary_match else None
 
             # Determine confidence based on data completeness
             confidence = 'high'
@@ -323,6 +357,9 @@ class GeminiAnalyzer:
                 'score_a': score_a,
                 'score_b': score_b,
                 'winner': winner,
+                'game_type': game_type,
+                'game_summary': game_summary,
+                'commentary_summary': commentary_summary,
                 'confidence': confidence
             }
 
