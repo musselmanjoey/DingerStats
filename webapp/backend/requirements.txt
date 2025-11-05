@@ -1,7 +1,0 @@
-flask==3.1.2
-flask-cors==6.0.1
-python-dotenv==1.0.0
-google-generativeai
-google-api-python-client
-backoff
-gunicorn==21.2.0

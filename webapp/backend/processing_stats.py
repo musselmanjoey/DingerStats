@@ -37,7 +37,7 @@ class ProcessingStats:
             'total_videos': total_videos,
             'processed': processed,
             'remaining': remaining,
-            'progress_pct': round((processed / total_videos) * 100, 1),
+            'progress_pct': round((processed / total_videos) * 100, 1) if total_videos > 0 else 0,
             'free_tier': {
                 'days_remaining': round(free_tier_days, 1),
                 'completion_date': free_tier_completion.strftime('%B %d, %Y'),
