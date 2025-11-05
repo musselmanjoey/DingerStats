@@ -336,7 +336,10 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        // Auto-detect API URL based on environment
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000/api'
+            : 'https://dingerstats-api.onrender.com/api'; // Update this with your Render URL
 
         // Tab switching
         function switchTab(tabName) {
