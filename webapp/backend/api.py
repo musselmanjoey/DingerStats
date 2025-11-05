@@ -6,12 +6,14 @@ Serves player stats, head-to-head data, and game results
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from stats_calculator import StatsCalculator
+from processing_stats import ProcessingStats
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
 # Initialize stats calculator
 calc = StatsCalculator()
+proc_stats = ProcessingStats()
 
 
 @app.route('/api/players', methods=['GET'])
@@ -87,6 +89,25 @@ def get_stats():
             'game_types': game_types,
             'recent_games': recent
         })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/processing-stats', methods=['GET'])
+def get_processing_stats():
+    """Get processing progress statistics"""
+    try:
+        return jsonify(proc_stats.get_stats())
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/donation-impact', methods=['GET'])
+def get_donation_impact():
+    """Calculate donation impact on processing time"""
+    try:
+        amount = request.args.get('amount', 5, type=float)
+        return jsonify(proc_stats.calculate_donation_impact(amount))
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

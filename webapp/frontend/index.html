@@ -230,6 +230,7 @@
                 <button class="tab active" onclick="switchTab('standings')">Standings</button>
                 <button class="tab" onclick="switchTab('h2h')">Head-to-Head</button>
                 <button class="tab" onclick="switchTab('recent')">Recent Games</button>
+                <button class="tab" onclick="switchTab('support')">Support the Project</button>
             </div>
 
             <!-- Standings Tab -->
@@ -276,6 +277,61 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Support Tab -->
+            <div id="support-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-title">About This Project</div>
+                    <p style="line-height: 1.6; margin-bottom: 1.5rem;">
+                        Hi! I'm Joey, a hobby developer who built DingerStats to track Mario Baseball game results from
+                        <a href="https://www.youtube.com/@DingerCity" target="_blank" style="color: #667eea;">Dinger City</a>'s YouTube videos.
+                        This site uses AI to analyze every game and extract player stats automatically.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Processing Progress</div>
+                    <div id="processing-stats">
+                        <div class="loading">Loading stats...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Speed Up Processing</div>
+                    <p style="line-height: 1.6; margin-bottom: 1.5rem;">
+                        Currently processing on a free tier (50 videos/day). Donations go 100% toward API costs
+                        to process all <span id="remaining-videos">1,118</span> videos faster!
+                    </p>
+
+                    <div class="donation-calculator">
+                        <label for="donation-amount" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            Calculate Your Impact:
+                        </label>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <input
+                                type="number"
+                                id="donation-amount"
+                                value="5"
+                                min="1"
+                                step="1"
+                                style="padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; width: 100px;"
+                                oninput="calculateImpact()"
+                            >
+                            <div id="impact-display" style="flex: 1; font-size: 0.95rem; color: #666;">
+                                $5 = 1,666 videos = 33.3 days saved!
+                            </div>
+                        </div>
+                    </div>
+
+                    <a
+                        href="https://venmo.com/Joey-Musselman"
+                        target="_blank"
+                        style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.1rem; margin-top: 1rem;"
+                    >
+                        Donate via Venmo @Joey-Musselman
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -293,6 +349,7 @@
             // Load data for tab
             if (tabName === 'standings') loadStandings();
             if (tabName === 'recent') loadRecentGames();
+            if (tabName === 'support') loadProcessingStats();
         }
 
         // Load standings
@@ -465,6 +522,66 @@
         // Event listeners
         document.getElementById('player1-select').addEventListener('change', loadHeadToHead);
         document.getElementById('player2-select').addEventListener('change', loadHeadToHead);
+
+        // Load processing stats
+        async function loadProcessingStats() {
+            try {
+                const response = await fetch(`${API_URL}/processing-stats`);
+                const data = await response.json();
+
+                document.getElementById('remaining-videos').textContent = data.remaining;
+
+                const html = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                                ${data.processed}/${data.total_videos}
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem;">Videos Processed</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                                ${data.progress_pct}%
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem;">Complete</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 0.5rem;">
+                                ${data.free_tier.days_remaining}
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem;">Days on Free Tier</div>
+                        </div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Estimated Completion:</div>
+                        <div style="font-size: 1.1rem;">${data.free_tier.completion_date} (free tier)</div>
+                        <div style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
+                            With API funding: ${data.paid_tier.days_to_complete} days (~$${data.paid_tier.cost_estimate})
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('processing-stats').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading processing stats:', error);
+            }
+        }
+
+        // Calculate donation impact
+        async function calculateImpact() {
+            const amount = parseFloat(document.getElementById('donation-amount').value) || 0;
+
+            try {
+                const response = await fetch(`${API_URL}/donation-impact?amount=${amount}`);
+                const data = await response.json();
+
+                document.getElementById('impact-display').innerHTML = `
+                    $${amount} = ${data.videos_funded.toLocaleString()} videos = ${data.days_saved} days saved!
+                `;
+            } catch (error) {
+                console.error('Error calculating impact:', error);
+            }
+        }
 
         // Initialize
         loadStandings();
