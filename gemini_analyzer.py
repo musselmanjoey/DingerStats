@@ -7,7 +7,7 @@ import os
 import re
 import time
 import backoff
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 from google import genai
 from google.genai import types
 from google.api_core import exceptions
@@ -110,6 +110,149 @@ class GeminiAnalyzer:
             error_msg = f"Failed to analyze video: {str(e)}"
             print(error_msg)
             return None, error_msg
+
+    @backoff.on_exception(
+        backoff.expo,
+        (exceptions.ResourceExhausted, exceptions.ServiceUnavailable, exceptions.DeadlineExceeded),
+        max_tries=5,
+        max_time=300
+    )
+    def analyze_game_videos_batch(self, video_data: List[Dict]) -> Tuple[List[Dict], str]:
+        """
+        Analyze multiple baseball game videos in a single request (up to 10)
+
+        Args:
+            video_data: List of dicts with 'video_id' and optional 'video_url' keys
+
+        Returns:
+            Tuple of (list of parsed_result_dicts, raw_response_text)
+            Each parsed_result_dict contains: video_id, team_a, team_b, score_a, score_b, winner, confidence
+        """
+        if not video_data or len(video_data) == 0:
+            return [], "No videos provided"
+
+        if len(video_data) > 10:
+            raise ValueError("Maximum 10 videos per batch")
+
+        # Build the content parts
+        parts = []
+
+        # Add each video
+        for video in video_data:
+            video_url = video.get('video_url') or f"https://www.youtube.com/watch?v={video['video_id']}"
+            parts.append(types.Part(
+                file_data=types.FileData(file_uri=video_url)
+            ))
+
+        # Add the prompt
+        prompt = f"""
+        Analyze these {len(video_data)} baseball game videos and extract information for EACH video.
+
+        For each video, provide:
+        1) The two teams that played
+        2) The final score
+        3) Which team won
+
+        Format your response for EACH video like this:
+
+        === VIDEO 1 ===
+        Team A: [name]
+        Team B: [name]
+        Score: [A's score]-[B's score]
+        Winner: [winning team name]
+
+        === VIDEO 2 ===
+        Team A: [name]
+        Team B: [name]
+        Score: [A's score]-[B's score]
+        Winner: [winning team name]
+
+        (Continue for all {len(video_data)} videos)
+
+        If you cannot determine information for a video, respond with:
+        === VIDEO X ===
+        Unable to determine: [reason]
+        """
+
+        parts.append(types.Part(text=prompt))
+
+        try:
+            # Make the API call
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=types.Content(parts=parts)
+            )
+
+            raw_response = response.text
+
+            # Parse the batch response
+            results = self.parse_batch_response(raw_response, video_data)
+
+            return results, raw_response
+
+        except Exception as e:
+            error_msg = f"Failed to analyze batch: {str(e)}"
+            print(error_msg)
+            # Return empty results for all videos
+            return [None] * len(video_data), error_msg
+
+    def parse_batch_response(self, response: str, video_data: List[Dict]) -> List[Dict]:
+        """
+        Parse batch response into individual video results
+
+        Args:
+            response: Raw text response from Gemini
+            video_data: Original video data list to match results with video_ids
+
+        Returns:
+            List of dictionaries with results for each video
+        """
+        results = []
+
+        # Split response by video markers
+        video_sections = re.split(r'===\s*VIDEO\s+\d+\s*===', response, flags=re.IGNORECASE)
+
+        # Skip the first split (text before first marker)
+        video_sections = video_sections[1:]
+
+        for i, section in enumerate(video_sections):
+            if i >= len(video_data):
+                break
+
+            video_id = video_data[i]['video_id']
+
+            # Parse this video's section
+            parsed = self.parse_game_result(section)
+
+            if parsed:
+                parsed['video_id'] = video_id
+                results.append(parsed)
+            else:
+                # Return None result for this video
+                results.append({
+                    'video_id': video_id,
+                    'team_a': None,
+                    'team_b': None,
+                    'score_a': None,
+                    'score_b': None,
+                    'winner': None,
+                    'confidence': 'low'
+                })
+
+        # If we didn't get results for all videos, pad with None results
+        while len(results) < len(video_data):
+            video_id = video_data[len(results)]['video_id']
+            results.append({
+                'video_id': video_id,
+                'team_a': None,
+                'team_b': None,
+                'score_a': None,
+                'score_b': None,
+                'winner': None,
+                'confidence': 'low'
+            })
+
+        return results
 
     def parse_game_result(self, response: str) -> Optional[Dict]:
         """

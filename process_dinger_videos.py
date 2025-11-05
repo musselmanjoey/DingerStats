@@ -26,7 +26,7 @@ class DingerStatsPipeline:
         self.gemini = GeminiAnalyzer(gemini_api_key)
         self.db = DatabaseManager()
 
-        print("✓ Pipeline initialized")
+        print("[OK] Pipeline initialized")
         print(f"  - Database: {self.db.db_path}")
         print(f"  - YouTube API: Ready")
         print(f"  - Gemini API: Ready")
@@ -116,21 +116,21 @@ class DingerStatsPipeline:
 
                 if success:
                     self.db.update_processing_status(video_id, 'completed')
-                    print(f"  ✓ {video_id}: {result['team_a']} vs {result['team_b']} - Winner: {result['winner']}")
+                    print(f"  [OK] {result['team_a']} vs {result['team_b']} - Winner: {result['winner']}")
                     return True
                 else:
                     self.db.update_processing_status(video_id, 'failed', 'Failed to store result')
-                    print(f"  ✗ {video_id}: Failed to store result")
+                    print(f"  [FAIL] Failed to store result")
                     return False
             else:
                 self.db.update_processing_status(video_id, 'failed', 'Gemini analysis failed')
-                print(f"  ✗ {video_id}: Gemini analysis failed")
+                print(f"  [FAIL] Gemini analysis failed")
                 return False
 
         except Exception as e:
             error_msg = str(e)
             self.db.update_processing_status(video_id, 'failed', error_msg)
-            print(f"  ✗ {video_id}: Error - {error_msg}")
+            print(f"  [FAIL] Error - {error_msg}")
             return False
 
     def process_unanalyzed_videos(self, max_videos: int = None, delay: float = 6.0):
@@ -140,6 +140,9 @@ class DingerStatsPipeline:
         Args:
             max_videos: Maximum number of videos to process (None = all)
             delay: Delay in seconds between API calls (default 6 for free tier rate limit)
+
+        Note: Gemini API only supports 1 YouTube video per request
+        Free tier: 250 requests/day, so max 250 videos/day
         """
         print("\nProcessing unanalyzed videos...")
 
@@ -157,19 +160,22 @@ class DingerStatsPipeline:
             videos = videos[:max_videos]
             print(f"  Processing first {len(videos)} videos")
 
+        print(f"  Rate limit: {delay}s between requests\n")
+
         success_count = 0
         for i, video in enumerate(videos, 1):
-            print(f"\n[{i}/{len(videos)}] Analyzing: {video['title']}")
+            print(f"[{i}/{len(videos)}] {video['title'][:70]}...")
 
             if self.analyze_video(video['video_id']):
                 success_count += 1
 
             # Rate limiting
             if i < len(videos):  # Don't sleep after last video
-                print(f"  Waiting {delay}s (rate limit)...")
                 time.sleep(delay)
 
-        print(f"\n✓ Processing complete: {success_count}/{len(videos)} successful")
+        print(f"\n{'='*60}")
+        print(f"COMPLETE: {success_count}/{len(videos)} successful ({success_count/len(videos)*100:.1f}%)")
+        print("="*60)
 
     def show_stats(self):
         """Display database statistics"""
@@ -208,6 +214,9 @@ class DingerStatsPipeline:
 
 
 def main():
+    # Load environment variables first
+    load_dotenv()
+
     parser = argparse.ArgumentParser(description="DingerStats Video Processing Pipeline")
 
     # Command selection
