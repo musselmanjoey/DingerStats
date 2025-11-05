@@ -8,6 +8,8 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
+from src.utils.player_normalizer import normalize_player_name
+from src.utils.game_type_normalizer import normalize_game_type, get_season_from_game_type, get_phase_from_game_type
 from collections import defaultdict
 
 
@@ -34,9 +36,9 @@ class StatsCalculator:
         player_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'games': 0})
 
         for result in all_results:
-            player_a = result.get('player_a')
-            player_b = result.get('player_b')
-            winner = result.get('winner')
+            player_a = normalize_player_name(result.get('player_a'))
+            player_b = normalize_player_name(result.get('player_b'))
+            winner = normalize_player_name(result.get('winner'))
 
             if not all([player_a, player_b, winner]):
                 continue
@@ -83,10 +85,14 @@ class StatsCalculator:
         player1_wins = 0
         player2_wins = 0
 
+        # Normalize the input player names for comparison
+        player1 = normalize_player_name(player1)
+        player2 = normalize_player_name(player2)
+
         for result in all_results:
-            player_a = result.get('player_a')
-            player_b = result.get('player_b')
-            winner = result.get('winner')
+            player_a = normalize_player_name(result.get('player_a'))
+            player_b = normalize_player_name(result.get('player_b'))
+            winner = normalize_player_name(result.get('winner'))
 
             # Check if this game involves both players
             is_matchup = (
@@ -131,9 +137,9 @@ class StatsCalculator:
         players = set()
         for result in all_results:
             if result.get('player_a'):
-                players.add(result.get('player_a'))
+                players.add(normalize_player_name(result.get('player_a')))
             if result.get('player_b'):
-                players.add(result.get('player_b'))
+                players.add(normalize_player_name(result.get('player_b')))
 
         return sorted(list(players))
 
@@ -144,11 +150,11 @@ class StatsCalculator:
         games = []
         for result in all_results[:limit]:
             games.append({
-                'player_a': result.get('player_a'),
-                'player_b': result.get('player_b'),
+                'player_a': normalize_player_name(result.get('player_a')),
+                'player_b': normalize_player_name(result.get('player_b')),
                 'score_a': result.get('score_a'),
                 'score_b': result.get('score_b'),
-                'winner': result.get('winner'),
+                'winner': normalize_player_name(result.get('winner')),
                 'game_type': result.get('game_type'),
                 'video_title': result.get('title'),
                 'date': result.get('published_at')
@@ -157,16 +163,76 @@ class StatsCalculator:
         return games
 
     def get_game_types(self):
-        """Get list of all unique game types"""
+        """Get list of all unique game types (normalized)"""
         all_results = self.db.get_all_game_results()
 
         types = set()
         for result in all_results:
             game_type = result.get('game_type')
             if game_type:
-                types.add(game_type)
+                normalized = normalize_game_type(game_type)
+                types.add(normalized)
 
         return sorted(list(types))
+
+    def get_seasons(self):
+        """Get list of all unique seasons"""
+        all_results = self.db.get_all_game_results()
+
+        seasons = set()
+        for result in all_results:
+            game_type = result.get('game_type')
+            if game_type:
+                season = get_season_from_game_type(game_type)
+                seasons.add(season)
+
+        return sorted(list(seasons))
+
+    def get_games_by_season(self, season_filter=None):
+        """
+        Get all games organized by season and phase
+
+        Args:
+            season_filter: Optional season to filter by (e.g., "Classic 10")
+
+        Returns:
+            Dict with structure:
+            {
+                'Classic 10': {
+                    'Regular Season': [games...],
+                    'Playoffs': [games...],
+                    'Finals': [games...]
+                }
+            }
+        """
+        all_results = self.db.get_all_game_results()
+
+        organized = defaultdict(lambda: defaultdict(list))
+
+        for result in all_results:
+            game_type = result.get('game_type')
+            season = get_season_from_game_type(game_type)
+            phase = get_phase_from_game_type(game_type)
+
+            # Skip if filtering by season and this doesn't match
+            if season_filter and season != season_filter:
+                continue
+
+            game_data = {
+                'player_a': normalize_player_name(result.get('player_a')),
+                'player_b': normalize_player_name(result.get('player_b')),
+                'score_a': result.get('score_a'),
+                'score_b': result.get('score_b'),
+                'winner': normalize_player_name(result.get('winner')),
+                'game_type': normalize_game_type(game_type),
+                'video_id': result.get('video_id'),
+                'video_title': result.get('title'),
+                'date': result.get('published_at')
+            }
+
+            organized[season][phase].append(game_data)
+
+        return dict(organized)
 
 
 if __name__ == "__main__":

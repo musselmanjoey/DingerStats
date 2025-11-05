@@ -8,18 +8,21 @@ venv/
 env/
 ENV/
 
-# Audio processing outputs
-temp_audio/
-temp_audio_new/
-official_audio_playback/
-official_audio_wav/
-official_game_audio/
-reference_playback/
-audacity_windows/
-change_samples/
-filtered_audio_samples/
-focused_clips/
-simple_debug/
+# Old audio processing (archived but not tracked)
+archive/old_audio_detection/temp_audio/
+archive/old_audio_detection/temp_audio_new/
+archive/old_audio_detection/official_audio_playback/
+archive/old_audio_detection/official_audio_wav/
+archive/old_audio_detection/official_game_audio/
+archive/old_audio_detection/reference_playback/
+archive/old_audio_detection/audacity_windows/
+archive/old_audio_detection/change_samples/
+archive/old_audio_detection/filtered_audio_samples/
+archive/old_audio_detection/focused_clips/
+archive/old_audio_detection/simple_debug/
+archive/old_audio_detection/*.png
+archive/old_audio_detection/*.log
+archive/old_audio_detection/*.txt
 
 # Generated images/visualizations
 *.png

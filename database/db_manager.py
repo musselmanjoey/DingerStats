@@ -104,8 +104,8 @@ class DatabaseManager:
                 conn.execute("""
                     INSERT INTO game_results
                     (video_id, player_a, player_b, team_a, team_b, score_a, score_b, winner,
-                     game_type, game_summary, commentary_summary, raw_response, confidence)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     game_type, game_summary, commentary_summary, raw_response, confidence, prompt_version, model_name)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     result_data['video_id'],
                     result_data.get('player_a'),
@@ -119,7 +119,9 @@ class DatabaseManager:
                     result_data.get('game_summary'),
                     result_data.get('commentary_summary'),
                     result_data.get('raw_response'),
-                    result_data.get('confidence', 'medium')
+                    result_data.get('confidence', 'medium'),
+                    result_data.get('prompt_version', 'v2'),
+                    result_data.get('model_name', 'gemini-2.0-flash-exp')
                 ))
                 conn.commit()
             return True

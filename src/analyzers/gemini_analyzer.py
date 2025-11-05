@@ -92,23 +92,11 @@ class GeminiAnalyzer:
                     print(f"Error analyzing video {video_url}: {e}")
                     raise
 
-    def analyze_game_video(self, video_id: str, video_url: str = None) -> Tuple[Optional[Dict], str]:
+    def _get_v1_prompt(self) -> str:
         """
-        Analyze a baseball game video to extract game results
-
-        Args:
-            video_id: YouTube video ID
-            video_url: Full YouTube URL (if None, constructs from video_id)
-
-        Returns:
-            Tuple of (parsed_result_dict, raw_response_text)
-            parsed_result_dict contains: team_a, team_b, score_a, score_b, winner, confidence
+        Original prompt (v1) - Basic game type detection
         """
-        if not video_url:
-            video_url = f"https://www.youtube.com/watch?v={video_id}"
-
-        # Structured prompt for better parsing
-        prompt = """
+        return """
         Analyze this Mario Baseball video game and extract the following information:
 
         STRUCTURED DATA (required):
@@ -151,12 +139,129 @@ class GeminiAnalyzer:
         Unable to determine: [reason]
         """
 
+    def _get_v2_prompt(self) -> str:
+        """
+        Improved prompt (v2) - Better Classic 10 YERR OUT! format detection
+        """
+        return """
+        Analyze this Mario Baseball video and extract the following information:
+
+        FIRST - Determine if this video contains actual tournament gameplay:
+
+        SKIP if the video is:
+        - Draft/team selection content (e.g., "DRAFT DAY", "Character Steals", "Team Breakdown")
+        - Analysis or prediction content (e.g., "Analysis", "Who will win", "Breakdown", "Contenders")
+        - Grudge matches or exhibition games (not part of tournament standings)
+        - Other non-tournament content
+
+        If this is NOT a tournament game, respond with:
+        NOT A GAME: [brief reason - e.g., "Draft video" or "Analysis content" or "Grudge match"]
+
+        If this IS a tournament game, continue with extraction:
+
+        STRUCTURED DATA (required):
+        1) The HUMAN PLAYER names (e.g., Dennis, Nick, Hunter, Jason, Andrew, etc.)
+        2) The character team names they're using (e.g., Daisy Cupids, Mario Heroes)
+        3) The final score
+        4) Which PLAYER won (not team name - the human player's name)
+        5) Game type: Identify the specific tournament format and phase
+
+        IMPORTANT - GAME TYPE DETECTION:
+
+        For "Classic 10" (YERR OUT! format):
+        - This tournament has a unique structure: Round-Robin → Single Elimination Game → Repeat
+        - Each round consists of MULTIPLE round-robin games, followed by ONE elimination game
+        - Look for these indicators:
+          * Video title mentioning "Round 1", "Round 2", "Round 3", or "Finals"
+          * Commentary discussing "elimination", "loser is out", or "YERR OUT"
+          * Commentary mentioning round standings or who's at the bottom
+
+        Specify the game type as one of:
+        - "Classic 10 - Round 1 - Round Robin" (for regular games in Round 1)
+        - "Classic 10 - Round 1 - Elimination" (for THE elimination game in Round 1)
+        - "Classic 10 - Round 2 - Round Robin" (for regular games in Round 2)
+        - "Classic 10 - Round 2 - Elimination" (for THE elimination game in Round 2)
+        - "Classic 10 - Round 3 - Round Robin" (for regular games in Round 3)
+        - "Classic 10 - Round 3 - Elimination" (for THE elimination game in Round 3)
+        - "Classic 10 - Finals" (for championship games)
+
+        For "Season 10" (traditional format):
+        - Standard structure: Regular Season → Playoffs → Finals
+        - Specify as:
+          * "Season 10 - Regular Season"
+          * "Season 10 - Playoffs"
+          * "Season 10 - Finals"
+
+        If you cannot determine the specific round or phase, use:
+        - "Classic 10" (generic, will be normalized later)
+        - "Season 10" (generic, will be normalized later)
+
+        GAME HIGHLIGHTS:
+        Summarize notable moments and gameplay:
+        - Notable plays (walk-offs, grand slams, comebacks, defensive gems, close plays)
+        - Game flow (was it close? blowout? back-and-forth?)
+        - Turning points or momentum shifts
+        - Overall game quality/excitement
+
+        COMMENTARY HIGHLIGHTS:
+        Capture memorable commentary moments:
+        - Running jokes or recurring bits (e.g., specific catchphrases on certain plays)
+        - Funny interactions between commentators
+        - Memorable calls or reactions
+        - Any callbacks or inside jokes
+
+        Format your response exactly like this:
+        Player A: [human player name]
+        Team A: [character team name]
+        Player B: [human player name]
+        Team B: [character team name]
+        Score: [A's score]-[B's score]
+        Winner: [human player name who won]
+        Game Type: [specific format from above - be as specific as possible]
+
+        GAME SUMMARY:
+        [Your game highlights and notable moments here - 2-4 sentences]
+
+        COMMENTARY SUMMARY:
+        [Your commentary highlights here - 1-3 sentences, or "None notable" if nothing stands out]
+
+        If you cannot determine this information with confidence, respond with:
+        Unable to determine: [reason]
+        """
+
+    def analyze_game_video(self, video_id: str, video_url: str = None, prompt_version: str = 'v2') -> Tuple[Optional[Dict], str]:
+        """
+        Analyze a baseball game video to extract game results
+
+        Args:
+            video_id: YouTube video ID
+            video_url: Full YouTube URL (if None, constructs from video_id)
+            prompt_version: Which prompt version to use ('v1' or 'v2')
+
+        Returns:
+            Tuple of (parsed_result_dict, raw_response_text)
+            parsed_result_dict contains: team_a, team_b, score_a, score_b, winner, confidence
+        """
+        if not video_url:
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+        # Choose prompt based on version
+        if prompt_version == 'v1':
+            prompt = self._get_v1_prompt()
+        else:
+            prompt = self._get_v2_prompt()
+
         try:
             # Get response from Gemini
             raw_response = self.analyze_video_with_retry(video_url, prompt)
 
             # Parse the structured response
             parsed_result = self.parse_game_result(raw_response)
+
+            # Add prompt version and model name to result
+            if parsed_result:
+                parsed_result['prompt_version'] = prompt_version
+                parsed_result['model_name'] = self.model
 
             return parsed_result, raw_response
 
@@ -320,6 +425,11 @@ class GeminiAnalyzer:
             Returns None if parsing fails
         """
         try:
+            # Check for "NOT A GAME" response (non-tournament content)
+            if "not a game" in response.lower():
+                print(f"  Skipping non-game content: {response[:100]}")
+                return None
+
             # Check for "Unable to determine" response
             if "unable to determine" in response.lower():
                 return {

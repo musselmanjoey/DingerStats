@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from webapp.backend.stats_calculator import StatsCalculator
 from webapp.backend.processing_stats import ProcessingStats
+from webapp.generate_tournament_pages import generate_all_tournament_pages
 
 def generate_static_site():
     """Generate static HTML with embedded data"""
@@ -30,6 +31,7 @@ def generate_static_site():
     players = calc.get_all_players()
     standings = calc.get_player_records()
     game_types = calc.get_game_types()
+    seasons = calc.get_seasons()  # Get list of seasons
     all_games = calc.db.get_all_game_results()  # Get ALL games for h2h
     recent_games = all_games[:20] if all_games else []  # Show 20 most recent
     processing_stats = proc_stats.get_stats()
@@ -37,6 +39,7 @@ def generate_static_site():
     print(f"  Found {len(players)} players")
     print(f"  Found {len(standings)} standings entries")
     print(f"  Found {len(all_games)} total games")
+    print(f"  Found {len(seasons)} seasons")
 
     # Read the 2005-style template
     template_path = os.path.join(os.path.dirname(__file__), 'frontend', 'index_template_2005.html')
@@ -48,6 +51,7 @@ def generate_static_site():
         'players': players,
         'standings': standings,
         'game_types': game_types,
+        'seasons': seasons,  # Add seasons list
         'recent_games': all_games,  # Include ALL games for h2h filtering, frontend will show first 20
         'processing_stats': processing_stats
     }
@@ -61,7 +65,14 @@ def generate_static_site():
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    print(f"\nStatic site generated: {output_path}")
+    print(f"\nMain site generated: {output_path}")
+
+    # Generate tournament pages
+    print("\n" + "="*50)
+    tournament_pages = generate_all_tournament_pages()
+
+    print("\n" + "="*50)
+    print("All pages generated successfully!")
     print("Ready to deploy to Vercel!")
 
 if __name__ == '__main__':

@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classic 10 - YERR OUT! - DingerStats</title>
+    <style>
+        /* 2005 Retro Styling */
+        body {
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            margin: 0;
+            padding: 20px;
+            background: #2c3e50 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAKklEQVQoU2NkYGD4z4AEQF1FBQUGBP9/fv78z4gsDNGJLIyuE10nuke4AJzSEgvf1qdLAAAAAElFTkSuQmCC') repeat;
+            color: #333;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            background: #fff;
+            border: 2px solid #999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Header - same style as main site */
+        .header {
+            background: linear-gradient(to bottom, #4a6fa5 0%, #2e5090 50%, #1a3a6e 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #ffd700;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 28px;
+            margin: 0 0 5px 0;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px #000, -1px -1px 2px rgba(255,255,255,0.3);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* Navigation */
+        .nav {
+            background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+            padding: 10px;
+            border-bottom: 2px solid #999;
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-link {
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #f5f5f5, #d5d5d5);
+            border: 1px solid #999;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(to bottom, #fff, #e5e5e5);
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        .tournament-info {
+            background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tournament-info h2 {
+            margin: 0 0 10px 0;
+            color: #2e5090;
+            font-size: 18px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+        }
+
+        .format-explanation {
+            background: #ffffcc;
+            border: 2px dashed #ffd700;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+
+        .format-explanation strong {
+            color: #d32f2f;
+        }
+
+        .phase-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #999;
+            flex-wrap: wrap;
+        }
+
+        .phase-tab {
+            padding: 10px 20px;
+            background: linear-gradient(to bottom, #d5d5d5, #b5b5b5);
+            border: 1px solid #999;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+        }
+
+        .phase-tab.active {
+            background: linear-gradient(to bottom, #4a6fa5, #2e5090);
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.2);
+        }
+
+        .phase-tab:hover:not(.active) {
+            background: linear-gradient(to bottom, #e5e5e5, #c5c5c5);
+        }
+
+        /* Bracket Display */
+        .bracket-section {
+            display: none;
+        }
+
+        .bracket-section.active {
+            display: block;
+        }
+
+        .round-description {
+            background: #f0f0f0;
+            border-left: 4px solid #2e5090;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-card {
+            background: #fff;
+            border: 2px solid #999;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .game-card:hover {
+            background: #ffffcc;
+            border-color: #ffd700;
+        }
+
+        .game-card.elimination-game {
+            border-color: #d32f2f;
+            background: #ffebee;
+        }
+
+        .game-card.elimination-game:hover {
+            background: #ffcdd2;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .elimination-badge {
+            background: #d32f2f;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        .matchup {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .player {
+            flex: 1;
+            padding: 5px;
+        }
+
+        .player.winner {
+            color: #2e5090;
+            font-weight: bold;
+        }
+
+        .player.eliminated {
+            color: #d32f2f;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .vs {
+            padding: 0 10px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .score {
+            font-family: "Courier New", monospace;
+            color: #666;
+        }
+
+        .video-link {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .video-link a {
+            display: inline-block;
+            padding: 5px 10px;
+            background: linear-gradient(to bottom, #f5f5f5, #d5d5d5);
+            border: 1px solid #999;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #333;
+            font-size: 10px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+
+        .video-link a:hover {
+            background: linear-gradient(to bottom, #fff, #e5e5e5);
+        }
+
+        .footer {
+            background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+            padding: 15px;
+            text-align: center;
+            border-top: 2px solid #999;
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* View Section Styling */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Sliding Door UI */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            align-items: center;
+        }
+
+        .carousel-button {
+            padding: 10px 20px;
+            background: linear-gradient(to bottom, #4a6fa5, #2e5090);
+            color: white;
+            border: 2px solid #1a3a6e;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .carousel-button:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #5a7fb5, #3e60a0);
+        }
+
+        .carousel-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            border: 2px solid #999;
+        }
+
+        .carousel-indicator.active {
+            background: #2e5090;
+        }
+
+        /* Round Breakdown Styles */
+        .round-header {
+            background: linear-gradient(to bottom, #4a6fa5, #2e5090);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 15px;
+        }
+
+        .round-header h3 {
+            margin: 0;
+            font-size: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .standings-table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 2px solid #999;
+        }
+
+        .standings-table th {
+            background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+            padding: 8px;
+            border: 1px solid #999;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .standings-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .standings-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .standings-table tr:hover {
+            background: #ffffcc;
+        }
+
+        .elimination-section {
+            background: #ffebee;
+            border: 3px solid #d32f2f;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .elimination-section h4 {
+            margin: 0 0 10px 0;
+            color: #d32f2f;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>.:. DingerStats .:.</h1>
+            <div class="subtitle">Mario Super Sluggers - Classic 10 - YERR OUT! Format - Est. 2025</div>
+        </div>
+
+        <div class="nav">
+            <a href="index.html" class="nav-link">&larr; Back to Home</a>
+        </div>
+
+        <div class="content">
+            <div class="tournament-info">
+                <h2>Classic 10</h2>
+                <p><strong>Total Games:</strong> 39</p>
+                <p><strong>Format:</strong> YERR OUT!</p>
+
+                <div class="format-explanation">
+                    <strong>YERR OUT! Format:</strong><br>
+                    1. Round-Robin: All players compete against each other<br>
+                    2. Elimination: Bottom seed faces top seed's choice in an elimination game<br>
+                    3. <strong>Loser is OUT!</strong><br>
+                    4. Repeat with remaining players until Finals
+                </div>
+            </div>
+
+            <!-- View Mode Tabs -->
+            <div class="phase-tabs">
+                <div class="phase-tab active" data-view="all-stats">All Stats</div>
+                <div class="phase-tab" data-view="round-breakdown">Round Breakdown</div>
+            </div>
+
+            <!-- All Stats View -->
+            <div class="view-section active" id="all-stats">
+                <div class="phase-tabs" style="margin-top: 15px;">
+                    <div class="phase-tab active" data-phase="round-1">Round 1</div>
+                    <div class="phase-tab" data-phase="round-2">Round 2</div>
+                    <div class="phase-tab" data-phase="round-3">Round 3</div>
+                    <div class="phase-tab" data-phase="finals">Finals</div>
+                </div>
+
+            <!-- Round 1 Section -->
+            <div class="bracket-section active" id="round-1">
+                <div class="round-description">
+                    <strong>Round 1:</strong> Round-Robin play followed by elimination game. Bottom seed faces opponent chosen by top seed.
+                </div>
+                <div class="games-list" id="round-1-games">
+                    <!-- Games will be injected here -->
+                </div>
+            </div>
+
+            <!-- Round 2 Section -->
+            <div class="bracket-section" id="round-2">
+                <div class="round-description">
+                    <strong>Round 2:</strong> Remaining players compete in round-robin, then another elimination game.
+                </div>
+                <div class="games-list" id="round-2-games">
+                    <!-- Games will be injected here -->
+                </div>
+            </div>
+
+            <!-- Round 3 Section -->
+            <div class="bracket-section" id="round-3">
+                <div class="round-description">
+                    <strong>Round 3:</strong> Final round of eliminations before the championship.
+                </div>
+                <div class="games-list" id="round-3-games">
+                    <!-- Games will be injected here -->
+                </div>
+            </div>
+
+            <!-- Finals Section -->
+            <div class="bracket-section" id="finals">
+                <div class="round-description">
+                    <strong>Finals:</strong> The last two players battle for the championship!
+                </div>
+                <div class="games-list" id="finals-games">
+                    <!-- Games will be injected here -->
+                </div>
+            </div>
+            </div> <!-- End all-stats view -->
+
+            <!-- Round Breakdown View (Sliding Door UI) -->
+            <div class="view-section" id="round-breakdown">
+                <div class="carousel-container">
+                    <div class="carousel-inner" id="carousel-inner">
+                        <!-- Slides will be injected here -->
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-button" id="prev-button">← Previous Round</button>
+                    <div class="carousel-indicators" id="carousel-indicators"></div>
+                    <button class="carousel-button" id="next-button">Next Round →</button>
+                </div>
+            </div>
+        </div> <!-- End content -->
+
+        <div class="footer">
+            &copy; 2025 DingerStats | Mario Super Sluggers Tournament Statistics<br>
+            YERR OUT! Format - Generated with love for the 2005 web aesthetic
+        </div>
+    </div>
+
+    <script>
+        window.TOURNAMENT_DATA = {
+  "Round 1": [
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 0,
+      "score_b": 7,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "kq-kuKZgjA0",
+      "video_title": "Going BEAST MODE with the best character in Mario Baseball",
+      "date": "2025-09-18T19:00:50Z"
+    },
+    {
+      "player_a": "Nick (CritNick/Big Dog)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 14,
+      "score_b": 8,
+      "winner": "Nick (CritNick/Big Dog)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "ve1YA5NMmb4",
+      "video_title": "Mario Baseball but hitting is allowed",
+      "date": "2025-10-21T19:56:30Z"
+    },
+    {
+      "player_a": "Nick (CritNick/Big Dog)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 15,
+      "score_b": 11,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "KJRwjvgK_20",
+      "video_title": "BIG DOG'S REVENGE: Team Swap vs Hunter",
+      "date": "2025-10-22T19:00:20Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Nick (CritNick/Big Dog)",
+      "score_a": 0,
+      "score_b": 5,
+      "winner": "Nick (CritNick/Big Dog)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "FOcq-1kblgE",
+      "video_title": "Newest season starts with a HIGHLY controversial game",
+      "date": "2025-08-25T19:00:11Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 3,
+      "score_b": 0,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "Cc0QC6QYCqQ",
+      "video_title": "This home run will make or break his entire season",
+      "date": "2025-08-29T19:00:11Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 9,
+      "score_b": 3,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "WbY_IjNfUsQ",
+      "video_title": "The best draft pick of the Mario Baseball season",
+      "date": "2025-09-02T19:00:34Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Nick (CritNick/Big Dog)",
+      "score_a": 9,
+      "score_b": 3,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "ia4stEav-qk",
+      "video_title": "This pitcher can actually hit like CRAZY",
+      "date": "2025-09-03T19:00:39Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Dennis (PapaDen)",
+      "score_a": 5,
+      "score_b": 12,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "p4sZYR4h45w",
+      "video_title": "Back and forth homers in the closest game yet",
+      "date": "2025-09-08T19:00:46Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 18,
+      "score_b": 16,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 1",
+      "video_id": "D8t8bxOGE8E",
+      "video_title": "Is walking actually META in Mario Baseball?",
+      "date": "2025-09-09T19:00:20Z"
+    }
+  ],
+  "Round 2": [
+    {
+      "player_a": "Andrew (City Hall)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 2,
+      "score_b": 12,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "tFHo3K0EK38",
+      "video_title": "The WEIRDEST thing we've ever seen in Mario Baseball",
+      "date": "2025-09-19T19:00:57Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 7,
+      "score_b": 3,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "YsG3fcBxUw0",
+      "video_title": "The NASTIEST home run of the season",
+      "date": "2025-09-22T19:00:37Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 4,
+      "score_b": 7,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "NyqblObO-zM",
+      "video_title": "This special is COMPLETELY unfair",
+      "date": "2025-09-23T19:00:31Z"
+    },
+    {
+      "player_a": "Andrew (City Hall)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 6,
+      "score_b": 7,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "dExBW085OaI",
+      "video_title": "Mario Baseball makes NO sense",
+      "date": "2025-09-24T19:00:38Z"
+    },
+    {
+      "player_a": "Tyler (WunderBears)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 2,
+      "score_b": 4,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "mzeBSMOzv1E",
+      "video_title": "This player turns mid tiers into top 10 characters",
+      "date": "2025-09-25T19:00:44Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 4,
+      "score_b": 2,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "CM4TfwoehX8",
+      "video_title": "The turtle team is UNDERRATED in Mario Baseball",
+      "date": "2025-09-26T19:00:10Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 13,
+      "score_b": 1,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "m8JcXjukRkg",
+      "video_title": "The WEIRDEST way to win a Mario Baseball game",
+      "date": "2025-09-29T19:00:47Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Dennis (PapaDen)",
+      "score_a": 2,
+      "score_b": 0,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "tD5rQ3Jb0y0",
+      "video_title": "Can THIS new strategy beat the Mario Baseball champion?",
+      "date": "2025-09-30T19:01:00Z"
+    },
+    {
+      "player_a": "Andrew (City Hall)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 7,
+      "score_b": 0,
+      "winner": "Andrew (City Hall)",
+      "game_type": "Classic 10 - Round 2",
+      "video_id": "F0VY0EonH_U",
+      "video_title": "ELIMINATION MATCH: Take down the Mario Baseball champion",
+      "date": "2025-10-01T19:00:27Z"
+    }
+  ],
+  "Round 3": [
+    {
+      "player_a": "Tyler (WunderBears)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 2,
+      "score_b": 9,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "1GxV1Cp8TZ8",
+      "video_title": "Missing this play would change EVERYTHING",
+      "date": "2025-10-02T19:00:02Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 7,
+      "score_b": 6,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "qJcQTrlMg84",
+      "video_title": "What is GOING ON in Mario Baseball?!",
+      "date": "2025-10-03T19:00:46Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 2,
+      "score_b": 3,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "IYfVEJmzxnc",
+      "video_title": "The most CLUTCH player in Mario Baseball history",
+      "date": "2025-10-06T19:00:26Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 4,
+      "score_b": 0,
+      "winner": "Tyler (WunderBears)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "D9WB_fvJXz8",
+      "video_title": "CLOSE PLAY determines this player's fate",
+      "date": "2025-10-07T19:00:12Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 17,
+      "score_b": 2,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "pD0w3A9z_8Q",
+      "video_title": "The highest value draft pick in Mario Baseball is NOT who you'd expect",
+      "date": "2025-08-28T19:00:51Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 8,
+      "score_b": 12,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "7VzJn7zqRXs",
+      "video_title": "You CANNOT disrespect this baseball legend",
+      "date": "2025-09-04T19:00:10Z"
+    },
+    {
+      "player_a": "Tyler (WunderBears)",
+      "player_b": "Nick (CritNick/Big Dog)",
+      "score_a": 7,
+      "score_b": 2,
+      "winner": "Tyler (WunderBears)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "L1XUOozjatY",
+      "video_title": "IMPOSSIBLE home runs just became possible",
+      "date": "2025-09-05T19:00:16Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Nick (CritNick/Big Dog)",
+      "score_a": 13,
+      "score_b": 3,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "12lQk1JeV8E",
+      "video_title": "The true villain of Mario Baseball",
+      "date": "2025-09-10T19:00:01Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 4,
+      "score_b": 6,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "1IvRD83hwXU",
+      "video_title": "Sick new characters in Mario Superstar Baseball",
+      "date": "2025-09-11T19:00:02Z"
+    },
+    {
+      "player_a": "Nick (CritNick/Big Dog)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 14,
+      "score_b": 8,
+      "winner": "Nick (CritNick/Big Dog)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "ve1YA5NMmb4",
+      "video_title": "Mario Baseball but hitting is allowed",
+      "date": "2025-10-21T19:56:30Z"
+    },
+    {
+      "player_a": "Nick (CritNick/Big Dog)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 3,
+      "score_b": 10,
+      "winner": "Nick (CritNick/Big Dog)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "Nxf35I5wEp8",
+      "video_title": "This game decides their fate in the season",
+      "date": "2025-09-12T19:00:20Z"
+    },
+    {
+      "player_a": "Hunter (Hunter Gatherers)",
+      "player_b": "Andrew (City Hall)",
+      "score_a": 2,
+      "score_b": 6,
+      "winner": "Andrew (City Hall)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "vdficNyTWio",
+      "video_title": "The loser is ELIMINATED from the Mario Baseball Season",
+      "date": "2025-09-15T19:00:52Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Dennis (PapaDen)",
+      "score_a": 7,
+      "score_b": 6,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Round 3",
+      "video_id": "TyIkXLOnouI",
+      "video_title": "Everyone thought this character was TRASH...",
+      "date": "2025-09-17T19:00:26Z"
+    }
+  ],
+  "Finals": [
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 1,
+      "score_b": 2,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "F-vHNDpzYcg",
+      "video_title": "The Mario Baseball SHOWDOWN of a lifetime",
+      "date": "2025-10-08T19:00:14Z"
+    },
+    {
+      "player_a": "Tyler (WunderBears)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 6,
+      "score_b": 3,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "4yNfPA3Esjs",
+      "video_title": "The most CONTROVERSIAL double play in Mario Baseball history",
+      "date": "2025-10-09T19:00:06Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 6,
+      "score_b": 5,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "-3AeXy-uP2Y",
+      "video_title": "This character's SKYROCKETING in the Mario Baseball Meta",
+      "date": "2025-10-13T19:00:00Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 3,
+      "score_b": 1,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "qy4v5EBqrtA",
+      "video_title": "Escaping the BOTTOM seed in Mario Baseball",
+      "date": "2025-10-14T19:00:54Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 4,
+      "score_b": 5,
+      "winner": "Hunter (Hunter Gatherers)",
+      "game_type": "Classic 10 - Finals - Championship",
+      "video_id": "sljdbpf5k_o",
+      "video_title": "Can the Mario Baseball champion lose EVER AGAIN?!",
+      "date": "2025-10-15T19:00:56Z"
+    },
+    {
+      "player_a": "Jason (JK Jesters)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 4,
+      "score_b": 2,
+      "winner": "Jason (JK Jesters)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "d2hQnmqwVT0",
+      "video_title": "WILL HUNTER FINALLY FALL? ELIMINATION GAME",
+      "date": "2025-10-16T19:00:39Z"
+    },
+    {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Jason (JK Jesters)",
+      "score_a": 6,
+      "score_b": 5,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Finals - Round Robin",
+      "video_id": "Cj089dAOPi8",
+      "video_title": "SINGLE ROUND ELIMINATION: Who wins Classic 10?!",
+      "date": "2025-10-20T19:00:09Z"
+    },
+    {
+      "player_a": "Andrew (City Hall)",
+      "player_b": "Dennis (PapaDen)",
+      "score_a": 5,
+      "score_b": 6,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Finals",
+      "video_id": "C9FHyZtDIGM",
+      "video_title": "The TIGHTEST game of the season",
+      "date": "2025-09-01T19:00:19Z"
+    }
+  ]
+};
+        window.ROUNDS_DATA = {
+  "Round 1": {
+    "round_robin": [
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 18,
+        "score_b": 16,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 1 - Round Robin"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 9,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 1 - Round Robin"
+      }
+    ],
+    "elimination": {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 0,
+      "score_b": 7,
+      "winner": "Dennis (PapaDen)",
+      "game_type": "Classic 10 - Round 1 - Elimination"
+    },
+    "standings": [
+      {
+        "player": "Jason (JK Jesters)",
+        "wins": 1,
+        "losses": 0
+      },
+      {
+        "player": "Hunter (Hunter Gatherers)",
+        "wins": 1,
+        "losses": 0
+      },
+      {
+        "player": "Tyler (WunderBears)",
+        "wins": 0,
+        "losses": 2
+      }
+    ]
+  },
+  "Finals": {
+    "round_robin": [
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 5,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 4,
+        "score_b": 2,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 4,
+        "score_b": 5,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Finals - Championship"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 3,
+        "score_b": 1,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 5,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      },
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 6,
+        "score_b": 3,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 1,
+        "score_b": 2,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Finals - Round Robin"
+      }
+    ],
+    "elimination": null,
+    "standings": [
+      {
+        "player": "Jason (JK Jesters)",
+        "wins": 3,
+        "losses": 2
+      },
+      {
+        "player": "Dennis (PapaDen)",
+        "wins": 2,
+        "losses": 2
+      },
+      {
+        "player": "Hunter (Hunter Gatherers)",
+        "wins": 2,
+        "losses": 2
+      },
+      {
+        "player": "Tyler (WunderBears)",
+        "wins": 0,
+        "losses": 1
+      }
+    ]
+  },
+  "Round 3": {
+    "round_robin": [
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 2,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 3 - Round Robin"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 7,
+        "score_b": 6,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 3 - Round Robin"
+      },
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 2,
+        "score_b": 9,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 3 - Round Robin"
+      }
+    ],
+    "elimination": {
+      "player_a": "Dennis (PapaDen)",
+      "player_b": "Tyler (WunderBears)",
+      "score_a": 4,
+      "score_b": 0,
+      "winner": "Tyler (WunderBears)",
+      "game_type": "Classic 10 - Round 3 - Elimination"
+    },
+    "standings": [
+      {
+        "player": "Hunter (Hunter Gatherers)",
+        "wins": 2,
+        "losses": 0
+      },
+      {
+        "player": "Dennis (PapaDen)",
+        "wins": 1,
+        "losses": 0
+      },
+      {
+        "player": "Tyler (WunderBears)",
+        "wins": 0,
+        "losses": 1
+      },
+      {
+        "player": "Jason (JK Jesters)",
+        "wins": 0,
+        "losses": 2
+      }
+    ]
+  },
+  "Round 2": {
+    "round_robin": [
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Dennis (PapaDen)",
+        "score_a": 2,
+        "score_b": 0,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Dennis (PapaDen)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 13,
+        "score_b": 1,
+        "winner": "Dennis (PapaDen)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Tyler (WunderBears)",
+        "score_a": 4,
+        "score_b": 2,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Tyler (WunderBears)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 2,
+        "score_b": 4,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 6,
+        "score_b": 7,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Jason (JK Jesters)",
+        "player_b": "Hunter (Hunter Gatherers)",
+        "score_a": 4,
+        "score_b": 7,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Hunter (Hunter Gatherers)",
+        "player_b": "Andrew (City Hall)",
+        "score_a": 7,
+        "score_b": 3,
+        "winner": "Hunter (Hunter Gatherers)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      },
+      {
+        "player_a": "Andrew (City Hall)",
+        "player_b": "Jason (JK Jesters)",
+        "score_a": 2,
+        "score_b": 12,
+        "winner": "Jason (JK Jesters)",
+        "game_type": "Classic 10 - Round 2 - Round Robin"
+      }
+    ],
+    "elimination": {
+      "player_a": "Andrew (City Hall)",
+      "player_b": "Hunter (Hunter Gatherers)",
+      "score_a": 7,
+      "score_b": 0,
+      "winner": "Andrew (City Hall)",
+      "game_type": "Classic 10 - Round 2 - Elimination"
+    },
+    "standings": [
+      {
+        "player": "Hunter (Hunter Gatherers)",
+        "wins": 4,
+        "losses": 1
+      },
+      {
+        "player": "Dennis (PapaDen)",
+        "wins": 2,
+        "losses": 0
+      },
+      {
+        "player": "Jason (JK Jesters)",
+        "wins": 2,
+        "losses": 1
+      },
+      {
+        "player": "Tyler (WunderBears)",
+        "wins": 0,
+        "losses": 2
+      },
+      {
+        "player": "Andrew (City Hall)",
+        "wins": 0,
+        "losses": 4
+      }
+    ]
+  }
+};
+
+        // View switching (All Stats vs Round Breakdown)
+        document.querySelectorAll('.phase-tab[data-view]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const view = tab.dataset.view;
+
+                // Remove active from view tabs and sections
+                document.querySelectorAll('.phase-tab[data-view]').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+
+                // Add active to clicked view
+                tab.classList.add('active');
+                document.getElementById(view).classList.add('active');
+            });
+        });
+
+        // Phase tab switching (within All Stats view)
+        document.querySelectorAll('.phase-tab[data-phase]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active from all phase tabs and sections
+                document.querySelectorAll('.phase-tab[data-phase]').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.bracket-section').forEach(s => s.classList.remove('active'));
+
+                // Add active to clicked tab and corresponding section
+                tab.classList.add('active');
+                const phase = tab.dataset.phase;
+                document.getElementById(phase).classList.add('active');
+            });
+        });
+
+        // Render games
+        function renderGames() {
+            if (!window.TOURNAMENT_DATA) return;
+
+            const data = window.TOURNAMENT_DATA;
+
+            // Map phases to container IDs
+            const phaseMap = {
+                'Round 1': 'round-1-games',
+                'Round 2': 'round-2-games',
+                'Round 3': 'round-3-games',
+                'Finals': 'finals-games'
+            };
+
+            // Render each phase
+            Object.keys(phaseMap).forEach(phase => {
+                const games = data[phase] || [];
+                const containerId = phaseMap[phase];
+                const container = document.getElementById(containerId);
+
+                if (!container) return;
+
+                container.innerHTML = games.map((game, index) => {
+                    // Detect elimination games (usually have "elimination" in game_type or lower scores)
+                    const isElimination = game.game_type && game.game_type.toLowerCase().includes('elimination');
+
+                    return `
+                        <div class="game-card ${isElimination ? 'elimination-game' : ''}">
+                            <div class="game-header">
+                                <span>Game #${index + 1} ${isElimination ? '<span class="elimination-badge">ELIMINATION</span>' : ''}</span>
+                                <span>${game.date || 'Date unavailable'}</span>
+                            </div>
+                            <div class="matchup">
+                                <div class="player ${game.winner === game.player_a ? 'winner' : ''} ${isElimination && game.winner !== game.player_a ? 'eliminated' : ''}">
+                                    ${game.player_a}
+                                    ${game.score_a !== null ? `<span class="score">(${game.score_a})</span>` : ''}
+                                </div>
+                                <div class="vs">vs</div>
+                                <div class="player ${game.winner === game.player_b ? 'winner' : ''} ${isElimination && game.winner !== game.player_b ? 'eliminated' : ''}">
+                                    ${game.player_b}
+                                    ${game.score_b !== null ? `<span class="score">(${game.score_b})</span>` : ''}
+                                </div>
+                            </div>
+                            ${game.video_id ? `
+                                <div class="video-link">
+                                    <a href="https://www.youtube.com/watch?v=${game.video_id}" target="_blank">
+                                        📺 Watch on YouTube
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        // Carousel State
+        let currentSlide = 0;
+        let totalSlides = 0;
+
+        // Render Round Breakdown Carousel
+        function renderRoundBreakdown() {
+            if (!window.ROUNDS_DATA) {
+                console.log('No ROUNDS_DATA available');
+                return;
+            }
+
+            const roundsData = window.ROUNDS_DATA;
+            const carouselInner = document.getElementById('carousel-inner');
+            const indicators = document.getElementById('carousel-indicators');
+
+            // Sort rounds (Round 1, Round 2, Round 3, Finals)
+            const roundOrder = ['Round 1', 'Round 2', 'Round 3', 'Finals'];
+            const sortedRounds = roundOrder.filter(r => roundsData[r]);
+
+            totalSlides = sortedRounds.length;
+
+            // Start with the last round (biggest/latest)
+            currentSlide = totalSlides - 1;
+
+            // Generate slides
+            carouselInner.innerHTML = sortedRounds.map((roundName, index) => {
+                const round = roundsData[roundName];
+                const standings = round.standings || [];
+                const elimination = round.elimination;
+
+                const totalGames = round.round_robin.length + (elimination ? 1 : 0);
+                const loser = elimination ? (elimination.winner === elimination.player_a ? elimination.player_b : elimination.player_a) : null;
+
+                return `
+                    <div class="carousel-slide">
+                        <div class="round-header">
+                            <h3>${roundName}</h3>
+                            <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">
+                                ${totalGames} Total Games (${round.round_robin.length} Round-Robin${elimination ? ' + 1 Elimination' : ''})
+                            </div>
+                        </div>
+
+                        <h4 style="margin-top: 0; color: #2e5090;">📊 Round-Robin Standings</h4>
+                        <table class="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player</th>
+                                    <th>Wins</th>
+                                    <th>Losses</th>
+                                    <th>Record</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${standings.map((s, idx) => `
+                                    <tr ${s.player === loser ? 'style="background: #ffebee;"' : ''}>
+                                        <td style="font-weight: bold;">${idx + 1}</td>
+                                        <td style="font-weight: bold;">
+                                            ${s.player}
+                                            ${idx === 0 ? ' 🥇' : ''}
+                                            ${s.player === loser ? ' ❌' : ''}
+                                        </td>
+                                        <td>${s.wins}</td>
+                                        <td>${s.losses}</td>
+                                        <td><strong>${s.wins}-${s.losses}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        ${elimination ? `
+                            <div class="elimination-section">
+                                <h4>⚔️ Elimination Game</h4>
+                                <div class="matchup" style="margin-top: 10px; font-size: 16px;">
+                                    <div class="player ${elimination.winner === elimination.player_a ? 'winner' : 'eliminated'}" style="flex: 1; text-align: center;">
+                                        <div style="font-weight: bold; margin-bottom: 5px;">
+                                            ${elimination.player_a}
+                                            ${elimination.winner === elimination.player_a ? ' ✅' : ' ❌'}
+                                        </div>
+                                        <span class="score" style="font-size: 24px; font-weight: bold;">${elimination.score_a}</span>
+                                    </div>
+                                    <div class="vs" style="font-size: 20px; font-weight: bold;">VS</div>
+                                    <div class="player ${elimination.winner === elimination.player_b ? 'winner' : 'eliminated'}" style="flex: 1; text-align: center;">
+                                        <div style="font-weight: bold; margin-bottom: 5px;">
+                                            ${elimination.player_b}
+                                            ${elimination.winner === elimination.player_b ? ' ✅' : ' ❌'}
+                                        </div>
+                                        <span class="score" style="font-size: 24px; font-weight: bold;">${elimination.score_b}</span>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px; padding: 10px; background: white; border: 2px solid #d32f2f; border-radius: 5px; text-align: center;">
+                                    <p style="margin: 0; font-weight: bold; color: #d32f2f; font-size: 14px;">
+                                        🚫 ${loser} was ELIMINATED
+                                    </p>
+                                    <p style="margin: 5px 0 0 0; font-weight: bold; color: #2e5090; font-size: 14px;">
+                                        ✓ ${elimination.winner} advances to the next round
+                                    </p>
+                                </div>
+                            </div>
+                        ` : '<p style="color: #666; padding: 10px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 3px;">⚠️ No elimination game data available for this round</p>'}
+                    </div>
+                `;
+            }).join('');
+
+            // Generate indicators
+            indicators.innerHTML = sortedRounds.map((_, index) =>
+                `<div class="carousel-indicator ${index === currentSlide ? 'active' : ''}" data-slide="${index}"></div>`
+            ).join('');
+
+            // Add indicator click handlers
+            document.querySelectorAll('.carousel-indicator').forEach(indicator => {
+                indicator.addEventListener('click', () => {
+                    currentSlide = parseInt(indicator.dataset.slide);
+                    updateCarousel();
+                });
+            });
+
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const carouselInner = document.getElementById('carousel-inner');
+            const offset = -currentSlide * 100;
+            carouselInner.style.transform = `translateX(${offset}%)`;
+
+            // Update indicators
+            document.querySelectorAll('.carousel-indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+
+            // Update buttons
+            document.getElementById('prev-button').disabled = currentSlide === 0;
+            document.getElementById('next-button').disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Carousel navigation
+        document.getElementById('prev-button').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            }
+        });
+
+        document.getElementById('next-button').addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        });
+
+        // Initialize
+        renderGames();
+        renderRoundBreakdown();
+    </script>
+</body>
+</html>
