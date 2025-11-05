@@ -1,0 +1,308 @@
+"""
+Gemini API Video Analyzer for DingerStats
+Uses Gemini's native YouTube video understanding to extract game results
+"""
+
+import os
+import re
+import time
+import backoff
+from typing import Dict, Optional, Tuple
+from google import genai
+from google.genai import types
+from google.api_core import exceptions
+
+
+class GeminiAnalyzer:
+    def __init__(self, api_key: Optional[str] = None, model: str = "gemini-2.0-flash-exp"):
+        """
+        Initialize Gemini API client
+
+        Args:
+            api_key: Gemini API key (defaults to GEMINI_API_KEY env var)
+            model: Model to use (gemini-2.0-flash-exp, gemini-2.0-flash-thinking-exp, etc.)
+        """
+        self.api_key = api_key or os.environ.get('GEMINI_API_KEY')
+        if not self.api_key:
+            raise ValueError("Gemini API key required. Set GEMINI_API_KEY environment variable.")
+
+        self.client = genai.Client(api_key=self.api_key)
+        self.model = model
+
+    @backoff.on_exception(
+        backoff.expo,
+        (exceptions.ResourceExhausted, exceptions.ServiceUnavailable, exceptions.DeadlineExceeded),
+        max_tries=5,
+        max_time=300
+    )
+    def analyze_video_with_retry(self, video_url: str, prompt: str) -> str:
+        """
+        Analyze video with exponential backoff retry logic
+
+        Args:
+            video_url: Full YouTube video URL
+            prompt: Question/instruction for Gemini
+
+        Returns:
+            Gemini's response text
+        """
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=types.Content(
+                    parts=[
+                        types.Part(
+                            file_data=types.FileData(
+                                file_uri=video_url
+                            )
+                        ),
+                        types.Part(text=prompt)
+                    ]
+                )
+            )
+            return response.text
+        except Exception as e:
+            print(f"Error analyzing video {video_url}: {e}")
+            raise
+
+    def analyze_game_video(self, video_id: str, video_url: str = None) -> Tuple[Optional[Dict], str]:
+        """
+        Analyze a baseball game video to extract game results
+
+        Args:
+            video_id: YouTube video ID
+            video_url: Full YouTube URL (if None, constructs from video_id)
+
+        Returns:
+            Tuple of (parsed_result_dict, raw_response_text)
+            parsed_result_dict contains: team_a, team_b, score_a, score_b, winner, confidence
+        """
+        if not video_url:
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+        # Structured prompt for better parsing
+        prompt = """
+        Analyze this baseball game video and extract the following information:
+        1) The two teams that played
+        2) The final score
+        3) Which team won
+
+        Format your response exactly like this:
+        Team A: [name]
+        Team B: [name]
+        Score: [A's score]-[B's score]
+        Winner: [winning team name]
+
+        If you cannot determine this information with confidence, respond with:
+        Unable to determine: [reason]
+        """
+
+        try:
+            # Get response from Gemini
+            raw_response = self.analyze_video_with_retry(video_url, prompt)
+
+            # Parse the structured response
+            parsed_result = self.parse_game_result(raw_response)
+
+            return parsed_result, raw_response
+
+        except Exception as e:
+            error_msg = f"Failed to analyze video: {str(e)}"
+            print(error_msg)
+            return None, error_msg
+
+    def parse_game_result(self, response: str) -> Optional[Dict]:
+        """
+        Parse Gemini's structured response into a dictionary
+
+        Args:
+            response: Raw text response from Gemini
+
+        Returns:
+            Dictionary with team_a, team_b, score_a, score_b, winner, confidence
+            Returns None if parsing fails
+        """
+        try:
+            # Check for "Unable to determine" response
+            if "unable to determine" in response.lower():
+                return {
+                    'team_a': None,
+                    'team_b': None,
+                    'score_a': None,
+                    'score_b': None,
+                    'winner': None,
+                    'confidence': 'low'
+                }
+
+            # Extract teams
+            team_a_match = re.search(r'Team A:\s*(.+)', response, re.IGNORECASE)
+            team_b_match = re.search(r'Team B:\s*(.+)', response, re.IGNORECASE)
+
+            # Extract score
+            score_match = re.search(r'Score:\s*(\d+)-(\d+)', response, re.IGNORECASE)
+
+            # Extract winner
+            winner_match = re.search(r'Winner:\s*(.+)', response, re.IGNORECASE)
+
+            if not all([team_a_match, team_b_match, score_match, winner_match]):
+                # Try alternative parsing (more flexible)
+                return self.flexible_parse(response)
+
+            team_a = team_a_match.group(1).strip()
+            team_b = team_b_match.group(1).strip()
+            score_a = int(score_match.group(1))
+            score_b = int(score_match.group(2))
+            winner = winner_match.group(1).strip()
+
+            # Determine confidence based on data completeness
+            confidence = 'high'
+            if not all([team_a, team_b, winner]):
+                confidence = 'low'
+            elif score_a == score_b:  # Tie is unusual in baseball
+                confidence = 'medium'
+
+            return {
+                'team_a': team_a,
+                'team_b': team_b,
+                'score_a': score_a,
+                'score_b': score_b,
+                'winner': winner,
+                'confidence': confidence
+            }
+
+        except Exception as e:
+            print(f"Error parsing game result: {e}")
+            return None
+
+    def flexible_parse(self, response: str) -> Optional[Dict]:
+        """
+        More flexible parsing for non-standard responses
+
+        Args:
+            response: Raw text response
+
+        Returns:
+            Dictionary with extracted data or None
+        """
+        try:
+            # Look for score patterns like "X-Y", "X to Y", "X : Y"
+            score_patterns = [
+                r'(\d+)\s*-\s*(\d+)',
+                r'(\d+)\s+to\s+(\d+)',
+                r'(\d+)\s*:\s*(\d+)'
+            ]
+
+            score_a, score_b = None, None
+            for pattern in score_patterns:
+                match = re.search(pattern, response)
+                if match:
+                    score_a = int(match.group(1))
+                    score_b = int(match.group(2))
+                    break
+
+            # Look for team names (capitalized words before score or "vs")
+            team_pattern = r'([A-Z][a-zA-Z\s]+?)(?:\s+vs\.?|\s+versus|\s+\d+)'
+            teams = re.findall(team_pattern, response)
+
+            team_a = teams[0].strip() if len(teams) > 0 else None
+            team_b = teams[1].strip() if len(teams) > 1 else None
+
+            # Winner is team with higher score
+            winner = None
+            if score_a is not None and score_b is not None:
+                if score_a > score_b:
+                    winner = team_a
+                elif score_b > score_a:
+                    winner = team_b
+
+            # Determine confidence
+            confidence = 'medium' if all([team_a, team_b, score_a, score_b]) else 'low'
+
+            return {
+                'team_a': team_a,
+                'team_b': team_b,
+                'score_a': score_a,
+                'score_b': score_b,
+                'winner': winner,
+                'confidence': confidence
+            }
+
+        except Exception as e:
+            print(f"Flexible parsing failed: {e}")
+            return None
+
+    def test_single_video(self, video_url: str):
+        """
+        Test analyzer on a single video (for debugging)
+
+        Args:
+            video_url: Full YouTube video URL
+        """
+        print(f"Analyzing: {video_url}")
+        print("-" * 60)
+
+        video_id = self.extract_video_id(video_url)
+        result, raw = self.analyze_game_video(video_id, video_url)
+
+        print("\nRaw Response:")
+        print(raw)
+        print("\n" + "-" * 60)
+
+        if result:
+            print("\nParsed Result:")
+            print(f"  Team A: {result['team_a']}")
+            print(f"  Team B: {result['team_b']}")
+            print(f"  Score: {result['score_a']}-{result['score_b']}")
+            print(f"  Winner: {result['winner']}")
+            print(f"  Confidence: {result['confidence']}")
+        else:
+            print("\nFailed to parse result")
+
+    @staticmethod
+    def extract_video_id(url: str) -> str:
+        """Extract video ID from YouTube URL"""
+        patterns = [
+            r'youtube\.com/watch\?v=([a-zA-Z0-9_-]+)',
+            r'youtu\.be/([a-zA-Z0-9_-]+)',
+            r'youtube\.com/embed/([a-zA-Z0-9_-]+)'
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, url)
+            if match:
+                return match.group(1)
+
+        # If no pattern matches, assume the URL is just the video ID
+        return url
+
+
+def main():
+    """Test the Gemini analyzer"""
+    print("Gemini Video Analyzer - Test Mode\n")
+
+    # Check for API key
+    api_key = os.environ.get('GEMINI_API_KEY')
+    if not api_key:
+        print("ERROR: GEMINI_API_KEY environment variable not set")
+        print("\nTo set it:")
+        print("  Windows: set GEMINI_API_KEY=your_key_here")
+        print("  Linux/Mac: export GEMINI_API_KEY=your_key_here")
+        print("\nGet your key from: https://aistudio.google.com/")
+        return
+
+    try:
+        analyzer = GeminiAnalyzer(api_key)
+
+        print("Enter a YouTube video URL to test:")
+        print("Example: https://www.youtube.com/watch?v=VIDEO_ID")
+        video_url = input("> ").strip()
+
+        if video_url:
+            analyzer.test_single_video(video_url)
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    main()

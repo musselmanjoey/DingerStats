@@ -33,3 +33,10 @@ waveform_*.png
 
 # Claude Code (optional - remove if you want to track it)
 .claude/
+
+# Environment variables and secrets
+.env
+
+# Database files
+database/*.db
+database/*.db-journal
