@@ -17,11 +17,13 @@ CREATE TABLE IF NOT EXISTS videos (
 CREATE TABLE IF NOT EXISTS game_results (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     video_id TEXT NOT NULL,
-    team_a TEXT,
-    team_b TEXT,
+    player_a TEXT,  -- Primary: Player name (e.g., "Dennis", "Nick")
+    player_b TEXT,  -- Primary: Player name
+    team_a TEXT,    -- Secondary: Character team name (e.g., "Daisy Cupids")
+    team_b TEXT,    -- Secondary: Character team name
     score_a INTEGER,
     score_b INTEGER,
-    winner TEXT,
+    winner TEXT,    -- Player name who won
     raw_response TEXT,  -- Store full Gemini response
     analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confidence TEXT,  -- high, medium, low

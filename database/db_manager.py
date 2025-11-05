@@ -103,11 +103,13 @@ class DatabaseManager:
             with self.get_connection() as conn:
                 conn.execute("""
                     INSERT INTO game_results
-                    (video_id, team_a, team_b, score_a, score_b, winner,
+                    (video_id, player_a, player_b, team_a, team_b, score_a, score_b, winner,
                      raw_response, confidence)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     result_data['video_id'],
+                    result_data.get('player_a'),
+                    result_data.get('player_b'),
                     result_data.get('team_a'),
                     result_data.get('team_b'),
                     result_data.get('score_a'),

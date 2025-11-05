@@ -82,16 +82,19 @@ class GeminiAnalyzer:
 
         # Structured prompt for better parsing
         prompt = """
-        Analyze this baseball game video and extract the following information:
-        1) The two teams that played
-        2) The final score
-        3) Which team won
+        Analyze this Mario Baseball video game and extract the following information:
+        1) The HUMAN PLAYER names (e.g., Dennis, Nick, Hunter, Jason, Andrew, etc.)
+        2) The character team names they're using (e.g., Daisy Cupids, Mario Heroes)
+        3) The final score
+        4) Which PLAYER won (not team name - the human player's name)
 
         Format your response exactly like this:
-        Team A: [name]
-        Team B: [name]
+        Player A: [human player name]
+        Team A: [character team name]
+        Player B: [human player name]
+        Team B: [character team name]
         Score: [A's score]-[B's score]
-        Winner: [winning team name]
+        Winner: [human player name who won]
 
         If you cannot determine this information with confidence, respond with:
         Unable to determine: [reason]
@@ -262,13 +265,15 @@ class GeminiAnalyzer:
             response: Raw text response from Gemini
 
         Returns:
-            Dictionary with team_a, team_b, score_a, score_b, winner, confidence
+            Dictionary with player_a, player_b, team_a, team_b, score_a, score_b, winner, confidence
             Returns None if parsing fails
         """
         try:
             # Check for "Unable to determine" response
             if "unable to determine" in response.lower():
                 return {
+                    'player_a': None,
+                    'player_b': None,
                     'team_a': None,
                     'team_b': None,
                     'score_a': None,
@@ -276,6 +281,10 @@ class GeminiAnalyzer:
                     'winner': None,
                     'confidence': 'low'
                 }
+
+            # Extract players
+            player_a_match = re.search(r'Player A:\s*(.+)', response, re.IGNORECASE)
+            player_b_match = re.search(r'Player B:\s*(.+)', response, re.IGNORECASE)
 
             # Extract teams
             team_a_match = re.search(r'Team A:\s*(.+)', response, re.IGNORECASE)
@@ -287,24 +296,28 @@ class GeminiAnalyzer:
             # Extract winner
             winner_match = re.search(r'Winner:\s*(.+)', response, re.IGNORECASE)
 
-            if not all([team_a_match, team_b_match, score_match, winner_match]):
+            if not all([player_a_match, player_b_match, score_match, winner_match]):
                 # Try alternative parsing (more flexible)
                 return self.flexible_parse(response)
 
-            team_a = team_a_match.group(1).strip()
-            team_b = team_b_match.group(1).strip()
+            player_a = player_a_match.group(1).strip()
+            player_b = player_b_match.group(1).strip()
+            team_a = team_a_match.group(1).strip() if team_a_match else None
+            team_b = team_b_match.group(1).strip() if team_b_match else None
             score_a = int(score_match.group(1))
             score_b = int(score_match.group(2))
             winner = winner_match.group(1).strip()
 
             # Determine confidence based on data completeness
             confidence = 'high'
-            if not all([team_a, team_b, winner]):
+            if not all([player_a, player_b, winner]):
                 confidence = 'low'
             elif score_a == score_b:  # Tie is unusual in baseball
                 confidence = 'medium'
 
             return {
+                'player_a': player_a,
+                'player_b': player_b,
                 'team_a': team_a,
                 'team_b': team_b,
                 'score_a': score_a,

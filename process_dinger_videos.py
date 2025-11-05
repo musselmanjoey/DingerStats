@@ -116,7 +116,10 @@ class DingerStatsPipeline:
 
                 if success:
                     self.db.update_processing_status(video_id, 'completed')
-                    print(f"  [OK] {result['team_a']} vs {result['team_b']} - Winner: {result['winner']}")
+                    # Display player names (primary) and team names (secondary)
+                    player_display = f"{result.get('player_a', '?')} vs {result.get('player_b', '?')}"
+                    team_display = f"({result.get('team_a', '?')} vs {result.get('team_b', '?')})"
+                    print(f"  [OK] {player_display} {team_display} - Winner: {result['winner']}")
                     return True
                 else:
                     self.db.update_processing_status(video_id, 'failed', 'Failed to store result')
@@ -207,7 +210,12 @@ class DingerStatsPipeline:
 
         for result in results:
             print(f"\nVideo: {result.get('title', 'Unknown')}")
-            print(f"  {result['team_a']} vs {result['team_b']}")
+            # Show player names (primary)
+            if result.get('player_a') and result.get('player_b'):
+                print(f"  Players: {result['player_a']} vs {result['player_b']}")
+            # Show team names (secondary)
+            if result.get('team_a') and result.get('team_b'):
+                print(f"  Teams: {result['team_a']} vs {result['team_b']}")
             print(f"  Score: {result['score_a']}-{result['score_b']}")
             print(f"  Winner: {result['winner']}")
             print(f"  Confidence: {result['confidence']}")
