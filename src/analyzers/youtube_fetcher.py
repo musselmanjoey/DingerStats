@@ -10,12 +10,13 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from datetime import datetime
 import isodate  # For parsing ISO 8601 duration
+from src.config import YOUTUBE_API_KEY
 
 
 class YouTubeFetcher:
     def __init__(self, api_key: Optional[str] = None):
         """Initialize YouTube Data API client"""
-        self.api_key = api_key or os.environ.get('YOUTUBE_API_KEY')
+        self.api_key = api_key or YOUTUBE_API_KEY or os.environ.get('YOUTUBE_API_KEY')
         if not self.api_key:
             raise ValueError("YouTube API key required. Set YOUTUBE_API_KEY environment variable.")
 
@@ -235,8 +236,7 @@ def main():
     print("YouTube Data API Fetcher - Test Mode\n")
 
     # Check for API key
-    api_key = os.environ.get('YOUTUBE_API_KEY')
-    if not api_key:
+    if not YOUTUBE_API_KEY and not os.environ.get('YOUTUBE_API_KEY'):
         print("ERROR: YOUTUBE_API_KEY environment variable not set")
         print("\nTo set it:")
         print("  Windows: set YOUTUBE_API_KEY=your_key_here")
@@ -244,7 +244,7 @@ def main():
         return
 
     try:
-        fetcher = YouTubeFetcher(api_key)
+        fetcher = YouTubeFetcher()
 
         # Example: Get channel info (replace with actual Dinger City channel)
         print("Enter Dinger City channel URL or ID:")

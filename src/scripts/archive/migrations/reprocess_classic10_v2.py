@@ -8,11 +8,15 @@ This script will:
 4. Allow comparison of v1 vs v2 data quality
 """
 
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
 import time
 from dotenv import load_dotenv
 from database.db_manager import DatabaseManager
-from gemini_analyzer import GeminiAnalyzer
+from src.analyzers.gemini_analyzer import GeminiAnalyzer
+from src.config import PLAYLISTS
 
 # Load environment variables
 load_dotenv()
@@ -29,7 +33,7 @@ def reprocess_classic10_with_v2():
     gemini = GeminiAnalyzer()
 
     # Classic 10 playlist ID
-    CLASSIC_10_PLAYLIST = 'PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF'
+    CLASSIC_10_PLAYLIST = PLAYLISTS['classic10']
 
     # Get all Classic 10 videos
     videos = db.get_videos_by_playlist(CLASSIC_10_PLAYLIST)

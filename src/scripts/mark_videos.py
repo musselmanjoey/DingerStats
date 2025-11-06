@@ -9,12 +9,7 @@ import argparse
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
-
-# Playlist IDs
-PLAYLISTS = {
-    'classic10': 'PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF',
-    'season10': 'PL4KAbBInKJ-wULDmMsXHk6lmNdN4WpKk2',
-}
+from src.config import PLAYLISTS
 
 
 def list_videos(playlist_key, show_all=False):

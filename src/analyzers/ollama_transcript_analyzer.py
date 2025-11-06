@@ -8,20 +8,21 @@ import requests
 import json
 from youtube_transcript_api import YouTubeTranscriptApi as TranscriptAPI
 from typing import Dict, Optional, Tuple
+from src.config import DEFAULT_OLLAMA_MODEL, DEFAULT_OLLAMA_URL
 
 
 class OllamaTranscriptAnalyzer:
-    def __init__(self, model: str = "llama3.2:1b", ollama_url: str = "http://localhost:11434"):
+    def __init__(self, model: str = None, ollama_url: str = None):
         """
         Initialize Ollama analyzer
 
         Args:
-            model: Ollama model to use (default: llama3.2:1b - fastest, best for weak machines)
-            ollama_url: Ollama API endpoint
+            model: Ollama model to use (defaults to DEFAULT_OLLAMA_MODEL from config)
+            ollama_url: Ollama API endpoint (defaults to DEFAULT_OLLAMA_URL from config)
         """
-        self.model = model
-        self.ollama_url = ollama_url
-        self.api_endpoint = f"{ollama_url}/api/generate"
+        self.model = model or DEFAULT_OLLAMA_MODEL
+        self.ollama_url = ollama_url or DEFAULT_OLLAMA_URL
+        self.api_endpoint = f"{self.ollama_url}/api/generate"
 
     def get_transcript(self, video_id: str) -> Optional[str]:
         """

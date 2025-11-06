@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS game_results (
     confidence TEXT,  -- high, medium, low
     analyzer_type TEXT DEFAULT 'gemini_visual',  -- gemini_visual, ollama_transcript
     prompt_version TEXT DEFAULT 'v1',  -- v1, v2, v3, etc.
+    model_name TEXT,  -- Specific AI model used (e.g., 'gemini-2.0-flash-exp', 'llama3.2:1b')
     FOREIGN KEY (video_id) REFERENCES videos(video_id)
 );
 

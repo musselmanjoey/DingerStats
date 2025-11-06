@@ -14,18 +14,14 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
+from src.config import DB_PATH
 from datetime import datetime
 
 def analyze_classic10_chronology():
     """
     Analyze Classic 10 games by publish date to identify round boundaries
     """
-    # Get absolute path to database
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(script_dir))
-    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
-
-    db = DatabaseManager(db_path)
+    db = DatabaseManager(DB_PATH)
 
     with db.get_connection() as conn:
         # Get all Classic 10 games with publish dates, ordered chronologically
@@ -197,12 +193,7 @@ def apply_updates(assignments):
     """
     Apply the round assignments to the database
     """
-    # Get absolute path to database
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(script_dir))
-    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
-
-    db = DatabaseManager(db_path)
+    db = DatabaseManager(DB_PATH)
 
     print("\nApplying updates...")
 

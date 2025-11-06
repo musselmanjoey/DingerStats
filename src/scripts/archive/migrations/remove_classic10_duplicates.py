@@ -10,14 +10,11 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
+from src.config import DB_PATH
 
 def remove_duplicates():
     """Remove duplicate game_results entries, keeping the best one"""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(script_dir))
-    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
-
-    db = DatabaseManager(db_path)
+    db = DatabaseManager(DB_PATH)
 
     print("=" * 80)
     print("REMOVING DUPLICATE CLASSIC 10 GAME ENTRIES")

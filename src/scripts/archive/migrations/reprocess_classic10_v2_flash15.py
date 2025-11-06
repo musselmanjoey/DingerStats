@@ -13,6 +13,7 @@ import time
 from dotenv import load_dotenv
 from database.db_manager import DatabaseManager
 from src.analyzers.gemini_analyzer import GeminiAnalyzer
+from src.config import PLAYLISTS
 
 load_dotenv()
 
@@ -28,7 +29,7 @@ def reprocess_classic10_with_v2_flash15():
     gemini = GeminiAnalyzer(model='models/gemini-1.5-flash')
 
     # Classic 10 playlist ID
-    CLASSIC_10_PLAYLIST = 'PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF'
+    CLASSIC_10_PLAYLIST = PLAYLISTS['classic10']
 
     # Get all Classic 10 videos
     all_videos = db.get_videos_by_playlist(CLASSIC_10_PLAYLIST)

@@ -10,22 +10,17 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
 from src.analyzers.ollama_transcript_analyzer import OllamaTranscriptAnalyzer
-
-# Playlist IDs
-PLAYLISTS = {
-    'classic10': 'PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF',
-    'season10': 'PL4KAbBInKJ-wULDmMsXHk6lmNdN4WpKk2',
-}
+from src.config import PLAYLISTS, DEFAULT_GEMINI_MODEL, DEFAULT_OLLAMA_MODEL
 
 
 def get_analyzer(analyzer_type, prompt_version):
     """Get the appropriate analyzer instance"""
     if analyzer_type == 'ollama':
-        return OllamaTranscriptAnalyzer(model="llama3.2:1b"), 'ollama_transcript'
+        return OllamaTranscriptAnalyzer(model=DEFAULT_OLLAMA_MODEL), 'ollama_transcript'
     elif analyzer_type == 'gemini':
         # Import here to avoid dependency if not using Gemini
         from src.analyzers.gemini_analyzer import GeminiAnalyzer
-        return GeminiAnalyzer(prompt_version=prompt_version), 'gemini_visual'
+        return GeminiAnalyzer(model=DEFAULT_GEMINI_MODEL, prompt_version=prompt_version), 'gemini_visual'
     else:
         raise ValueError(f"Unknown analyzer type: {analyzer_type}")
 

@@ -51,3 +51,11 @@ nul
 
 # Vercel
 .vercel
+
+# Generated static site files (regenerated from templates)
+webapp/frontend/index.html
+webapp/frontend/classic-10.html
+webapp/frontend/season-*.html
+
+# Keep templates (these are the source files)
+!webapp/frontend/*_template*.html

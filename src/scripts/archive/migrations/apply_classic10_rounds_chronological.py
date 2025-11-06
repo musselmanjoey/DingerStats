@@ -14,6 +14,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from database.db_manager import DatabaseManager
+from src.config import DB_PATH
 from datetime import datetime
 
 def is_grudge_match(title):
@@ -30,11 +31,7 @@ def is_grudge_match(title):
 
 def get_clean_classic10_games():
     """Get Classic 10 games, removing duplicates and non-tournament games"""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(script_dir))
-    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
-
-    db = DatabaseManager(db_path)
+    db = DatabaseManager(DB_PATH)
 
     with db.get_connection() as conn:
         cursor = conn.execute("""
@@ -166,11 +163,7 @@ def assign_rounds_by_chronology():
 
 def apply_assignments(assignments):
     """Apply the round assignments to the database"""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(script_dir))
-    db_path = os.path.join(project_root, 'database', 'dingerstats.db')
-
-    db = DatabaseManager(db_path)
+    db = DatabaseManager(DB_PATH)
 
     print("\n" + "=" * 80)
     print("APPLYING UPDATES TO DATABASE")

@@ -58,6 +58,13 @@ class DatabaseManager:
                 conn.commit()
                 print("  Game results migration complete!")
 
+            # Check if model_name column exists in game_results table
+            if 'model_name' not in result_columns:
+                print("  Running migration: Adding model_name to game_results...")
+                conn.execute("ALTER TABLE game_results ADD COLUMN model_name TEXT")
+                conn.commit()
+                print("  Model name migration complete!")
+
     def get_connection(self):
         """Get database connection"""
         conn = sqlite3.connect(self.db_path)

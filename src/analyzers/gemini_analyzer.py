@@ -7,27 +7,29 @@ import os
 import re
 import time
 import backoff
+from pathlib import Path
 from typing import Dict, Optional, Tuple, List
 from google import genai
 from google.genai import types
 from google.api_core import exceptions
+from src.config import GEMINI_API_KEY, DEFAULT_GEMINI_MODEL
 
 
 class GeminiAnalyzer:
-    def __init__(self, api_key: Optional[str] = None, model: str = "gemini-2.0-flash-exp"):
+    def __init__(self, api_key: Optional[str] = None, model: str = None):
         """
         Initialize Gemini API client
 
         Args:
-            api_key: Gemini API key (defaults to GEMINI_API_KEY env var)
-            model: Model to use (gemini-2.0-flash-exp, gemini-2.0-flash-thinking-exp, etc.)
+            api_key: Gemini API key (defaults to GEMINI_API_KEY from config)
+            model: Model to use (defaults to DEFAULT_GEMINI_MODEL from config)
         """
-        self.api_key = api_key or os.environ.get('GEMINI_API_KEY')
+        self.api_key = api_key or GEMINI_API_KEY or os.environ.get('GEMINI_API_KEY')
         if not self.api_key:
             raise ValueError("Gemini API key required. Set GEMINI_API_KEY environment variable.")
 
         self.client = genai.Client(api_key=self.api_key)
-        self.model = model
+        self.model = model or DEFAULT_GEMINI_MODEL
 
     def analyze_video_with_retry(self, video_url: str, prompt: str, max_retries: int = 3) -> str:
         """
@@ -92,142 +94,30 @@ class GeminiAnalyzer:
                     print(f"Error analyzing video {video_url}: {e}")
                     raise
 
+    def _get_prompt(self, version: str) -> str:
+        """
+        Load prompt from file based on version
+
+        Args:
+            version: Prompt version (v1, v2, etc.)
+
+        Returns:
+            Prompt text as string
+        """
+        prompt_path = Path(__file__).parent.parent / 'prompts' / f'game_analysis_{version}.txt'
+
+        if not prompt_path.exists():
+            raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+
+        return prompt_path.read_text()
+
     def _get_v1_prompt(self) -> str:
-        """
-        Original prompt (v1) - Basic game type detection
-        """
-        return """
-        Analyze this Mario Baseball video game and extract the following information:
-
-        STRUCTURED DATA (required):
-        1) The HUMAN PLAYER names (e.g., Dennis, Nick, Hunter, Jason, Andrew, etc.)
-        2) The character team names they're using (e.g., Daisy Cupids, Mario Heroes)
-        3) The final score
-        4) Which PLAYER won (not team name - the human player's name)
-        5) Game type: Is this a Regular Season game, Playoff, Elimination, Finals, or other tournament format?
-
-        GAME HIGHLIGHTS:
-        Summarize notable moments and gameplay:
-        - Notable plays (walk-offs, grand slams, comebacks, defensive gems, close plays)
-        - Game flow (was it close? blowout? back-and-forth?)
-        - Turning points or momentum shifts
-        - Overall game quality/excitement
-
-        COMMENTARY HIGHLIGHTS:
-        Capture memorable commentary moments:
-        - Running jokes or recurring bits (e.g., specific catchphrases on certain plays)
-        - Funny interactions between commentators
-        - Memorable calls or reactions
-        - Any callbacks or inside jokes
-
-        Format your response exactly like this:
-        Player A: [human player name]
-        Team A: [character team name]
-        Player B: [human player name]
-        Team B: [character team name]
-        Score: [A's score]-[B's score]
-        Winner: [human player name who won]
-        Game Type: [Regular Season/Playoff/Elimination/Finals/etc.]
-
-        GAME SUMMARY:
-        [Your game highlights and notable moments here - 2-4 sentences]
-
-        COMMENTARY SUMMARY:
-        [Your commentary highlights here - 1-3 sentences, or "None notable" if nothing stands out]
-
-        If you cannot determine this information with confidence, respond with:
-        Unable to determine: [reason]
-        """
+        """Original prompt (v1) - Basic game type detection"""
+        return self._get_prompt('v1')
 
     def _get_v2_prompt(self) -> str:
-        """
-        Improved prompt (v2) - Better Classic 10 YERR OUT! format detection
-        """
-        return """
-        Analyze this Mario Baseball video and extract the following information:
-
-        FIRST - Determine if this video contains actual tournament gameplay:
-
-        SKIP if the video is:
-        - Draft/team selection content (e.g., "DRAFT DAY", "Character Steals", "Team Breakdown")
-        - Analysis or prediction content (e.g., "Analysis", "Who will win", "Breakdown", "Contenders")
-        - Grudge matches or exhibition games (not part of tournament standings)
-        - Other non-tournament content
-
-        If this is NOT a tournament game, respond with:
-        NOT A GAME: [brief reason - e.g., "Draft video" or "Analysis content" or "Grudge match"]
-
-        If this IS a tournament game, continue with extraction:
-
-        STRUCTURED DATA (required):
-        1) The HUMAN PLAYER names (e.g., Dennis, Nick, Hunter, Jason, Andrew, etc.)
-        2) The character team names they're using (e.g., Daisy Cupids, Mario Heroes)
-        3) The final score
-        4) Which PLAYER won (not team name - the human player's name)
-        5) Game type: Identify the specific tournament format and phase
-
-        IMPORTANT - GAME TYPE DETECTION:
-
-        For "Classic 10" (YERR OUT! format):
-        - This tournament has a unique structure: Round-Robin → Single Elimination Game → Repeat
-        - Each round consists of MULTIPLE round-robin games, followed by ONE elimination game
-        - Look for these indicators:
-          * Video title mentioning "Round 1", "Round 2", "Round 3", or "Finals"
-          * Commentary discussing "elimination", "loser is out", or "YERR OUT"
-          * Commentary mentioning round standings or who's at the bottom
-
-        Specify the game type as one of:
-        - "Classic 10 - Round 1 - Round Robin" (for regular games in Round 1)
-        - "Classic 10 - Round 1 - Elimination" (for THE elimination game in Round 1)
-        - "Classic 10 - Round 2 - Round Robin" (for regular games in Round 2)
-        - "Classic 10 - Round 2 - Elimination" (for THE elimination game in Round 2)
-        - "Classic 10 - Round 3 - Round Robin" (for regular games in Round 3)
-        - "Classic 10 - Round 3 - Elimination" (for THE elimination game in Round 3)
-        - "Classic 10 - Finals" (for championship games)
-
-        For "Season 10" (traditional format):
-        - Standard structure: Regular Season → Playoffs → Finals
-        - Specify as:
-          * "Season 10 - Regular Season"
-          * "Season 10 - Playoffs"
-          * "Season 10 - Finals"
-
-        If you cannot determine the specific round or phase, use:
-        - "Classic 10" (generic, will be normalized later)
-        - "Season 10" (generic, will be normalized later)
-
-        GAME HIGHLIGHTS:
-        Summarize notable moments and gameplay:
-        - Notable plays (walk-offs, grand slams, comebacks, defensive gems, close plays)
-        - Game flow (was it close? blowout? back-and-forth?)
-        - Turning points or momentum shifts
-        - Overall game quality/excitement
-
-        COMMENTARY HIGHLIGHTS:
-        Capture memorable commentary moments:
-        - Running jokes or recurring bits (e.g., specific catchphrases on certain plays)
-        - Funny interactions between commentators
-        - Memorable calls or reactions
-        - Any callbacks or inside jokes
-
-        Format your response exactly like this:
-        Player A: [human player name]
-        Team A: [character team name]
-        Player B: [human player name]
-        Team B: [character team name]
-        Score: [A's score]-[B's score]
-        Winner: [human player name who won]
-        Game Type: [specific format from above - be as specific as possible]
-
-        GAME SUMMARY:
-        [Your game highlights and notable moments here - 2-4 sentences]
-
-        COMMENTARY SUMMARY:
-        [Your commentary highlights here - 1-3 sentences, or "None notable" if nothing stands out]
-
-        If you cannot determine this information with confidence, respond with:
-        Unable to determine: [reason]
-        """
+        """Improved prompt (v2) - Better Classic 10 YERR OUT! format detection"""
+        return self._get_prompt('v2')
 
     def analyze_game_video(self, video_id: str, video_url: str = None, prompt_version: str = 'v2') -> Tuple[Optional[Dict], str]:
         """
@@ -611,8 +501,7 @@ def main():
     print("Gemini Video Analyzer - Test Mode\n")
 
     # Check for API key
-    api_key = os.environ.get('GEMINI_API_KEY')
-    if not api_key:
+    if not GEMINI_API_KEY and not os.environ.get('GEMINI_API_KEY'):
         print("ERROR: GEMINI_API_KEY environment variable not set")
         print("\nTo set it:")
         print("  Windows: set GEMINI_API_KEY=your_key_here")
@@ -621,7 +510,7 @@ def main():
         return
 
     try:
-        analyzer = GeminiAnalyzer(api_key)
+        analyzer = GeminiAnalyzer()
 
         print("Enter a YouTube video URL to test:")
         print("Example: https://www.youtube.com/watch?v=VIDEO_ID")

@@ -2,10 +2,14 @@
 Fetch all Classic and Season playlists from Dinger City
 """
 
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
 from dotenv import load_dotenv
-from youtube_fetcher import YouTubeFetcher
+from src.analyzers.youtube_fetcher import YouTubeFetcher
 from database.db_manager import DatabaseManager
+from src.config import PLAYLISTS
 
 # Load environment variables
 load_dotenv()
@@ -21,7 +25,7 @@ def main():
 
     # Define all Classic playlists
     classics = [
-        ("Classic 10: YERR OUT!", "PL4KAbBInKJ-x2Thksr-E8xKnpdElGeeqF"),
+        ("Classic 10: YERR OUT!", PLAYLISTS['classic10']),
         ("Classic 9: TEAM or NO TEAM", "PL4KAbBInKJ-zzSUI8ADCmI10Yl5RMeIml"),
         ("Classic 8 - Moneyball", "PL4KAbBInKJ-watpCq-XwwBTjgn5AjT58k"),
         ("Classic 7 - Blind Auction", "PL4KAbBInKJ-yyT-gLQ64j7VG6KSVxLdP8"),
@@ -35,7 +39,7 @@ def main():
 
     # Define all Season playlists
     seasons = [
-        ("SEASON 10 (Spring 2024)", "PL4KAbBInKJ-wULDmMsXHk6lmNdN4WpKk2"),
+        ("SEASON 10 (Spring 2024)", PLAYLISTS['season10']),
         ("SEASON 9! Summer 2022", "PL4KAbBInKJ-xA2ncS-VZ2nD8FwdHHEcHe"),
         ("SEASON 8! Fall 2021", "PL4KAbBInKJ-wQw1VMopYJckrA2SoAc-Ad"),
         ("Season 7", "PL4KAbBInKJ-zvXG_lrydLaKMJwpEKYZBG"),
